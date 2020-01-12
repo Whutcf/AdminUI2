@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+	<head>
+		<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,Chrome=1">
+		<!-- Google Chrome Frame也可以让IE用上Chrome的引擎: -->
+		<meta name="renderer" content="webkit">
+		<!--国产浏览器高速模式-->
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="author" content="穷在闹市" />
+		<!-- 作者 -->
+		<meta name="revised" content="穷在闹市.v3, 2019/05/01" />
+		<!-- 定义页面的最新版本 -->
+		<meta name="description" content="网站简介" />
+		<!-- 网站简介 -->
+		<meta name="keywords" content="搜索关键字，以半角英文逗号隔开" />
+		<title>用户登录页面</title>
+
+		<!-- 公共样式 开始 -->
+		<link rel="shortcut icon" href="images/favicon.ico" />
+		<link rel="bookmark" href="images/favicon.ico" />
+		<link rel="stylesheet" type="text/css" href="css/base.css">
+		<link rel="stylesheet" type="text/css" href="css/iconfont.css">
+		<script type="text/javascript" src="framework/jquery-1.11.3.min.js"></script>
+		<link rel="stylesheet" type="text/css" href="layui/css/layui.css">
+		<script type="text/javascript" src="layui/layui.js"></script>
+		<!-- 公共样式 结束 -->
+
+		<link rel="stylesheet" type="text/css" href="css/login1.css">
+		<link rel="stylesheet" type="text/css" href="css/errorPage.css">
+		<script type="text/javascript" src="js/login1.js"></script>
+	</head>
+
+	<body>
+		<div class="loginBg"></div>
+		<div class="login_main">
+			<div class="box">
+				<div class="left">
+					<img src="images/logo.png" />
+					<p style="font-family: "arial narrow";">欢迎使用AdminUI</p>
+				</div>
+				<div class="right">
+					<form class="layui-form layui-form-pane" action="/login">
+						<div th:if="${loginError}">
+							<p style="color: red; font-family: '微软雅黑';" th:text="${error}"></p>
+						</div>
+						<div th:if="${hasmsg}">
+							<p style="color: green; font-family: '微软雅黑';" th:text="${msg}"></p>
+						</div>
+						<div th:if="${param.hasmsg}">
+							<p style="color: green; font-family: '微软雅黑';padding: 10px;" th:text="${param.msg}"></p>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label login_title"><i class="iconfont icon-gerenzhongxin-denglu"></i></label>
+							<div class="layui-input-block login_input">
+								<input id="username" type="text" th:value="${username}" name="username" required lay-verify="required"
+								 autocomplete="off" placeholder="请输入您的用户名" class="layui-input">
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label login_title"><i class="iconfont icon-mima1"></i></label>
+							<div class="layui-input-block login_input">
+								<input type="password" name="password" required lay-verify="required" autocomplete="off" placeholder="请输入密码"
+								 class="layui-input">
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<button class="layui-btn layui-btn-fluid login_but" lay-submit lay-filter="loginBut">登 录</button>
+						</div>
+						<div class="layui-form-item">
+							<input type="radio" name="role" value="admin" title="管理员" checked lay-filter="userType">
+							<input type="radio" name="role" value="manager" title="经理" lay-filter="userType">
+							<input type="radio" name="role" value="employee" title="员工" lay-filter="userType">
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+		<script>
+			layui.use('form', function() {
+				var form = layui.form;
+				//监听提交
+				form.on('submit(loginBut)', function(data) {
+					//					layer.msg(JSON.stringify(data.field),{time: 6000});
+					console.log(data);
+					return true;
+				});
+				//监听用户类型，改变风格
+				form.on('radio(userType)', function(data) {
+					if (data.value == "admin") {
+						$(".loginBg").css("background", "url('images/login_admin_bg.jpg')");
+						$(".login_but").css("cssText", "background-color:#57c201 !important");
+					}
+					if (data.value == "manager") {
+						$(".loginBg").css("background", "url('images/login_sh_bg.jpg')");
+						$(".login_but").css("cssText", "background-color:#16c6f9 !important");
+					}
+					if (data.value == "employee") {
+						$(".loginBg").css("background", "url('images/login_fj_bg.jpg')");
+						$(".login_but").css("cssText", "background-color:#ffd205 !important");
+					}
+				});
+			});
+
+
+			$("#username").blur(function() {
+				var username = $(this);
+				$.ajax({
+					url: '/checkUserName?username=' + username.val(),
+					type: 'GET',
+					success: function(data) {
+						if(data=='SUCCESS'){
+							layer.open({
+								type: 1,
+								title: false, //不显示标题栏
+								closeBtn: false,
+								area: '240px;',
+								shade: 0.8,
+								id: 'LAY_layuipro', //设定一个id，防止重复弹出
+								btn: ['注册账号', '暂时不想'],
+								btnAlign: 'c',
+								moveType: 1, //拖拽模式，0或者1
+								content: '<div style="padding: 10px; line-height: 10px; background-color: #C1FFC1; color: #CD2626; font-weight: 200;text-align: center;">您的账号不存在！</div>',
+								success: function(layero) {
+									var btn = layero.find('.layui-layer-btn');
+									btn.find('.layui-layer-btn0').attr({
+										href: 'http://localhost:8080/toRegist'
+									});
+								}
+							});
+						}
+					}
+				});
+			})
+		</script>
+	</body>
+
+</html>

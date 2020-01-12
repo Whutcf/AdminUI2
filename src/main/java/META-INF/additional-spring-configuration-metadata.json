@@ -1,0 +1,37 @@
+{"properties": [
+  {
+    "name": "spring.mvc.tatic-path-pattern",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.mvc.tatic-path-pattern'"
+  },
+  {
+    "name": "mybatis-plus.global-config.logic-delete-value",
+    "type": "java.lang.String",
+    "description": "A description for 'mybatis-plus.global-config.logic-delete-value'"
+  },
+  {
+    "name": "mybatis-plus.global-config.logic-not-delete-value",
+    "type": "java.lang.String",
+    "description": "A description for 'mybatis-plus.global-config.logic-not-delete-value'"
+  },
+  {
+    "name": "mybatis-plus.global-config.refresh-mapper",
+    "type": "java.lang.String",
+    "description": "A description for 'mybatis-plus.global-config.refresh-mapper'"
+  },
+  {
+    "name": "mybatis-plus.global-config.db-column-underline",
+    "type": "java.lang.String",
+    "description": "A description for 'mybatis-plus.global-config.db-column-underline'"
+  },
+  {
+    "name": "mybatis-plus.global-config.field-strategy",
+    "type": "java.lang.String",
+    "description": "A description for 'mybatis-plus.global-config.field-strategy'"
+  },
+  {
+    "name": "mybatis-plus.global-config.id-type",
+    "type": "java.lang.String",
+    "description": "A description for 'mybatis-plus.global-config.id-type'"
+  }
+]}

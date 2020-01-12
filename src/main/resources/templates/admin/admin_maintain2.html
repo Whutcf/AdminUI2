@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,Chrome=1">
+		<!-- Google Chrome Frame也可以让IE用上Chrome的引擎: -->
+		<meta name="renderer" content="webkit">
+		<!--国产浏览器高速模式-->
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="author" content="穷在闹市" />
+		<!-- 作者 -->
+		<meta name="revised" content="穷在闹市.v3, 2019/05/01" />
+		<!-- 定义页面的最新版本 -->
+		<meta name="description" content="网站简介" />
+		<!-- 网站简介 -->
+		<meta name="keywords" content="搜索关键字，以半角英文逗号隔开" />
+		<title>管理员维护页面</title>
+
+		<!-- 公共样式 开始 -->
+		<link rel="stylesheet" type="text/css" href="../../css/base.css">
+		<link rel="stylesheet" type="text/css" href="../../css/iconfont.css">
+		<script type="text/javascript" src="../../framework/jquery-1.11.3.min.js"></script>
+		<link rel="stylesheet" type="text/css" href="../../layui/css/layui.css">
+		<script type="text/javascript" src="../../layui/layui.js"></script>
+		<!-- 滚动条插件 -->
+		<link rel="stylesheet" type="text/css" href="../../css/jquery.mCustomScrollbar.css">
+		<script src="../../framework/jquery-ui-1.10.4.min.js"></script>
+		<script src="../../framework/jquery.mousewheel.min.js"></script>
+		<script src="../../framework/jquery.mCustomScrollbar.min.js"></script>
+		<script src="../../framework/cframe.js"></script><!-- 仅供所有子页面使用 -->
+		<!-- 公共样式 结束 -->
+
+
+	</head>
+
+	<body>
+		<div class="cBody">
+			<div class="layui-tab layui-tab-card" lay-filter="adminTab">
+				<ul class="layui-tab-title">
+					<li class="layui-this">用户管理</li>
+					<li>角色管理</li>
+					<li>用户批量导入</li>
+				</ul>
+				<div class="layui-tab-content">
+					<div class="layui-tab-item layui-show">
+						<table class="layui-hide" id="userlist" lay-filter="userlist"></table>
+					</div>
+					<div class="layui-tab-item">
+						<table class="layui-hide" id="rolelist" lay-filter="rolelist"></table>
+					</div>
+					<div class="layui-tab-item">
+						<div class="layui-upload-drag" id="addUserList">
+						<i class="layui-icon"></i>
+						<p>点击上传，或将文件拖拽到此处</p> 	
+					</div>
+				</div>
+			</div>
+			<div class="layui-footer">
+				<!-- 底部固定区域 -->
+				© cf.com
+			</div>
+		</div>
+
+		<!--头部工具栏-->
+		<script type="text/html" id="toolbarModify">
+			<div class="layui-btn-container">
+				<button class="layui-btn layui-btn-sm" lay-event="deleteAll">删除选中行数据</button>
+				<button class="layui-btn layui-btn-sm" lay-event="isAll">是否全选</button>
+			</div>
+		</script>
+		<!--行内工具栏-->
+		<script type="text/html" id="modifyTable">
+			<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看用户角色</a>
+			<a class="layui-btn layui-btn-xs" lay-event="edit">编辑用户</a>
+			<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+		</script>
+		<script type="text/html" id="switchTpl">
+			<input type="checkbox" name="state" value="{{d.state}}" lay-skin="switch" lay-text="是|否" lay-filter="userState" {{ d.state == "T" ? 'checked' : '' }}>
+		</script>
+
+
+		<script>
+			layui.use(['table', 'form', 'element','upload'], function() {
+				var table = layui.table,
+					form = layui.form,
+					laydate = layui.laydate, //日期
+					upload = layui.upload, //上传
+					element = layui.element; //元素操作
+
+				//监听Tab切换
+				element.on('tab(adminTab)', function(data) {
+					layer.tips('切换到第 ' + (data.index+1) + '页：' + this.innerHTML, this, {
+						tips: 1
+					});
+					layui.use(['table'], function() {
+						if (data.index == 1) {
+							rtable();
+						} else if(data.index == 2){
+							utable();
+						} else {
+							uploadFile();
+						}
+					});
+
+				});
+
+
+				var table1 = layui.table;
+				rtable = function() {
+					table1.render({
+						elem: '#rolelist',
+						url: 'showRoleList',
+						//toolbar: '#toolbarModify',
+						title: '用户角色表',
+						method: 'GET',
+						cols: [
+							[{
+								type: 'checkbox'
+							}, {
+								field: 'roleId',
+								title: 'ID',
+								width: 60,
+								unresize: true,
+								sort: true
+							}, {
+								field: 'roleName',
+								title: '角色名称',
+								align: 'center',
+								width: 100
+							}, {
+								field: 'createtime',
+								title: '创建时间',
+								width: 160
+							}, {
+								field: 'updatetime',
+								title: '更新时间',
+								width: 160
+							}, {
+								field: 'updatePerson',
+								title: '更新人员',
+								width: 100
+							}, {
+								title: '角色编辑',
+								width: 240,
+								align: 'center',
+								toolbar: '#modifyTable'
+							}]
+						],
+						page: false
+					});
+				};
+
+				utable = function() {
+					table.render({
+						elem: '#userlist',
+						url: 'showUserList',
+						toolbar: '#toolbarModify',
+						title: '用户数据表',
+						method: 'GET',
+						cols: [
+							[{
+								type: 'checkbox'
+							}, {
+								field: 'userId',
+								title: 'ID',
+								width: 60,
+								unresize: true,
+								sort: true
+							}, {
+								field: 'username',
+								title: '用户性名',
+								align: 'center',
+								width: 100
+							}, {
+								field: 'password',
+								title: '用户密码',
+								width: 100
+							}, {
+								field: 'state',
+								title: '是否生效',
+								width: 100,
+								templet: '#switchTpl',
+								unresize: true
+							}, {
+								field: 'createtime',
+								title: '创建时间',
+								width: 160
+							}, {
+								field: 'updatetime',
+								title: '更新时间',
+								width: 160
+							}, {
+								field: 'updatePerson',
+								title: '更新人员',
+								width: 100
+							}, {
+								title: '用户编辑',
+								width: 240,
+								align: 'center',
+								toolbar: '#modifyTable'
+							}]
+						],
+						page: true
+					});
+				};
+
+				utable();
+
+				//修改状态
+				form.on('switch(userState)', function(obj) {
+					// layer.tips(this.value + ' ' + this.name + '：' + obj.elem.checked, obj.othis);
+					var data = $(obj.elem),
+						id = data.parents('tr').first().find('td').eq(1).text();
+					var state = obj.elem.checked;
+					layer.confirm("确认修改状态?", {
+						btn: ['确定', '取消'],
+						skin: 'layui-layer-molv',
+						title: '修改状态'
+					}, function() {
+						$.ajax({
+							url: 'changeState',
+							type: 'POST',
+							data: {
+								'userId': id,
+								'state': state
+							},
+							success: function() {
+								layer.msg("修改成功！", {
+									icon: 6,
+									time: 1000
+								});
+								utable();
+							}
+						});
+					}, function() {
+						layer.msg('取消修改', {
+							icon: 2,
+							time: 2000, //20s后自动关闭
+						});
+						utable();
+					});
+				});
+
+
+				//头工具栏事件
+				table.on('toolbar(userlist)', function(obj) {
+					var checkStatus = table.checkStatus(obj.config.id);
+					switch (obj.event) {
+						case 'deleteAll':
+							var data = checkStatus.data;
+							var flag = true;
+							if (data.length > 0) {
+								for (var i = 0; i < data.length; i++) {
+									if (data[i].state == 'T') {
+										layer.msg("不能删除，存在有效用户！", {
+											icon: 7,
+											time: 2500
+										});
+										flag = false;
+										break;
+									}
+								};
+								if (flag) {
+									$.ajax({
+										url: 'deleteAll',
+										type: 'POST',
+										data: JSON.stringify(data),
+										dataType: 'text', //返回值的类型
+										async: false, //不是异步处理
+										contentType: "application/json;charset=UTF-8",
+										success: function(index) {
+											if (index == 'SUCCESS') {
+												layer.msg("删除成功！", {
+													icon: 6,
+													time: 1000
+												});
+												utable();
+											}
+										}
+									});
+								};
+							} else {
+								layer.msg("请选择需要删除的对象！", {
+									icon: 7,
+									time: 1000
+								});
+							}
+
+							break;
+						case 'isAll':
+							layer.msg(checkStatus.isAll ? '全选' : '未全选');
+							break;
+					};
+				});
+
+				//监听表格中的工具条
+				table.on('tool(userlist)', function(obj) {
+					var data = obj.data,
+						$ = layui.$;
+					if (obj.event === 'detail') {
+						// layer.msg('ID：' + data.userId + ' 的查看操作');						
+						layer.open({
+							type: 2,
+							//title: '收藏管理 (考生姓名：张无忌)',
+							title: '角色维护页面 <span style="color: green; font-size: large;" >' + '(用户姓名：' + data.username + ')' +
+								'</span>', //将姓名设置为红色
+							shadeClose: true, //弹出框之外的地方是否可以点击
+							offset: '10%',
+							area: ['50%', '60%'],
+							content: 'toAdminMaintainRole?userId=' + data.userId
+						});
+					} else if (obj.event === 'del') {
+						if (data.state == 'F') {
+							layer.confirm('真的删除行么', {
+								skin: 'layui-layer-molv',
+								title: '删除用户'
+							}, function() {
+								$.ajax({
+									url: 'deleteUser',
+									type: 'POST',
+									data: {
+										"userId": data.userId
+									},
+									success: function() {
+										layer.msg("删除成功！", {
+											icon: 6,
+											time: 1000
+										});
+										utable();
+									}
+								});
+							}, function() {
+								layer.msg("取消修改", {
+									icon: 2,
+									time: 2000
+								})
+							});
+						} else {
+							layer.msg("请先将用户置为无效！", {
+								icon: 7,
+								time: 2500
+							});
+						};
+
+					} else if (obj.event === 'edit') {
+						// layer.alert('编辑行：<br>' + JSON.stringify(data))
+						layer.open({
+							type: 2,
+							skin: 'layui-layer-rim', //边上加框
+							title: '用户维护页面 <span style="color: green; font-size: large;" >' + '(用户姓名：' + data.username + ')' +
+								'</span>', //将姓名设置为红色
+							shadeClose: true, //弹出框之外的地方是否可以点击
+							offset: '10%',
+							area: ['35%', '40%'],
+							// content: 'toAdminMaintainUser?userId='+data.userId+'&username='+data.username+'&password='+data.password+'&state='+data.state
+							content: 'toAdminMaintainUser',
+							success: function(layero, index) {
+								var body = layer.getChildFrame('body', index);
+								//得到iframe页的窗口对象，执行iframe页的方法：iframeWin.method();
+								var iframeWin = window[layero.find('iframe')[0]['name']];
+								//初始化表单数据的值
+								body.find("#userId").val(data.userId);
+								body.find("#username").val(data.username);
+								body.find("#password").val(data.password);
+								body.find("#state").val(data.state);
+							}
+						});
+					};
+				});
+
+
+				//上传
+				uploadFile = function(){
+				upload.render({
+					elem: '#addUserList',
+					url: 'uploadUserList', //上传接口
+					accept: 'file',//普通文件
+					exts: 'xls|xlsx',//允许上传的文件后缀
+					multiple: true,
+					done: function(res) {
+						console.log(res)
+					}
+				});
+				};
+			});
+		</script>
+	</body>
+
+</html>

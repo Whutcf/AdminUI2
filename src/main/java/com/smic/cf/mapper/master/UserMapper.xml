@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.smic.cf.mapper.master.UserMapper">
+	<!-- 使用MybatisPlus 在domain中使用@TableId("user_id")可以替换userResultMap -->
+	<!-- 配置一个映射关系 <resultMap type="User" id="userResultMap"> <id property="userId" 
+		column="user_id"/> </resultMap> -->
+	<!-- 可以重复利用的SQL片段 -->
+	<sql id="baseColumnList">
+		user_id,username,password,state
+	</sql>
+
+	<!-- 查询所有用户信息 -->
+	<sql id="selectAll">
+		select
+		<include refid="baseColumnList" />
+		from sys_user
+	</sql>
+
+	<!-- 登录用户信息查询 -->
+	<!-- <select id="verifyUser" parameterType="User" resultMap="userResultMap"> -->
+	<select id="verifyUser" parameterType="User" resultType="User">
+		<include refid="selectAll" />
+		<where>
+			<if test="username != null and username != '' ">
+				username = #{username,jdbcType=VARCHAR}
+			</if>
+			<if test="password != null and password != '' ">
+				and password = #{password,jdbcType=VARCHAR}
+			</if>
+		</where>
+	</select>
+
+	<!-- 根据用户id获取用户初始密码 -->
+	<select id="findUserPasswordById" parameterType="Integer"
+		resultType="String">
+		select password from sys_user where user_id = #{userid}
+	</select>
+
+	<!-- 修改密码 -->
+	<update id="updatePasswordById">
+		update sys_user set password = #{newpassword} where
+		user_id = #{userid}
+	</update>
+
+	<!-- 新增用户 -->
+	<insert id="insertUser" parameterType="hashmap">
+		<selectKey keyProperty="userId" order="AFTER"
+			resultType="java.lang.Integer">
+			select LAST_INSERT_ID()
+		</selectKey>
+		insert into sys_user (username,password,state) value
+		(#{username},#{password},#{state})
+
+	</insert>
+
+	<!-- 根据Id修改用户状态 -->
+	<update id="updateStateById">
+		update sys_user set state = #{state} where user_id =
+		#{userId}
+	</update>
+
+	<!-- 删除用户的所有角色 -->
+	<delete id="deleteUserRoles" parameterType="Integer">
+		delete from
+		sys_user_role where user_id=#{userId}
+	</delete>
+
+	<!-- 删除用户 -->
+	<delete id="deleteUserById">
+		delete from sys_user where user_id = #{1}
+	</delete>
+
+	<!-- 删除多个用户 -->
+	<delete id="deleteUsers" parameterType="java.util.List">
+		delete from sys_user where user_id in
+		<foreach collection="list" item="user" index="index" open="("
+			separator="," close=")">
+			#{user.userId}
+		</foreach>
+	</delete>
+
+	<!-- 多对多关联映射！ -->
+	<resultMap type="User" id="queryUserWithRole">
+		<id property="userId" column="user_id" />
+		<result property="username" column="username" />
+		<result property="password" column="password" />
+		<result property="state" column="state" />
+		<result property="createtime" column="createtime" />
+		<result property="updatetime" column="updatetime" />
+		<collection property="roles" ofType="Role">
+			<id property="roleId" column="role_id" />
+			<result property="rolename" column="role_name" />
+		</collection>
+	</resultMap>
+
+
+	<!-- 查询所有用户的所有角色 -->
+	<select id="findAllUserWithRoles" resultMap="queryUserWithRole">
+
+		SELECT
+		a.user_id,
+		a.username,
+		a.PASSWORD,
+		a.state,
+		a.createtime,
+		a.updatetime,
+		c.role_id,
+		c.role_name
+		FROM
+		sys_user a
+		LEFT JOIN sys_user_role b ON a.user_id = b.user_id
+		LEFT JOIN sys_role c ON b.role_id = c.role_id
+		order by a.user_id
+
+	</select>
+
+
+	<!-- 配置一对多的映射关系 -->
+	<resultMap type="Role" id="queryRolesWithUserID">
+		<id property="roleId" column="role_id" />
+		<result property="roleName" column="role_name" />
+		<collection property="users" ofType="User">
+			<id property="userId" column="user_id" />
+		</collection>
+	</resultMap>
+
+	<!-- 查询当前用户角色 -->
+	<select id="findUserRolesByUserId" parameterType="Integer"
+		resultMap="queryRolesWithUserID">
+		SELECT
+		c.role_id,c.role_name,a.user_id
+		FROM
+		sys_user a, sys_user_role b , sys_role c
+		where
+		a.user_id = #{1} and a.user_id = b.user_id and b.role_id = c.role_id
+	</select>
+
+	<!-- 查询当前用户未添加的角色 -->
+	<select id="findUnAddedRolesByUserId" parameterType="Integer"
+		resultMap="queryRolesWithUserID">
+		SELECT
+		b.role_id,b.role_name,a.user_id
+		FROM
+		sys_user_role a , sys_role b
+		where
+		a.user_id = #{userId} and b.role_id not IN(
+
+		SELECT role_id from sys_user_role where user_id = #{userId} )
+	</select>
+
+	<!-- 插入用户角色 -->
+	<insert id="insertRoles" parameterType="Integer">
+		insert into sys_user_role
+		(user_id,role_id)
+		values
+		(#{userId},#{roleId})
+	</insert>
+
+	<!-- 查询所有角色 -->
+	<select id="findAllRoles" resultMap="queryRolesWithUserID">
+		select * from sys_role
+	</select>
+
+	<!-- 删除单个角色 -->
+	<delete id="deleteRole" parameterType="Integer">
+		delete from sys_user_role
+		where role_id=#{roleId} and user_id=#{userId}
+	</delete>
+
+	<!-- 查询用户角色总数 -->
+	<select id="countRols" resultType="Integer">
+		select count(role_id) from
+		sys_role
+	</select>
+	
+	
+	<!-- 使用MybatisPlus的方法替换 -->
+	<!-- 查询所有用户！ -->
+	<!-- <select id="findAllUsers" resultMap="userResultMap">
+		<include refid="selectAll" />
+	</select> -->
+		<!-- 更新用户信息 -->
+	<!-- <update id="updateUserInfo" parameterType="User">
+		update sys_user
+		set username = #{username},password = #{password},state=#{state}
+		where
+		user_id = #{userId}
+	</update> -->
+	<!-- 根据用户名查找用户 -->
+	<!-- <select id="findUserByUserName" parameterType="String"
+		resultType="User">
+		<include refid="selectAll" />
+		where username = #{username}
+	</select> -->
+</mapper>
+ 

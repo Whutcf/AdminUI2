@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,Chrome=1">
+		<!-- Google Chrome Frame也可以让IE用上Chrome的引擎: -->
+		<meta name="renderer" content="webkit">
+		<!--国产浏览器高速模式-->
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="author" content="穷在闹市" />
+		<!-- 作者 -->
+		<meta name="revised" content="穷在闹市.v3, 2019/05/01" />
+		<!-- 定义页面的最新版本 -->
+		<meta name="description" content="网站简介" />
+		<!-- 网站简介 -->
+		<meta name="keywords" content="搜索关键字，以半角英文逗号隔开" />
+		<title>管理员维护页面</title>
+
+		<!-- 公共样式 开始 -->
+		<link rel="stylesheet" type="text/css" href="../../css/base.css">
+		<link rel="stylesheet" type="text/css" href="../../css/iconfont.css">
+		<script type="text/javascript" src="../../framework/jquery-1.11.3.min.js"></script>
+		<link rel="stylesheet" type="text/css" href="../../layui/css/layui.css">
+		<script type="text/javascript" src="../../layui/layui.js"></script>
+		<!-- 滚动条插件 -->
+		<link rel="stylesheet" type="text/css" href="../../css/jquery.mCustomScrollbar.css">
+		<script src="../../framework/jquery-ui-1.10.4.min.js"></script>
+		<script src="../../framework/jquery.mousewheel.min.js"></script>
+		<script src="../../framework/jquery.mCustomScrollbar.min.js"></script>
+		<script src="../../framework/cframe.js"></script><!-- 仅供所有子页面使用 -->
+		<!-- 公共样式 结束 -->
+
+
+	</head>
+
+	<body>
+		<table class="layui-hide" id="rolelist" lay-filter="rolelist"></table>
+		<!-- 用来接受另一个页面传入的参数 -->
+		<input type="hidden" name="userId" th:value="${userId}" id="userId"/>
+		<!--头部工具栏-->
+		<script type="text/html" id="toolbarModify">
+			<div class="layui-btn-container">
+				<button class="layui-btn layui-btn-sm" lay-event="add">添加</button>
+				<button class="layui-btn layui-btn-sm" lay-event="back">返回</button>
+			</div>
+		</script>
+
+		<script>
+			
+			layui.use(['table', 'form'], function() {
+				var table = layui.table,
+					form = layui.form;
+				var userId = $("#userId").val();
+
+				ptable = function() {
+					table.render({
+						elem: '#rolelist',
+						url: 'findUnAddedRolesByUserId?userId='+userId,
+						toolbar: '#toolbarModify',
+						title: '用户角色表',
+						method: 'GET',
+						cols: [
+							[{
+								type: 'checkbox'
+							}, {
+								field: 'roleId',
+								title: 'ID',
+								// width: 80,
+								unresize: true,
+								sort: true
+							}, {
+								field: 'rolename',
+								title: '角色名',
+								// width: 120
+							},{
+								field:'users',
+								title:'用户ID',
+								templet: '<div>{{d.users.userId}}</div>',
+								 hide:true
+							}]
+						]
+					});
+				};
+
+				ptable();
+
+
+
+				//头工具栏事件
+				table.on('toolbar(rolelist)', function(obj) {
+					var checkStatus = table.checkStatus(obj.config.id);
+					var data = checkStatus.data;
+					switch(obj.event){
+						case 'add' :
+							if (data.length > 0) {
+								$.ajax({
+									url: 'addRoles',
+									type: 'POST',
+									data: JSON.stringify(data),
+									contentType: "application/json;charset=UTF-8",
+									success: function(index) {
+										if(index=='SUCCESS'){
+											layer.msg("角色添加成功",{
+												icon: 6,
+												time: 1000
+											},function(){
+												window.parent.location.reload();//刷新父页面
+												var index=parent.layer.getFrameIndex(window.name);
+												parent.layer.close(index);
+											});
+										}
+									}
+								});
+							} else {
+								layer.msg("请选择需要添加的角色！", {
+									icon: 7,
+									time: 500
+								});
+							};
+							break;
+						case 'back':
+							var index=parent.layer.getFrameIndex(window.name);
+							parent.layer.close(index);
+							break;
+						
+						
+					}
+					
+				});
+
+
+			});
+		</script>
+	</body>
+
+</html>
