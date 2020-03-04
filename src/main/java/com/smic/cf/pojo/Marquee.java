@@ -19,5 +19,5 @@ public class Marquee implements Serializable {
     private String marqueeLabel;
     private String marqueeContent;
     private String marqueeLink;
-    private String updateTime;
+    private String createTime;
 }

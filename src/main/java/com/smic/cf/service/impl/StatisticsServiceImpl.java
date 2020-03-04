@@ -1,5 +1,7 @@
 package com.smic.cf.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.smic.cf.pojo.ForeignStatistics;
 import com.smic.cf.pojo.Marquee;
 import com.smic.cf.pojo.Statistics;
@@ -70,7 +72,7 @@ public class StatisticsServiceImpl implements StatisticsService {
     }
 
     /**
-     * 更新跑马灯信息
+     * 更新跑马灯信息,只记录第一笔数据
      * @param marquees 跑马灯实体的集合
      * @return void
      * @author 蔡明涛
@@ -78,16 +80,25 @@ public class StatisticsServiceImpl implements StatisticsService {
      **/
     private void insertMarquee(List<Marquee> marquees) {
         for (Marquee marquee: marquees ) {
-            Marquee oldMarquee = marqueeMapper.selectById(marquee.getId());
+            //只记录了一笔，直接根据Label，content和link判断是否存在
+            LambdaQueryWrapper<Marquee> lambdaQueryWrapper = Wrappers.lambdaQuery();
+            lambdaQueryWrapper.eq(Marquee::getMarqueeContent,marquee.getMarqueeContent()).eq(Marquee::getMarqueeLabel,marquee.getMarqueeLabel())
+                    .eq(Marquee::getMarqueeLink,marquee.getMarqueeLink());
+            Marquee oldMarquee = marqueeMapper.selectOne(lambdaQueryWrapper);
             if (StringUtils.isEmpty(oldMarquee)){
-                marquee.setUpdateTime(DateUtils.getCurrentDateTime());
+                marquee.setCreateTime(DateUtils.getCurrentDateTime());
                 marqueeMapper.insert(marquee);
             }else {
-                if (oldMarquee.equals(marquee)){
+                List<String> ignoreFields = new ArrayList<>();
+                ignoreFields.add("id");
+                ignoreFields.add("createTime");
+                if (BeanUtils.compareTwoObjs(ignoreFields,oldMarquee,marquee)){
+                    //如果相等，无需添加
                     log.debug("无需添加新的跑马灯！");
                 }else {
-                    marqueeMapper.deleteById(oldMarquee.getId());
-                    marquee.setUpdateTime(DateUtils.getCurrentDateTime());
+                    //如果不相等，删除原来的替换成新的
+                    marqueeMapper.delete(lambdaQueryWrapper);
+                    marquee.setCreateTime(DateUtils.getCurrentDateTime());
                     marqueeMapper.insert(marquee);
                     log.debug("新添加的跑马灯信息是{}",marquee.toString());
                 }
