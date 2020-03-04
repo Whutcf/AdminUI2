@@ -1,14 +1,12 @@
-package com.smic.cf.domain;
+package com.smic.cf.pojo;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import lombok.AllArgsConstructor;
@@ -18,26 +16,23 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@TableName("sys_user")
 public class User implements Serializable {
 
 	private static final long serialVersionUID = -2317543120131319228L;
-	@TableId(value="user_id",type=IdType.AUTO)
+	@TableId(type=IdType.AUTO)
 	private Integer userId;
-	private String username;
+	private String userName;
 	private String password;
 	private String state;
 	
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss" ,timezone="GMT+8")
 	@TableField(fill=FieldFill.INSERT)
-	private Date createtime;
+	private Date createTime;
 
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss" ,timezone="GMT+8")
 	@TableField(fill=FieldFill.INSERT_UPDATE)
-	private Date updatetime;
+	private Date updateTime;
 	@TableField(fill=FieldFill.INSERT_UPDATE)
 	private String updatePerson; 
-	@TableField(exist=false)
-	private ArrayList<Role> roles;
 	
 }

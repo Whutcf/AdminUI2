@@ -6,7 +6,7 @@
 		column="user_id"/> </resultMap> -->
 	<!-- 可以重复利用的SQL片段 -->
 	<sql id="baseColumnList">
-		user_id,username,password,state
+		user_id,user_name,password,state
 	</sql>
 
 	<!-- 查询所有用户信息 -->
@@ -16,19 +16,6 @@
 		from sys_user
 	</sql>
 
-	<!-- 登录用户信息查询 -->
-	<!-- <select id="verifyUser" parameterType="User" resultMap="userResultMap"> -->
-	<select id="verifyUser" parameterType="User" resultType="User">
-		<include refid="selectAll" />
-		<where>
-			<if test="username != null and username != '' ">
-				username = #{username,jdbcType=VARCHAR}
-			</if>
-			<if test="password != null and password != '' ">
-				and password = #{password,jdbcType=VARCHAR}
-			</if>
-		</where>
-	</select>
 
 	<!-- 根据用户id获取用户初始密码 -->
 	<select id="findUserPasswordById" parameterType="Integer"
@@ -48,8 +35,8 @@
 			resultType="java.lang.Integer">
 			select LAST_INSERT_ID()
 		</selectKey>
-		insert into sys_user (username,password,state) value
-		(#{username},#{password},#{state})
+		insert into sys_user (user_name,password,state) value
+		(#{user_name},#{password},#{state})
 
 	</insert>
 
@@ -79,74 +66,6 @@
 		</foreach>
 	</delete>
 
-	<!-- 多对多关联映射！ -->
-	<resultMap type="User" id="queryUserWithRole">
-		<id property="userId" column="user_id" />
-		<result property="username" column="username" />
-		<result property="password" column="password" />
-		<result property="state" column="state" />
-		<result property="createtime" column="createtime" />
-		<result property="updatetime" column="updatetime" />
-		<collection property="roles" ofType="Role">
-			<id property="roleId" column="role_id" />
-			<result property="rolename" column="role_name" />
-		</collection>
-	</resultMap>
-
-
-	<!-- 查询所有用户的所有角色 -->
-	<select id="findAllUserWithRoles" resultMap="queryUserWithRole">
-
-		SELECT
-		a.user_id,
-		a.username,
-		a.PASSWORD,
-		a.state,
-		a.createtime,
-		a.updatetime,
-		c.role_id,
-		c.role_name
-		FROM
-		sys_user a
-		LEFT JOIN sys_user_role b ON a.user_id = b.user_id
-		LEFT JOIN sys_role c ON b.role_id = c.role_id
-		order by a.user_id
-
-	</select>
-
-
-	<!-- 配置一对多的映射关系 -->
-	<resultMap type="Role" id="queryRolesWithUserID">
-		<id property="roleId" column="role_id" />
-		<result property="roleName" column="role_name" />
-		<collection property="users" ofType="User">
-			<id property="userId" column="user_id" />
-		</collection>
-	</resultMap>
-
-	<!-- 查询当前用户角色 -->
-	<select id="findUserRolesByUserId" parameterType="Integer"
-		resultMap="queryRolesWithUserID">
-		SELECT
-		c.role_id,c.role_name,a.user_id
-		FROM
-		sys_user a, sys_user_role b , sys_role c
-		where
-		a.user_id = #{1} and a.user_id = b.user_id and b.role_id = c.role_id
-	</select>
-
-	<!-- 查询当前用户未添加的角色 -->
-	<select id="findUnAddedRolesByUserId" parameterType="Integer"
-		resultMap="queryRolesWithUserID">
-		SELECT
-		b.role_id,b.role_name,a.user_id
-		FROM
-		sys_user_role a , sys_role b
-		where
-		a.user_id = #{userId} and b.role_id not IN(
-
-		SELECT role_id from sys_user_role where user_id = #{userId} )
-	</select>
 
 	<!-- 插入用户角色 -->
 	<insert id="insertRoles" parameterType="Integer">
@@ -157,9 +76,9 @@
 	</insert>
 
 	<!-- 查询所有角色 -->
-	<select id="findAllRoles" resultMap="queryRolesWithUserID">
+<!-- 	<select id="findAllRoles" resultMap="queryRolesWithUserID">
 		select * from sys_role
-	</select>
+	</select> -->
 
 	<!-- 删除单个角色 -->
 	<delete id="deleteRole" parameterType="Integer">
@@ -173,24 +92,5 @@
 		sys_role
 	</select>
 	
-	
-	<!-- 使用MybatisPlus的方法替换 -->
-	<!-- 查询所有用户！ -->
-	<!-- <select id="findAllUsers" resultMap="userResultMap">
-		<include refid="selectAll" />
-	</select> -->
-		<!-- 更新用户信息 -->
-	<!-- <update id="updateUserInfo" parameterType="User">
-		update sys_user
-		set username = #{username},password = #{password},state=#{state}
-		where
-		user_id = #{userId}
-	</update> -->
-	<!-- 根据用户名查找用户 -->
-	<!-- <select id="findUserByUserName" parameterType="String"
-		resultType="User">
-		<include refid="selectAll" />
-		where username = #{username}
-	</select> -->
 </mapper>
  

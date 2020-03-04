@@ -119,16 +119,16 @@
 				<img class="jt" src="images/top_jt.png" />
 				<div class="topMenu">
 					<ul th:if="${session?.userinfo}">
-						<li th:switch="${session?.userinfo?.username}">
+						<li th:switch="${session?.userinfo?.userName}">
 							<a th:case="'admin'" href="javascript:void(0)" onclick="menuCAClick('admin/toAdminMaintain2',this)" onmouseenter="getTips(this, '点击可以进入用户管理界面')"
 							 onmouseleave="layer.closeAll('tips')">
 								<i class="iconfont icon-yonghu1">
-									<i th:text="${session?.userinfo?.username}"></i>
+									<i th:text="${session?.userinfo?.userName}"></i>
 								</i>
 							</a>
 							<a th:case="*" href="javascript:void(0)" onmouseenter="getTips(this, '欢迎使用AdminUI')" onmouseleave="layer.closeAll('tips')">
 								<i class="iconfont icon-yonghu1">
-									<i th:text="${session?.userinfo?.username}"></i>
+									<i th:text="${session?.userinfo?.userName}"></i>
 								</i>
 							</a>
 						</li>

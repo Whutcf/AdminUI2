@@ -1,11 +1,14 @@
 package com.smic.cf.service;
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.smic.cf.domain.Role;
+import com.smic.cf.pojo.Role;
+import com.smic.cf.util.Result;
 
 public interface RoleService {
 
-	IPage<Role> selectPage(Page<Role> page);
+	Result<Role> selectPage(Integer currentPage,Integer limit);
+
+	Result<Role> findUserRolesByUserId(Integer userId);
+
+	Result<Role> findUnAddedRolesByUserId(Integer userId);
 
 }

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 
 	<head>
 		<meta charset="UTF-8">
@@ -19,7 +19,7 @@
 
 		<!-- 公共样式 开始 -->
 		<link rel="stylesheet" type="text/css" href="../../css/base.css">
-		<link rel="stylesheet" type="text/css" href="../../css/iconfont.css">
+		<!-- <link rel="stylesheet" type="text/css" href="../../css/iconfont.css"> -->
 		<script type="text/javascript" src="../../framework/jquery-1.11.3.min.js"></script>
 		<link rel="stylesheet" type="text/css" href="../../layui/css/layui.css">
 		<script type="text/javascript" src="../../layui/layui.js"></script>
@@ -78,10 +78,6 @@
 								title: '角色名',
 								// width: 120
 							}, {
-								field:'users',
-								templet:'<div>{{d.users.userId}}</div>',
-								hide:true
-							}, {
 								title: '角色编辑',
 								// width: 200,
 								align: 'center',
@@ -118,6 +114,15 @@
 							break;
 						case 'deleteRoles':
 							var data = checkStatus.data;
+							var userIdInfo = {"userId" : $("#userId").val()}
+							data.forEach(item => {item.userId=$("#userId").val()})
+							data.forEach(item => {item.userRoleId=0})
+							for(var i=0;i<data.length;i++){
+								delete data[i]['roleName'];
+								delete data[i]['createTime'];
+								delete data[i]['updateTime'];
+								delete data[i]['updatePerson'];
+							}
 							if (data.length > 0) {
 								$.ajax({
 									url: 'deleteRoles',

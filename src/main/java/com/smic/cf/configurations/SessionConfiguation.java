@@ -8,6 +8,9 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 import com.smic.cf.filter.AdminInterceptor;
 
+/**
+ * @author 蔡明涛
+ */
 @SpringBootConfiguration
 public class SessionConfiguation extends WebMvcConfigurationSupport {
 

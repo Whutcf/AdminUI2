@@ -54,7 +54,7 @@
 						<div class="layui-form-item">
 							<label class="layui-form-label login_title"><i class="iconfont icon-gerenzhongxin-denglu"></i></label>
 							<div class="layui-input-block login_input">
-								<input id="username" type="text" th:value="${username}" name="username" required lay-verify="required"
+								<input id="userName" type="text" th:value="${userName}" name="userName" required lay-verify="required"
 								 autocomplete="off" placeholder="请输入您的用户名" class="layui-input">
 							</div>
 						</div>
@@ -104,10 +104,10 @@
 			});
 
 
-			$("#username").blur(function() {
-				var username = $(this);
+			$("#userName").blur(function() {
+				var userName = $(this);
 				$.ajax({
-					url: '/checkUserName?username=' + username.val(),
+					url: '/checkUserName?userName=' + userName.val(),
 					type: 'GET',
 					success: function(data) {
 						if(data=='SUCCESS'){
@@ -125,7 +125,8 @@
 								success: function(layero) {
 									var btn = layero.find('.layui-layer-btn');
 									btn.find('.layui-layer-btn0').attr({
-										href: 'http://localhost:8080/toRegist'
+										/* href: 'http://localhost:8888/toRegist' */
+										href: 'http://'+window.location.host + '/toRegist'
 									});
 								}
 							});

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
-import com.smic.cf.domain.User;
+import com.smic.cf.pojo.User;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -32,7 +32,7 @@ public class AdminInterceptor extends HandlerInterceptorAdapter {
 			response.sendRedirect(request.getContextPath()+"/toPermisson");
 			return false;
 		}
-		log.info(user.getUsername()+"登入AdminUI！");
+		log.info("{} 登入AdminUI！",user.getUserName());
 		return true;
 	}
 

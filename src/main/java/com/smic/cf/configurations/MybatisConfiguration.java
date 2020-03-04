@@ -22,8 +22,6 @@ public class MybatisConfiguration {
 	    	PaginationInterceptor paginationInterceptor = new PaginationInterceptor();
 	    	//设置方言
 	    	paginationInterceptor.setDialectType("mysql");
-	    	//设置默认单页显示条目数，默认单页显示500条
-	    	paginationInterceptor.setLimit(10);
 	        return paginationInterceptor;
 	    }
 }

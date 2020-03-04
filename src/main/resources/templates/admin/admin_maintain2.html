@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 
 	<head>
 		<meta charset="UTF-8">
@@ -44,6 +44,13 @@
 				</ul>
 				<div class="layui-tab-content">
 					<div class="layui-tab-item layui-show">
+						<div class="searchUser">
+						  用户名：
+						  <div class="layui-inline">
+						    <input class="layui-input" name="userName" id="userTableReload" autocomplete="off">
+						  </div>
+						  <button class="layui-btn" data-type="reload">搜索</button>
+						</div>
 						<table class="layui-hide" id="userlist" lay-filter="userlist"></table>
 					</div>
 					<div class="layui-tab-item">
@@ -129,11 +136,11 @@
 								align: 'center',
 								width: 100
 							}, {
-								field: 'createtime',
+								field: 'createTime',
 								title: '创建时间',
 								width: 160
 							}, {
-								field: 'updatetime',
+								field: 'updateTime',
 								title: '更新时间',
 								width: 160
 							}, {
@@ -168,7 +175,7 @@
 								unresize: true,
 								sort: true
 							}, {
-								field: 'username',
+								field: 'userName',
 								title: '用户性名',
 								align: 'center',
 								width: 100
@@ -183,11 +190,11 @@
 								templet: '#switchTpl',
 								unresize: true
 							}, {
-								field: 'createtime',
+								field: 'createTime',
 								title: '创建时间',
 								width: 160
 							}, {
-								field: 'updatetime',
+								field: 'updateTime',
 								title: '更新时间',
 								width: 160
 							}, {
@@ -201,11 +208,37 @@
 								toolbar: '#modifyTable'
 							}]
 						],
-						page: true
+						page: true,
+						id: 'userTable'
 					});
 				};
 
 				utable();
+				//查询功能
+				var $ = layui.$, active = {
+				    reload: function(){
+				      var userTableReload = $('#userTableReload');
+				      
+				      //执行重载
+				      table.reload('userTable', {
+				        page: {
+				          curr: 1 //重新从第 1 页开始
+				        }
+				        ,where: {
+				         
+				            userName: userTableReload.val()
+				          
+				        }
+				      }, 'data');
+				    }
+				  };
+				  
+				  $('.searchUser .layui-btn').on('click', function(){
+				    var type = $(this).data('type');
+				    active[type] ? active[type].call(this) : '';
+				  });
+				
+				
 
 				//修改状态
 				form.on('switch(userState)', function(obj) {
@@ -303,7 +336,7 @@
 						layer.open({
 							type: 2,
 							//title: '收藏管理 (考生姓名：张无忌)',
-							title: '角色维护页面 <span style="color: green; font-size: large;" >' + '(用户姓名：' + data.username + ')' +
+							title: '角色维护页面 <span style="color: green; font-size: large;" >' + '(用户姓名：' + data.userName + ')' +
 								'</span>', //将姓名设置为红色
 							shadeClose: true, //弹出框之外的地方是否可以点击
 							offset: '10%',
@@ -348,12 +381,12 @@
 						layer.open({
 							type: 2,
 							skin: 'layui-layer-rim', //边上加框
-							title: '用户维护页面 <span style="color: green; font-size: large;" >' + '(用户姓名：' + data.username + ')' +
+							title: '用户维护页面 <span style="color: green; font-size: large;" >' + '(用户姓名：' + data.userName + ')' +
 								'</span>', //将姓名设置为红色
 							shadeClose: true, //弹出框之外的地方是否可以点击
 							offset: '10%',
 							area: ['35%', '40%'],
-							// content: 'toAdminMaintainUser?userId='+data.userId+'&username='+data.username+'&password='+data.password+'&state='+data.state
+							// content: 'toAdminMaintainUser?userId='+data.userId+'&userName='+data.userName+'&password='+data.password+'&state='+data.state
 							content: 'toAdminMaintainUser',
 							success: function(layero, index) {
 								var body = layer.getChildFrame('body', index);
@@ -361,7 +394,7 @@
 								var iframeWin = window[layero.find('iframe')[0]['name']];
 								//初始化表单数据的值
 								body.find("#userId").val(data.userId);
-								body.find("#username").val(data.username);
+								body.find("#userName").val(data.userName);
 								body.find("#password").val(data.password);
 								body.find("#state").val(data.state);
 							}

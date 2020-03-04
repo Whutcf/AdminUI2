@@ -2,15 +2,13 @@ package com.smic.cf.service;
 
 import java.util.List;
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.smic.cf.domain.Role;
-import com.smic.cf.domain.User;
+import com.smic.cf.pojo.User;
+import com.smic.cf.util.Result;
 
 public interface UserService {
 	User verifyUser(String username, String password);
 
-	String findUserById(Integer userid);
+	String findPasswordById(Integer userid);
 
 	void updatePasswordById(Integer userid, String newPassword);
 
@@ -26,22 +24,14 @@ public interface UserService {
 
 	void deleteUsers(List<User> users);
 
-	List<Role> findUserRolesByUserId(Integer userId);
-
-	List<Role> findUnAddedRolesByUserId(Integer userId);
-
-	void addRoles(List<Role> roles);
-
-	void deleteRole(Integer roleId, Integer userId);
-
-	void deleteRoles(List<Role> roles);
-
 	int updateUserInfo(User user);
 
 	void addUser(User user);
 
-	IPage<User> selectPage(Page<User> page);
+	Result<User> selectPage(Integer currentPage, Integer limit, String userName);
+
+	String findUserNameById(Integer userId);
+
+	User findUserById(Integer userId);
 	
-	//弃用的方法
-//	void addUser(String username, String password, String state);
 }

@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.smic.cf.domain.User;
+import com.smic.cf.pojo.User;
 import com.smic.cf.service.UserService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * 
  * @ClassName UserController
- * @Description TODO(这里用一句话描述这个类的作用) 
+ * @Description  
  * @author cai feng
  * @date 2019年6月22日
  *
@@ -39,10 +39,10 @@ public class UserController {
 	@RequestMapping("/login")
 	public String login(Model model,HttpServletRequest request) {
 		log.info("进入用户登录模块！");
-		String username = request.getParameter("username");
+		String userName = request.getParameter("userName");
 		String password = request.getParameter("password");
-		if (password != null && username !=null) {			
-			User user = usersService.verifyUser(username, password);
+		if (password != null && userName !=null) {			
+			User user = usersService.verifyUser(userName, password);
 			if(!ObjectUtils.isEmpty(user)) {
 				String state = user.getState();
 				if(STATE.equalsIgnoreCase(state)) {
@@ -58,7 +58,7 @@ public class UserController {
 			}
 		}
 		log.info("密码错误！");
-		model.addAttribute("username", username);
+		model.addAttribute("userName", userName);
 		model.addAttribute("loginError",true);
 		model.addAttribute("error", "密码错误！");
 		return "login";
@@ -70,7 +70,7 @@ public class UserController {
 		String oldPassword = request.getParameter("oldpassword");
 		String newPassword = request.getParameter("password");
 		Integer userid = (Integer) request.getSession().getAttribute("userid");
-		String initialPassword = usersService.findUserById(userid);
+		String initialPassword = usersService.findPasswordById(userid);
 		if(!initialPassword.equalsIgnoreCase(oldPassword)) {
 			model.addAttribute("verifyFailure",true);
 			model.addAttribute("error", "密码不正确！");
@@ -86,12 +86,12 @@ public class UserController {
 	
 	@RequestMapping("/checkUserName")
 	@ResponseBody
-	public String checkUserName(Model model,@RequestParam("username")String username) {
+	public String checkUserName(Model model,@RequestParam("userName")String userName) {
 		log.info("验证用户名是否存在！");
-		User user = usersService.findUserByUsername(username);
+		User user = usersService.findUserByUsername(userName);
 		if(ObjectUtils.isEmpty(user)) {
 			log.info("用户名不存在，请注册帐号！");
-			model.addAttribute("username", username);
+			model.addAttribute("userName", userName);
 			model.addAttribute("nameNotExist",true);
 			model.addAttribute("error", "用户名不存在，请注册帐号！");
 			return "SUCCESS";
@@ -103,25 +103,24 @@ public class UserController {
 	@RequestMapping("/regist")
 	public String regist(Model model,HttpServletRequest request, RedirectAttributes redirectAttributes) {
 		log.info("新用户注册！");
-		String username = request.getParameter("username");
+		String userName = request.getParameter("userName");
 		String password = request.getParameter("passWord");
 		String state = request.getParameter("state");
-		User verifyUser = usersService.findUserByUsername(username);
+		User verifyUser = usersService.findUserByUsername(userName);
 		if(!ObjectUtils.isEmpty(verifyUser)) {
-			model.addAttribute("username", username);
+			model.addAttribute("userName", userName);
 			model.addAttribute("verifyFailure",true);
 			model.addAttribute("error", "用户名已存在！");
 			log.info("用户名已存在!");
 			return "regist";
 		}
 		User user = new User();
-		user.setUsername(username);
+		user.setUserName(userName);
 		user.setPassword(password);
 		user.setState(state);
-		user.setCreatetime(new Date());
-		user.setUpdatetime(null);
+		user.setCreateTime(new Date());
+		user.setUpdateTime(null);
 		usersService.addUser(user);
-		//usersService.addUser(username,password,state);
 		log.info("用户注册成功！");
 		redirectAttributes.addAttribute("hasmsg", true);
 		redirectAttributes.addAttribute("msg", "您已注册成功，请登录！");
