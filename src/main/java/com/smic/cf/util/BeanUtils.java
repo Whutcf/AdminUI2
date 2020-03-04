@@ -25,7 +25,7 @@ public class BeanUtils {
      **/
     public static boolean compareTwoObjs(List<String> ignoreList, Object obj1, Object obj2){
         //同种类型的对象才可以参与比较
-        if (obj1.getClass() == obj2.getClass()){
+        if (obj1.getClass() == obj2.getClass() && !StringUtils.isEmpty(obj1) && !StringUtils.isEmpty(obj2)){
             //实例化class对象
             Class<?> clazz1 = obj1.getClass();
             Class<?> clazz2 = obj2.getClass();
