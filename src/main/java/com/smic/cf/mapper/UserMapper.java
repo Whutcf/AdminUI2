@@ -3,12 +3,18 @@ package com.smic.cf.mapper;
 import java.util.HashMap;
 import java.util.List;
 
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.smic.cf.pojo.Role;
 import com.smic.cf.pojo.User;
 
+/**
+ * @author 蔡明涛
+ * @date 2020.03.05 00:12
+ **/
+@Mapper
 public interface UserMapper extends BaseMapper<User> {
 
 	String findUserPasswordById(Integer userid);

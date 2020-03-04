@@ -13,7 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @SpringBootApplication
 @ServletComponentScan
-@MapperScan("com.smic.cf.mapper.master")
+@MapperScan("com.smic.cf.mapper")
 public class AdminUiApplication {
 
     public static void main(String[] args) {

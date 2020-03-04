@@ -48,7 +48,7 @@ spring:
 
 #mybatis
 mybatis-plus:
-  mapper-locations: classpath*:mapper/master/*Mapper.xml
+  mapper-locations: classpath:mapper/*Mapper.xml
   type-aliases-package: com.smic.cf.pojo
   #实体扫描，多个package用逗号或者分号分隔
   global-config:
