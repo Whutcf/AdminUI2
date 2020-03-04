@@ -72,7 +72,7 @@ public class ProvinceServiceImpl implements ProvinceService {
                 //爬虫过来的数据cities是不带省的信息，后续都会用到，直接在此处更新
                 cityCovid19Info.setProvinceName(provinceName);
                 cityCovid19Info.setProvinceShortName(provinceShortName);
-                if (cityCovid19Info.getLocationId() != 0 && cityCovid19Info.getLocationId() !=1){
+                if (cityCovid19Info.getLocationId() != 0 && cityCovid19Info.getLocationId() !=-1){
                     CityCovid19Info oldCityCovid19Info = cityCovidInfoMapper.selectById(cityCovid19Info.getLocationId());
                     if (!StringUtils.isEmpty(oldCityCovid19Info)){
                         List<String> ignoreFields = new ArrayList<>();
