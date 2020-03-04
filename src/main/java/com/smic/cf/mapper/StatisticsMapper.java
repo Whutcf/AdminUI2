@@ -1,4 +1,4 @@
-package com.smic.cf.mapper.master;
+package com.smic.cf.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.smic.cf.pojo.Statistics;

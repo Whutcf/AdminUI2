@@ -2,8 +2,8 @@ package com.smic.cf.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.smic.cf.mapper.master.CityCovidInfoMapper;
-import com.smic.cf.mapper.master.ProvinceMapper;
+import com.smic.cf.mapper.CityCovidInfoMapper;
+import com.smic.cf.mapper.ProvinceMapper;
 import com.smic.cf.pojo.CityCovid19Info;
 import com.smic.cf.pojo.ProvinceCovid19Info;
 import com.smic.cf.service.ProvinceService;
@@ -153,6 +153,7 @@ public class ProvinceServiceImpl implements ProvinceService {
         for(ProvinceCovid19Info provinceCovid19Info : provinceCovid19InfoList){
             ProvinceCovid19Info oldProvinceCovid19Info = provinceMapper.selectById(provinceCovid19Info.getLocationId());
             if(StringUtils.isEmpty(oldProvinceCovid19Info)){
+                //只有第一次爬取的省份才会用到
                 provinceMapper.insert(provinceCovid19Info);
             }else {
                 if(!oldProvinceCovid19Info.equals(provinceCovid19Info)){

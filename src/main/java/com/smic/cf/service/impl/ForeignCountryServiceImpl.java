@@ -2,8 +2,8 @@ package com.smic.cf.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.smic.cf.mapper.master.ForeignCountryCovidHistMapper;
-import com.smic.cf.mapper.master.ForeignCountryCovidInfoMapper;
+import com.smic.cf.mapper.ForeignCountryCovidHistMapper;
+import com.smic.cf.mapper.ForeignCountryCovidInfoMapper;
 import com.smic.cf.pojo.ForeignCountryCovid19Hist;
 import com.smic.cf.pojo.ForeignCountryCovid19Info;
 import com.smic.cf.service.ForeignCountryService;

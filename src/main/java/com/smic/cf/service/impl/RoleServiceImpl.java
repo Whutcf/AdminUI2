@@ -13,8 +13,8 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.smic.cf.pojo.Role;
 import com.smic.cf.pojo.User;
-import com.smic.cf.mapper.master.RoleMapper;
-import com.smic.cf.mapper.master.UserRoleMapper;
+import com.smic.cf.mapper.RoleMapper;
+import com.smic.cf.mapper.UserRoleMapper;
 import com.smic.cf.service.RoleService;
 import com.smic.cf.util.Result;
 

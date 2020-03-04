@@ -1,4 +1,4 @@
-package com.smic.cf.mapper.master;
+package com.smic.cf.mapper;
 
 import java.util.HashMap;
 import java.util.List;

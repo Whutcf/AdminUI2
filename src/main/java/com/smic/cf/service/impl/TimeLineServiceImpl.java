@@ -2,7 +2,7 @@ package com.smic.cf.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.smic.cf.pojo.TimeLine;
-import com.smic.cf.mapper.master.TimeLineMapper;
+import com.smic.cf.mapper.TimeLineMapper;
 import com.smic.cf.service.TimeLineService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
