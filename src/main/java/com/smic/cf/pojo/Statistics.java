@@ -16,8 +16,8 @@ import java.util.List;
 @Data
 public class Statistics {
     /**
-     *  "id": 1,
-     * 	"createTime": 1579537899000,
+     *  "id": 1, 栏位无用放弃
+     * 	"createTime": 1579537899000, 栏位无意义放弃
      * 	"imgUrl": "https://img1.dxycdn.com/2020/0201/450/3394153392393266839-135.png",
      * 	"dailyPics": ["https://img1.dxycdn.com/2020/0211/763/3395998884005602079-135.png", "https://img1.dxycdn.com/2020/0211/362/3395998896890788910-135.png", "https://img1.dxycdn.com/2020/0211/365/3395998905480724211-135.png", "https://img1.dxycdn.com/2020/0211/364/3395998916217859778-135.png", "https://img1.dxycdn.com/2020/0211/922/3395998929103046444-135.png", "https://img1.dxycdn.com/2020/0211/089/3395998939840182072-135.png"],
      * 	"summary": "",
@@ -56,9 +56,6 @@ public class Statistics {
      * 		"deadIncr": 18
      *        }
      */
-    @TableId(value = "id",type = IdType.INPUT)
-    private int id;
-    private String createTime;
     private String modifyTime;
     private String imgUrl;
     private String dailyPics;

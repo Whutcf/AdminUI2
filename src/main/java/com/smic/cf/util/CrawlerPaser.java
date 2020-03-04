@@ -29,7 +29,6 @@ public class CrawlerPaser {
     public static Statistics parseStatisticsInformation(String staticInformation){
         JSONObject jsonObject = JSON.parseObject(staticInformation);
         Statistics statistics = JSON.toJavaObject(jsonObject, Statistics.class);
-        statistics.setCreateTime(DateUtils.getDate(Long.parseLong(statistics.getCreateTime())));
         statistics.setModifyTime(DateUtils.getDate(Long.parseLong(statistics.getModifyTime())));
         return statistics;
     }

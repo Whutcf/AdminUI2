@@ -45,7 +45,10 @@ public class StatisticsServiceImpl implements StatisticsService {
     @Override
     public String insertStatics(Statistics statistics) {
         StringBuilder statisticNews = new StringBuilder();
-        Statistics oldStatistics = statisticsMapper.selectLatestOne();
+        //使用Mybatis-plus提供的方法取代selectLastOne()
+        LambdaQueryWrapper<Statistics> query = Wrappers.lambdaQuery();
+        query.orderByDesc(Statistics::getModifyTime).last("limit 1");
+        Statistics oldStatistics = statisticsMapper.selectOne(query);
         if (!StringUtils.isEmpty(oldStatistics)){
             if (oldStatistics.getModifyTime().equalsIgnoreCase(statistics.getModifyTime())){
                 log.debug("不需要更新数据： {}",statistics.toString());
@@ -61,7 +64,7 @@ public class StatisticsServiceImpl implements StatisticsService {
                 insertMarquee(statistics.getMarquee());
             }
         }else {
-            //同上
+            //第一次抓取到数据会用到
             updateStatistics(statistics, statisticNews);
             updateForeignStatistics(statistics.getForeignStatistics());
             insertTrendChart(statistics);
