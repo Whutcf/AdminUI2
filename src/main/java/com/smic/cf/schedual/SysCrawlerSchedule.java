@@ -39,7 +39,7 @@ public class SysCrawlerSchedule {
     @Resource
     private ForeignCountryService foreignCountryService;
 
-    @Scheduled(cron="0 0/1 * * * ? ")
+    @Scheduled(cron="0 0/20 * * * ? ")
     public void getData(){
         log.info("定时脚本开启，时间{}", DateUtils.getCurrentDateTime());
         //获取页面数据
