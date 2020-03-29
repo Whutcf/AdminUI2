@@ -30,6 +30,12 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
+		<!--引入Quartz 动态配置job-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-quartz</artifactId>
+		</dependency>
+
 		<!-- spring boot 整合MybatisPlus -->
 <!-- 		<dependency>
 			<groupId>org.mybatis.spring.boot</groupId>

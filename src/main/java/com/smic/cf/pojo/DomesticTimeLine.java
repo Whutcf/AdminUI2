@@ -13,7 +13,8 @@ import java.io.Serializable;
  * @date 2020.03.01 19:19
  */
 @Data
-public class TimeLine implements Serializable {
+public class DomesticTimeLine implements Serializable {
+   private static final long serialVersionUID = 7634119027614255797L;
    @TableId(value = "id", type = IdType.INPUT)
    private int id;
    private String pubDate;
@@ -22,9 +23,5 @@ public class TimeLine implements Serializable {
    private String summary;
    private String infoSource;
    private String sourceUrl;
-   private String provinceId;
-   private String provinceName;
-   private String createTime;
-   private String modifyTime;
-   private String dataInfoTime;
+   private int provinceId;
 }

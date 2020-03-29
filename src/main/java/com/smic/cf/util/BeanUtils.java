@@ -1,11 +1,8 @@
 package com.smic.cf.util;
 
-import com.smic.cf.pojo.Cat;
-import com.smic.cf.pojo.Dog;
 import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.List;
 
 /**

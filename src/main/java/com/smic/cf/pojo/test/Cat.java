@@ -1,4 +1,4 @@
-package com.smic.cf.pojo;
+package com.smic.cf.pojo.test;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,8 +13,9 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Dog {
+public class Cat {
     private int id;
-    private String name;
+    private String cname;
     private int age;
+    private String nickname;
 }

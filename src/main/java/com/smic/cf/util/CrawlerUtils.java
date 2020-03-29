@@ -1,5 +1,6 @@
 package com.smic.cf.util;
 
+import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
@@ -53,5 +54,41 @@ public class CrawlerUtils {
             information = matcher.group();
         }
         return information;
+    }
+
+    /**
+     * 获取url中所需要的数据
+     * @param regex 正则表达式
+     * @param jsonDataString 解析的json文件数据
+     * @return java.lang.String
+     * @author 蔡明涛
+     * @date 2020/3/28 18:05
+     */
+    public static String getJsonInformation(String regex,String jsonDataString){
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(jsonDataString);
+        if (matcher.find()){
+            return matcher.group();
+        }else {
+            return null;
+        }
+    }
+
+    /**
+     * 获取json文件并转化成字符串
+     * @param url 网页地址
+     * @return java.lang.String
+     * @author 蔡明涛
+     * @date 2020/3/28 10:55
+     */
+    public static String getJsonStringData(String url) throws IOException {
+        Connection.Response response = Jsoup.connect(url).header("Accept", "*/*")
+                .header("Accept-Encoding", "gzip, deflate")
+                .header("Accept-Language", "zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3")
+                .header("Content-Type", "application/json;charset=UTF-8")
+                .header("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:48.0) Gecko/20100101 Firefox/48.0")
+                .timeout(10000).ignoreContentType(true).execute();
+
+        return response.body();
     }
 }

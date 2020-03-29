@@ -1,15 +1,15 @@
 package com.smic.cf.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.smic.cf.pojo.ProvinceCovid19Hist;
+import com.smic.cf.pojo.ProvinceCovid19;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
  * @Description
- * @ClassName ProvinceHistMapper
+ * @ClassName ProvinceMapper
  * @Author 蔡明涛
- * @date 2020.03.04 23:52
+ * @date 2020.03.02 21:16
  */
 @Mapper
-public interface ProvinceHistMapper extends BaseMapper<ProvinceCovid19Hist> {
+public interface ProvinceCovid19Mapper extends BaseMapper<ProvinceCovid19> {
 }

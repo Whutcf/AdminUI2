@@ -11,35 +11,33 @@ public class Crawler {
      * 爬虫的网址
      */
     public static final String URL = "https://3g.dxy.cn/newh5/view/pneumonia";
+    /**
+     * json api数据的id
+     */
+    public static final String ID = "id";
+
+    /**
+     * 获取国外信息汇总
+     */
+    public static final String FOREIGN_STATIC_INFORMATION_REGEX_TEMPLATE="\\[\\{.*\\}\\]";
+    public static final String FOREIGN_STATIC_INFORMATION_ATTRIBUTE="getListByCountryTypeService2true";
+
+    /**
+     * 解析json文件转成的string
+     */
+    public static final String JSON_REGEX_TEMPLATE = "\\[\\{.*\\}\\]";
+
+    /**
+     * 获取国内信息
+     */
+    public static final String DOMESTIC_STATIC_INFORMATION_REGEX_TEMPLATE = "\\[\\{.*\\}\\]\\}\\]";
+    public static final String DOMESTIC_STATIC_INFORMATION_ATTRIBUTE="getAreaStat";
+
 
     /**
      * 时间线新闻
      */
-    public static final String TIME_LINE_REGEX_TEMPLATE = "\\[(.*?)\\]";
-    public static final String TIME_LINE_ATTRIBUTE="getTimelineService";
-
-    /**
-     * 获取各省市信息
-     */
-    public static final String AREA_INFORMATION_REGEX_TEMPLATE = "\\[(.*)\\]";
-    public static final String AREA_INFORMATION_ATTRIBUTE="getAreaStat";
-
-    /**
-     * 获取国内基本总数据
-     */
-    public static final String STATIC_INFORMATION_REGEX_TEMPLATE="\\{(\"id\".*?)\\}\\}";
-    public static final String STATIC_INFORMATION_ATTRIBUTE="getStatisticsService";
-
-    /**
-     * 获取各省详细信息
-     */
-    public static final String PROVINCE_INFORMATION_REGEX_TEMPLATE = "\\[(.*)\\]";
-    public static final String PROVINCE_INFORMATION_ATTRIBUTE = "getListByCountryTypeService1";
-
-    /**
-     * 获取总国外基本数据
-     */
-    public static final String FOREIGN_STATIC_INFORMATION_REGEX_TEMPLATE="\\[(.*)\\]";
-    public static final String FOREIGN_STATIC_INFORMATION_ATTRIBUTE="getListByCountryTypeService2";
+    public static final String TIME_LINE_REGEX_TEMPLATE = "\\[\\{.*\\}\\]";
+    public static final String DOMESTIC_TIME_LINE_ATTRIBUTE="getTimelineService1";
 
 }

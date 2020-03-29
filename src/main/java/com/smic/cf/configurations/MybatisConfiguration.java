@@ -1,27 +1,39 @@
 package com.smic.cf.configurations;
 
+import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
+import com.smic.cf.handler.JobMetaObjectHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
 
 /**
- * 
- * @Description: 
  * @author cai feng
+ * @Description mybatis-plus 的配置类
  * @date 2019年7月24日
  */
 @Configuration
 public class MybatisConfiguration {
 
-	 /*
-	    * 分页插件，自动识别数据库类型
-	    * 多租户，请参考官网【插件扩展】
-	    */
-	    @Bean
-	    public PaginationInterceptor paginationInterceptor() {
-	    	PaginationInterceptor paginationInterceptor = new PaginationInterceptor();
-	    	//设置方言
-	    	paginationInterceptor.setDialectType("mysql");
-	        return paginationInterceptor;
-	    }
+    /**
+     * 分页插件，自动识别数据库类型
+     * 多租户，请参考官网【插件扩展】
+     */
+    @Bean
+    public PaginationInterceptor paginationInterceptor() {
+        PaginationInterceptor paginationInterceptor = new PaginationInterceptor();
+        //设置方言
+        paginationInterceptor.setDialectType("mysql");
+        return paginationInterceptor;
+    }
+
+    /**
+     * 自动填充插件
+     * @return com.baomidou.mybatisplus.core.handlers.MetaObjectHandler
+     * @author 蔡明涛
+     * @date 2020/3/11 20:29
+     */
+    @Bean
+    public MetaObjectHandler metaObjectHandler() {
+        return new JobMetaObjectHandler();
+    }
 }

@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.List;
 
 
@@ -15,14 +16,10 @@ import java.util.List;
  * @date 2020.03.01 22:38
  */
 @Data
-public class ProvinceCovid19Info {
+public class ProvinceCovid19 implements Serializable {
+    private static final long serialVersionUID = 2104519898102137592L;
     @TableId(value = "location_id",type = IdType.INPUT)
     private int locationId;
-    private String createTime;
-    private String modifyTime;
-    private String tags;
-    private int countryType;
-    private int provinceId;
     private String provinceName;
     private String provinceShortName;
     private int currentConfirmedCount;
@@ -31,8 +28,10 @@ public class ProvinceCovid19Info {
     private int curedCount;
     private int deadCount;
     private String comment;
-    private int sort;
+    private String statisticsData;
     @TableField(exist = false)
-    private List<CityCovid19Info> cities;
+    private List<CityCovid19> cities;
+    @TableField(exist = false)
+    private List<DomesticStatisticsTrendChartData> domesticStatisticsTrendChartDataList;
 
 }
