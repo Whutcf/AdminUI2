@@ -1,8 +1,10 @@
 package com.smic.cf.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.smic.cf.mapper.ForeignCountryCovid19Mapper;
 import com.smic.cf.mapper.ForeignStatisticTrendChartDataMapper;
 import com.smic.cf.mapper.IncrVoMapper;
@@ -51,8 +53,10 @@ public class ForeignCountryServiceImpl implements ForeignCountryService {
                 // 保存或更新当前区域数据
                 if (foreignCountryCovid19.getLocationId() != 0) {
                     if (!StringUtils.isEmpty(foreignCountryCovid19Mapper.selectById(foreignCountryCovid19.getLocationId()))) {
+                        foreignCountryCovid19.setDeadRate(foreignCountryCovid19.getDeadRate() + "%");
                         foreignCountryCovid19Mapper.updateById(foreignCountryCovid19);
                     } else {
+                        foreignCountryCovid19.setDeadRate(foreignCountryCovid19.getDeadRate() + "%");
                         foreignCountryCovid19Mapper.insert(foreignCountryCovid19);
                     }
                 } else {
@@ -95,5 +99,50 @@ public class ForeignCountryServiceImpl implements ForeignCountryService {
                 }
             }
         }
+    }
+
+    /**
+     * 获取国外疫情数据
+     *
+     * @param page  当前页
+     * @param limit 页面记录数
+     * @param continents 大洲名
+     * @param provinceName 国家名
+     * @return com.baomidou.mybatisplus.core.metadata.IPage<com.smic.cf.pojo.ForeignCountryCovid19>
+     * @author 蔡明涛
+     * @date 2020/3/29 16:34
+     */
+    @Override
+    public IPage<ForeignCountryCovid19> selectPage(Integer page, Integer limit, String continents, String provinceName) {
+        LambdaQueryWrapper<ForeignCountryCovid19> queryWrapper = Wrappers.lambdaQuery();
+        queryWrapper.eq(!StringUtils.isEmpty(continents),ForeignCountryCovid19::getContinents,continents)
+                .eq(!StringUtils.isEmpty(provinceName),ForeignCountryCovid19::getProvinceName,provinceName);
+        Page<ForeignCountryCovid19> page1 = new Page<>(page, limit);
+        return foreignCountryCovid19Mapper.selectPage(page1, queryWrapper);
+    }
+
+    /**
+     * 获取大洲数
+     *
+     * @return java.util.List<java.lang.String>
+     * @author 蔡明涛
+     * @date 2020/3/29 19:55
+     */
+    @Override
+    public List<String> getContinents() {
+        return foreignCountryCovid19Mapper.getContinents();
+    }
+
+    /**
+     * 获取大洲对应的国家
+     *
+     * @param continents 大洲
+     * @return java.util.List<java.lang.String>
+     * @author 蔡明涛
+     * @date 2020/3/29 20:36
+     */
+    @Override
+    public List<String> getCountries(String continents) {
+        return foreignCountryCovid19Mapper.getCountries(continents);
     }
 }

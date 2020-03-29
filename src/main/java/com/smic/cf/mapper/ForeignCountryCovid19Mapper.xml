@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.smic.cf.mapper.ForeignCountryCovid19Mapper">
+    <select id="getContinents" resultType="String">
+        select continents
+        from adminui.sys_foreign_country_covid19
+        group by continents
+    </select>
+    <select id="getCountries" resultType="java.lang.String">
+        select province_name
+        from adminui.sys_foreign_country_covid19
+        <if test="continents != null and continents !='' ">
+            where continents = #{continents}
+        </if>
+    </select>
+</mapper>

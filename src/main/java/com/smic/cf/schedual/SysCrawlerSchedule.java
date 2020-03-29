@@ -36,13 +36,13 @@ public class SysCrawlerSchedule {
     private DomesticService domesticService;
 
     /**
-     * 获取疫情基本数据 执行时间，每天上午11点
+     * 获取疫情基本数据 执行时间，每小时更新
      *
      * @return void
      * @author 蔡明涛
      * @date 2020/3/29 10:57
      */
-    @Scheduled(cron = "0 5 11 * * * ")
+    @Scheduled(cron = "0 5 0/1 * * * ")
     public void getCovid19Data() {
         log.info("定时脚本开启，时间{}", DateUtils.getCurrentDateTime());
         //获取页面数据
@@ -68,7 +68,7 @@ public class SysCrawlerSchedule {
      * @author 蔡明涛
      * @date 2020/3/29 11:10
      */
-    @Scheduled(cron = "0 0/10 11 * * ")
+    @Scheduled(cron = "0 0/10 * * * ?")
     public void getTimeLineData() {
         log.info("定时脚本开启，时间{}", DateUtils.getCurrentDateTime());
         //获取页面数据

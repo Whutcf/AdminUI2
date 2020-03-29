@@ -1,5 +1,3 @@
-
-
 spring:
   profiles: 
     active: dev 
@@ -15,7 +13,9 @@ spring:
     servlet:
       content-type: text/html 
 
-  mvc:    view:      prefix: /templates/
+  mvc:
+    view:
+      prefix: /templates/
       suffix: .html
     static-path-pattern: /static/**
 

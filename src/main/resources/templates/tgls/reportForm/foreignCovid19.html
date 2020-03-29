@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,Chrome=1">
+    <!-- Google Chrome Frame也可以让IE用上Chrome的引擎: -->
+    <meta name="renderer" content="webkit">
+    <!--国产浏览器高速模式-->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="穷在闹市"/>
+    <!-- 作者 -->
+    <meta name="revised" content="穷在闹市.v3, 2019/05/01"/>
+    <!-- 定义页面的最新版本 -->
+    <meta name="description" content="网站简介"/>
+    <!-- 网站简介 -->
+    <meta name="keywords" content="搜索关键字，以半角英文逗号隔开"/>
+    <title>国外疫情</title>
+
+    <!-- 公共样式 开始 -->
+    <link rel="stylesheet" type="text/css" href="../../css/base.css">
+    <link rel="stylesheet" type="text/css" href="../../css/iconfont.css">
+    <script type="text/javascript" src="../../framework/jquery-1.11.3.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="../../layui/css/layui.css">
+    <script type="text/javascript" src="../../layui/layui.js"></script>
+    <!-- 滚动条插件 -->
+    <link rel="stylesheet" type="text/css" href="../../css/jquery.mCustomScrollbar.css">
+    <script src="../../framework/jquery-ui-1.10.4.min.js"></script>
+    <script src="../../framework/jquery.mousewheel.min.js"></script>
+    <script src="../../framework/jquery.mCustomScrollbar.min.js"></script>
+    <script src="../../framework/cframe.js"></script><!-- 仅供所有子页面使用 -->
+    <!-- 公共样式 结束 -->
+
+    <script type="text/javascript" src="../../../static/framework/echarts.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="../../css/reportForm.css">
+</head>
+
+<body>
+<div class="cBody">
+    <!-- 国外数据一览表 -->
+    <form class="layui-form layui-fluid" action="">
+        <div class="layui-form-item">
+            <label class="layui-form-label">联动筛选</label>
+            <div class="layui-input-inline">
+                <select id="continents" lay-filter="continentsFilter" lay-search>
+                    <option value="">请选择或搜索大洲</option>
+                </select>
+            </div>
+            <div class="layui-input-inline">
+                <select id="provinceName" lay-search>
+                    <option value="">请选择或搜索国家</option>
+                </select>
+            </div>
+            <div class="layui-inline">
+                <a class="layui-btn" id="search_submit" data-type="reload" lay-filter="reload_search_submit">查询</a>
+            </div>
+        </div>
+    </form>
+    <div style="width: 100%; height: 200px;">
+        <table class="layui-hide-sm" id="foreignStatistics" lay-skin="line" lay-filter="foreignStatic"></table>
+    </div>
+</div>
+</body>
+<script type="text/html" id="toolbar">
+    <a class="layui-btn layui-btn-xs" lay-event="detail">查看历史数据</a>
+</script>
+<script>
+    layui.use(['table', 'form'], function () {
+        const table = layui.table
+            , form = layui.form;
+        const selectProvince = $("#provinceName");
+        const selectContinents = $("#continents");
+        table.render({
+            elem: '#foreignStatistics'
+            /* 高度最大化 */
+            , height: 300
+            /* 全局设置单元格的最新宽度 */
+            , cellMinWidth: 60
+            , title: '国外疫情表'
+            , url: '/crawler/getForeignStatistics'
+            , cols: [
+                [{field: 'locationId', hide: true}
+                    , {field: 'continents', title: '大洲'}
+                    , {field: 'provinceName', title: '国家名称'}
+                    , {field: 'countryShortCode', title: '英文简称'}
+                    , {field: 'countryFullName', title: '英文全称'}
+                    , {field: 'currentConfirmedCount', title: '当前确诊', sort: true}
+                    , {field: 'confirmedCount', title: '累计确诊', sort: true}
+                    , {field: 'suspectedCount', title: '疑似病例'}
+                    , {field: 'curedCount', title: '治愈病例'}
+                    , {field: 'deadCount', title: '死亡病例'}
+                    , {field: 'deadRate', title: '死亡率', sort: true}
+                    , {title: '操作', fixed: 'right', align: 'center', toolbar: '#toolbar'}
+                ]
+            ]
+            , page: {
+                layout: ['prev', 'page', 'next', 'skip', 'limit', 'refresh', 'count'] //自定义分页布局
+                , groups: 5 //显示 5 个连续页码
+                , first: '首页' // 自定义“首页”的内容
+                , last: '尾页' // 自定义“尾页”的内容
+                , limit: 20 // 每页显示条数
+                , limits: [20, 50, 100, 200] //每页条数的选择项
+            }
+            , where: {
+                'continents': ''
+                , 'provinceName': ''
+            }
+            , method: 'post'
+            , response: {
+                statusCode: 200 // 重新规定成功的状态码为 200， table 默认为0
+            }
+            , parseData: function (res) { //将原始数据解析成 table 组件所规定的数据
+                return {
+                    "code": res.code, //解析接口状态
+                    "msg": res.message, //解析提示文本
+                    "count": res.data.total, //解析数据长度
+                    "data": res.data.rows //解析数据列表
+                };
+            }
+        });
+
+        // 获取大洲下拉框
+        $.ajax({
+            url: '/crawler/getContinents'
+            , dataType: 'json'
+            , type: 'get'
+            , success: function (data) {
+                $.each(data.data, function (index, item) {
+                    selectContinents.append(new Option(item, item));
+                });
+                // append 结束后重新渲染
+                form.render("select");
+            }
+        });
+
+        // 获取国家下拉框
+        form.on('select(continentsFilter)', function (data) {
+            selectProvince.empty('');
+            if (data.value !== '' && data.value != null) {
+                $.ajax({
+                    url: '/crawler/getCountries'
+                    , dataType: 'json'
+                    , data: {
+                        continents: $('#continents').val()
+                    }
+                    , type: 'get'
+                    , success: function (data) {
+                        selectProvince.append(new Option('请选择或搜索国家', ''));
+                        $.each(data.data, function (index, item) {
+                            // new Option(text,value)
+                            selectProvince.append(new Option(item, item));
+                        });
+                        selectProvince.find("option[value='']").prop("selected", true);
+                        // append 结束后重新渲染
+                        form.render("select");
+                    }
+                })
+            }
+        });
+
+        // 搜索功能
+        const active = {
+            reload: function () {
+                table.reload('foreignStatistics', {
+                    where: {
+                        'provinceName': selectProvince.val().trim()
+                        , 'continents': selectContinents.val().trim()
+                    }
+                    , page: {
+                        cur: 1
+                    }
+                },'data');
+            }
+        };
+        $('#search_submit').on('click', function () {
+            let type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+
+
+    });
+</script>
+</html>
