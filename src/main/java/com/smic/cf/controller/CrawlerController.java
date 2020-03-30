@@ -4,8 +4,14 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.smic.cf.pojo.Crawler;
 import com.smic.cf.pojo.ForeignCountryCovid19;
+import com.smic.cf.pojo.ProvinceCovid19;
+import com.smic.cf.schedual.SysCrawlerSchedule;
+import com.smic.cf.service.DomesticService;
 import com.smic.cf.service.ForeignCountryService;
+import com.smic.cf.util.CrawlerParser;
+import com.smic.cf.util.CrawlerUtils;
 import com.smic.cf.util.ResultBean;
 import com.smic.cf.util.ResultBeanUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -27,8 +33,30 @@ public class CrawlerController {
 
     @Resource
     private ForeignCountryService foreignCountryService;
+    @Resource
+    private DomesticService domesticService;
 
-    // todo: 2020/3/1 21:06 蔡明涛  考虑做个手动触发爬虫的页面
+    // TODO: 2020/3/31 手动刷新需要做避免重复刷新，需呀解决一个bug，CDMI 这个数据有异常
+
+    @GetMapping("/refresh")
+    public ResultBean<String> refresh(){
+        //获取页面数据
+        CrawlerUtils.getPage(Crawler.URL);
+        //提取页面数据（JSON格式）
+        String foreignCountryInformation = CrawlerUtils.getInformation(Crawler.FOREIGN_STATIC_INFORMATION_REGEX_TEMPLATE, Crawler.ID, Crawler.FOREIGN_STATIC_INFORMATION_ATTRIBUTE);
+        String domesticInformation = CrawlerUtils.getInformation(Crawler.DOMESTIC_STATIC_INFORMATION_REGEX_TEMPLATE, Crawler.ID, Crawler.DOMESTIC_STATIC_INFORMATION_ATTRIBUTE);
+
+        //解析json数据
+        List<ForeignCountryCovid19> foreignCountryCovid19List = CrawlerParser.parseForeignCountryInformation(foreignCountryInformation);
+        List<ProvinceCovid19> provinceCovid19List = CrawlerParser.parseDomesticInformation(domesticInformation);
+
+        //将解析的数据存入DB
+        foreignCountryService.insertForeignCountryData(foreignCountryCovid19List);
+        domesticService.insertDomesticData(provinceCovid19List);
+
+
+        return ResultBeanUtil.success();
+    }
 
     /**
      * 获取所有全球疫情数据
@@ -76,4 +104,5 @@ public class CrawlerController {
         return ResultBeanUtil.success(jsonArray);
     }
 
+    // TODO: 2020/3/29 页面排序问题解决，引入Echarts
 }

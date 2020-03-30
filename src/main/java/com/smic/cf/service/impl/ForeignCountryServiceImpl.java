@@ -66,10 +66,16 @@ public class ForeignCountryServiceImpl implements ForeignCountryService {
                             .eq(!StringUtils.isEmpty(foreignCountryCovid19.getCountryShortCode()), ForeignCountryCovid19::getCountryShortCode, foreignCountryCovid19.getCountryShortCode())
                             .eq(!StringUtils.isEmpty(foreignCountryCovid19.getContinents()), ForeignCountryCovid19::getContinents, foreignCountryCovid19.getContinents())
                             .eq(!StringUtils.isEmpty(foreignCountryCovid19.getCountryFullName()), ForeignCountryCovid19::getCountryFullName, foreignCountryCovid19.getCountryFullName());
-                    if (!StringUtils.isEmpty(foreignCountryCovid19Mapper.selectOne(queryWrapper))) {
-                        foreignCountryCovid19Mapper.delete(queryWrapper);
+                    ForeignCountryCovid19 foreignCountryCovid19Old = foreignCountryCovid19Mapper.selectOne(queryWrapper);
+                    if (StringUtils.isEmpty(foreignCountryCovid19Old)) {
+                        foreignCountryCovid19.setDeadRate(foreignCountryCovid19.getDeadRate() + "%");
+                        foreignCountryCovid19Mapper.insert(foreignCountryCovid19);
+                    } else {
+                        if (!foreignCountryCovid19Old.equals(foreignCountryCovid19)) {
+                            foreignCountryCovid19.setDeadRate(foreignCountryCovid19.getDeadRate() + "%");
+                            foreignCountryCovid19Mapper.update(foreignCountryCovid19, queryWrapper);
+                        }
                     }
-                    foreignCountryCovid19Mapper.insert(foreignCountryCovid19);
                 }
                 // 更新每日新增数据,需要对0特殊处理
                 IncrVo incrVo = foreignCountryCovid19.getIncrVo();
@@ -79,7 +85,7 @@ public class ForeignCountryServiceImpl implements ForeignCountryService {
                     LambdaQueryWrapper<IncrVo> queryWrapper = Wrappers.lambdaQuery();
                     queryWrapper.eq(IncrVo::getId, 0)
                             .eq(IncrVo::getCountryShortCode, incrVo.getCountryShortCode());
-                    if (!StringUtils.isEmpty(incrVoMapper.selectOne(queryWrapper))) {
+                    if (!incrVo.getCountryShortCode().equals("CNMI") && !StringUtils.isEmpty(incrVoMapper.selectOne(queryWrapper))) {
                         incrVoMapper.delete(queryWrapper);
                     }
                 }
@@ -88,12 +94,17 @@ public class ForeignCountryServiceImpl implements ForeignCountryService {
                 List<ForeignStatisticsTrendChartData> statisticsTrendChartDataList = foreignCountryCovid19.getStatisticsTrendChartDataList();
                 if (null != statisticsTrendChartDataList && statisticsTrendChartDataList.size() > 0) {
                     for (ForeignStatisticsTrendChartData foreignStatisticsTrendChartData : statisticsTrendChartDataList) {
-                        ForeignStatisticsTrendChartData trendChartData = new LambdaQueryChainWrapper<>(foreignStatisticTrendChartDataMapper)
-                                .eq(ForeignStatisticsTrendChartData::getLocationId, foreignStatisticsTrendChartData.getLocationId())
+                        LambdaQueryWrapper<ForeignStatisticsTrendChartData> queryWrapper = new LambdaQueryWrapper<>();
+                        queryWrapper.eq(ForeignStatisticsTrendChartData::getLocationId, foreignStatisticsTrendChartData.getLocationId())
                                 .eq(ForeignStatisticsTrendChartData::getCountryShortCode, foreignStatisticsTrendChartData.getCountryShortCode())
-                                .eq(ForeignStatisticsTrendChartData::getDateId, foreignStatisticsTrendChartData.getDateId()).one();
-                        if (StringUtils.isEmpty(trendChartData)) {
+                                .eq(ForeignStatisticsTrendChartData::getDateId, foreignStatisticsTrendChartData.getDateId());
+                        ForeignStatisticsTrendChartData trendChartDataNew = foreignStatisticTrendChartDataMapper.selectOne(queryWrapper);
+                        if (StringUtils.isEmpty(trendChartDataNew)) {
                             foreignStatisticTrendChartDataMapper.insert(foreignStatisticsTrendChartData);
+                        } else {
+                            if (!foreignStatisticsTrendChartData.equals(trendChartDataNew)) {
+                                foreignStatisticTrendChartDataMapper.update(foreignStatisticsTrendChartData, queryWrapper);
+                            }
                         }
                     }
                 }
@@ -104,9 +115,9 @@ public class ForeignCountryServiceImpl implements ForeignCountryService {
     /**
      * 获取国外疫情数据
      *
-     * @param page  当前页
-     * @param limit 页面记录数
-     * @param continents 大洲名
+     * @param page         当前页
+     * @param limit        页面记录数
+     * @param continents   大洲名
      * @param provinceName 国家名
      * @return com.baomidou.mybatisplus.core.metadata.IPage<com.smic.cf.pojo.ForeignCountryCovid19>
      * @author 蔡明涛
@@ -115,8 +126,8 @@ public class ForeignCountryServiceImpl implements ForeignCountryService {
     @Override
     public IPage<ForeignCountryCovid19> selectPage(Integer page, Integer limit, String continents, String provinceName) {
         LambdaQueryWrapper<ForeignCountryCovid19> queryWrapper = Wrappers.lambdaQuery();
-        queryWrapper.eq(!StringUtils.isEmpty(continents),ForeignCountryCovid19::getContinents,continents)
-                .eq(!StringUtils.isEmpty(provinceName),ForeignCountryCovid19::getProvinceName,provinceName);
+        queryWrapper.eq(!StringUtils.isEmpty(continents), ForeignCountryCovid19::getContinents, continents)
+                .eq(!StringUtils.isEmpty(provinceName), ForeignCountryCovid19::getProvinceName, provinceName);
         Page<ForeignCountryCovid19> page1 = new Page<>(page, limit);
         return foreignCountryCovid19Mapper.selectPage(page1, queryWrapper);
     }

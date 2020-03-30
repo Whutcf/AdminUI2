@@ -46,11 +46,14 @@ public class DomesticServiceImpl implements DomesticService {
     public void insertDomesticData(List<ProvinceCovid19> provinceCovid19List) {
         if (null != provinceCovid19List && provinceCovid19List.size()>0){
             for (ProvinceCovid19 provinceCovid19 : provinceCovid19List) {
+                ProvinceCovid19 provinceCovid19Old = provinceCovid19Mapper.selectById(provinceCovid19.getLocationId());
                 // 保存或更新省份信息
-                if (StringUtils.isEmpty(provinceCovid19Mapper.selectById(provinceCovid19.getLocationId()))){
+                if (StringUtils.isEmpty(provinceCovid19Old)){
                     provinceCovid19Mapper.insert(provinceCovid19);
                 }else {
-                    provinceCovid19Mapper.updateById(provinceCovid19);
+                    if(!provinceCovid19.equals(provinceCovid19Old)){
+                        provinceCovid19Mapper.updateById(provinceCovid19);
+                    }
                 }
                 // 保存省份历史数据
                 List<DomesticStatisticsTrendChartData> trendChartDataList = provinceCovid19.getDomesticStatisticsTrendChartDataList();
@@ -60,9 +63,14 @@ public class DomesticServiceImpl implements DomesticService {
                         queryWrapper.eq(DomesticStatisticsTrendChartData::getDateId,trendChartData.getDateId())
                                 .eq(DomesticStatisticsTrendChartData::getLocationId,trendChartData.getLocationId())
                                 .eq(DomesticStatisticsTrendChartData::getProvinceName,trendChartData.getProvinceName());
+                        DomesticStatisticsTrendChartData trendChartDataOld = domesticStatisticTrendChartDataMapper.selectOne(queryWrapper);
                         // 只有找不到记录的时候，才会插入数据
-                        if (StringUtils.isEmpty(domesticStatisticTrendChartDataMapper.selectOne(queryWrapper))) {
+                        if (StringUtils.isEmpty(trendChartDataOld)) {
                             domesticStatisticTrendChartDataMapper.insert(trendChartData);
+                        } else {
+                            if (!trendChartData.equals(trendChartDataOld)){
+                                domesticStatisticTrendChartDataMapper.update(trendChartData,queryWrapper);
+                            }
                         }
                     }
                 }
@@ -82,11 +90,14 @@ public class DomesticServiceImpl implements DomesticService {
                                     .eq(CityCovid19::getCityName,city.getCityName())
                                     .eq(CityCovid19::getProvinceShortName,city.getProvinceShortName())
                                     .eq(CityCovid19::getProvinceId,city.getProvinceId());
+                            CityCovid19 cityCovid19Old = cityCovid19Mapper.selectOne(queryWrapper);
                             // 如果原来数据库中不存在历史数据，就新增，存在就更新
-                            if (StringUtils.isEmpty(cityCovid19Mapper.selectOne(queryWrapper))){
+                            if (StringUtils.isEmpty(cityCovid19Old)){
                                 cityCovid19Mapper.insert(city);
                             }else {
-                                cityCovid19Mapper.update(city,queryWrapper);
+                                if(!city.equals(cityCovid19Old)){
+                                    cityCovid19Mapper.update(city,queryWrapper);
+                                }
                             }
                         }
                     }
