@@ -3,7 +3,6 @@ package com.smic.cf.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.smic.cf.mapper.ForeignCountryCovid19Mapper;
 import com.smic.cf.mapper.ForeignStatisticTrendChartDataMapper;
@@ -53,10 +52,8 @@ public class ForeignCountryServiceImpl implements ForeignCountryService {
                 // 保存或更新当前区域数据
                 if (foreignCountryCovid19.getLocationId() != 0) {
                     if (!StringUtils.isEmpty(foreignCountryCovid19Mapper.selectById(foreignCountryCovid19.getLocationId()))) {
-                        foreignCountryCovid19.setDeadRate(foreignCountryCovid19.getDeadRate() + "%");
                         foreignCountryCovid19Mapper.updateById(foreignCountryCovid19);
                     } else {
-                        foreignCountryCovid19.setDeadRate(foreignCountryCovid19.getDeadRate() + "%");
                         foreignCountryCovid19Mapper.insert(foreignCountryCovid19);
                     }
                 } else {
@@ -66,15 +63,15 @@ public class ForeignCountryServiceImpl implements ForeignCountryService {
                             .eq(!StringUtils.isEmpty(foreignCountryCovid19.getCountryShortCode()), ForeignCountryCovid19::getCountryShortCode, foreignCountryCovid19.getCountryShortCode())
                             .eq(!StringUtils.isEmpty(foreignCountryCovid19.getContinents()), ForeignCountryCovid19::getContinents, foreignCountryCovid19.getContinents())
                             .eq(!StringUtils.isEmpty(foreignCountryCovid19.getCountryFullName()), ForeignCountryCovid19::getCountryFullName, foreignCountryCovid19.getCountryFullName());
-                    ForeignCountryCovid19 foreignCountryCovid19Old = foreignCountryCovid19Mapper.selectOne(queryWrapper);
-                    if (StringUtils.isEmpty(foreignCountryCovid19Old)) {
-                        foreignCountryCovid19.setDeadRate(foreignCountryCovid19.getDeadRate() + "%");
+                    // 防止异常出现两笔以上的记录，防呆
+                    List<ForeignCountryCovid19> foreignCountryCovid19Olds = foreignCountryCovid19Mapper.selectList(queryWrapper);
+                    if (foreignCountryCovid19Olds.size() == 0) {
                         foreignCountryCovid19Mapper.insert(foreignCountryCovid19);
+                    } else if (foreignCountryCovid19Olds.size() == 1) {
+                        foreignCountryCovid19Mapper.update(foreignCountryCovid19, queryWrapper);
                     } else {
-                        if (!foreignCountryCovid19Old.equals(foreignCountryCovid19)) {
-                            foreignCountryCovid19.setDeadRate(foreignCountryCovid19.getDeadRate() + "%");
-                            foreignCountryCovid19Mapper.update(foreignCountryCovid19, queryWrapper);
-                        }
+                        foreignCountryCovid19Mapper.delete(queryWrapper);
+                        foreignCountryCovid19Mapper.insert(foreignCountryCovid19);
                     }
                 }
                 // 更新每日新增数据,需要对0特殊处理
@@ -85,7 +82,7 @@ public class ForeignCountryServiceImpl implements ForeignCountryService {
                     LambdaQueryWrapper<IncrVo> queryWrapper = Wrappers.lambdaQuery();
                     queryWrapper.eq(IncrVo::getId, 0)
                             .eq(IncrVo::getCountryShortCode, incrVo.getCountryShortCode());
-                    if (!incrVo.getCountryShortCode().equals("CNMI") && !StringUtils.isEmpty(incrVoMapper.selectOne(queryWrapper))) {
+                    if (incrVoMapper.selectList(queryWrapper).size()>0) {
                         incrVoMapper.delete(queryWrapper);
                     }
                 }
@@ -98,13 +95,15 @@ public class ForeignCountryServiceImpl implements ForeignCountryService {
                         queryWrapper.eq(ForeignStatisticsTrendChartData::getLocationId, foreignStatisticsTrendChartData.getLocationId())
                                 .eq(ForeignStatisticsTrendChartData::getCountryShortCode, foreignStatisticsTrendChartData.getCountryShortCode())
                                 .eq(ForeignStatisticsTrendChartData::getDateId, foreignStatisticsTrendChartData.getDateId());
-                        ForeignStatisticsTrendChartData trendChartDataNew = foreignStatisticTrendChartDataMapper.selectOne(queryWrapper);
-                        if (StringUtils.isEmpty(trendChartDataNew)) {
+                        List<ForeignStatisticsTrendChartData> trendChartData = foreignStatisticTrendChartDataMapper.selectList(queryWrapper);
+                        // 总是会莫名出现重复选项，所以选择使用selectList
+                        if (trendChartData.size() == 0) {
                             foreignStatisticTrendChartDataMapper.insert(foreignStatisticsTrendChartData);
+                        } else if (trendChartData.size() == 1) {
+                            foreignStatisticTrendChartDataMapper.update(foreignStatisticsTrendChartData, queryWrapper);
                         } else {
-                            if (!foreignStatisticsTrendChartData.equals(trendChartDataNew)) {
-                                foreignStatisticTrendChartDataMapper.update(foreignStatisticsTrendChartData, queryWrapper);
-                            }
+                            foreignStatisticTrendChartDataMapper.selectById(foreignStatisticsTrendChartData.getLocationId());
+                            foreignStatisticTrendChartDataMapper.insert(foreignStatisticsTrendChartData);
                         }
                     }
                 }

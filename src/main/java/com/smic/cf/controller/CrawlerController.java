@@ -36,8 +36,6 @@ public class CrawlerController {
     @Resource
     private DomesticService domesticService;
 
-    // TODO: 2020/3/31 手动刷新需要做避免重复刷新，需呀解决一个bug，CDMI 这个数据有异常
-
     @GetMapping("/refresh")
     public ResultBean<String> refresh(){
         //获取页面数据
@@ -45,16 +43,12 @@ public class CrawlerController {
         //提取页面数据（JSON格式）
         String foreignCountryInformation = CrawlerUtils.getInformation(Crawler.FOREIGN_STATIC_INFORMATION_REGEX_TEMPLATE, Crawler.ID, Crawler.FOREIGN_STATIC_INFORMATION_ATTRIBUTE);
         String domesticInformation = CrawlerUtils.getInformation(Crawler.DOMESTIC_STATIC_INFORMATION_REGEX_TEMPLATE, Crawler.ID, Crawler.DOMESTIC_STATIC_INFORMATION_ATTRIBUTE);
-
         //解析json数据
         List<ForeignCountryCovid19> foreignCountryCovid19List = CrawlerParser.parseForeignCountryInformation(foreignCountryInformation);
         List<ProvinceCovid19> provinceCovid19List = CrawlerParser.parseDomesticInformation(domesticInformation);
-
         //将解析的数据存入DB
         foreignCountryService.insertForeignCountryData(foreignCountryCovid19List);
         domesticService.insertDomesticData(provinceCovid19List);
-
-
         return ResultBeanUtil.success();
     }
 

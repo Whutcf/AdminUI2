@@ -24,7 +24,7 @@ public interface ForeignCountryCovid19Mapper extends BaseMapper<ForeignCountryCo
 
     /**
      * 获取大洲对应的国家
-     * @param continents
+     * @param continents 大洲
      * @return java.util.List<java.lang.String>
      * @author 蔡明涛
      * @date 2020/3/29 20:38

@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 
+import java.io.Serializable;
+
 /**
  * @Description 国外疫情历史数据
  * @ClassName StatisticsTrendChartData
@@ -11,7 +13,8 @@ import lombok.Data;
  * @Date 2020/3/28 10:59
  **/
 @Data
-public class ForeignStatisticsTrendChartData {
+public class ForeignStatisticsTrendChartData implements Serializable {
+    private static final long serialVersionUID = -3146232470505610607L;
     @TableId(value = "location_id",type = IdType.INPUT)
     private int locationId;
     private String countryShortCode;
