@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.smic.cf.pojo.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
@@ -15,6 +16,7 @@ import java.util.List;
  * @Author 蔡明涛
  * @date 2020.03.01 12:56
  */
+@Slf4j
 public class CrawlerParser {
 
     /**
@@ -36,30 +38,34 @@ public class CrawlerParser {
                     country.setCreateTime(DateUtils.getDate(Long.parseLong(country.getCreateTime())));
                     country.setModifyTime(DateUtils.getDate(Long.parseLong(country.getModifyTime())));
                 }
-                // 获取每日新增数据
+                // 获取每日新增数据，需要判断是否有值
                 IncrVo incrVo = country.getIncrVo();
-                incrVo.setId(country.getLocationId());
-                incrVo.setCountryShortCode(country.getCountryShortCode());
-                country.setIncrVo(incrVo);
-                // 获取服务器上的json数据并转换成字符串，主要是该地区的历史数据
-                String stringData = CrawlerUtils.getJsonStringData(country.getStatisticsData());
-                String statisticDataStr = CrawlerUtils.getJsonInformation(Crawler.JSON_REGEX_TEMPLATE, stringData);
-                JSONArray parseArray = JSON.parseArray(statisticDataStr);
-                List<ForeignStatisticsTrendChartData> list = new ArrayList<>();
-                if (null != parseArray) {
-                    for (Object o : parseArray) {
-                        JSONObject jsonObject = JSON.parseObject(o.toString());
-                        ForeignStatisticsTrendChartData statisticsTrendChartData = JSON.toJavaObject(jsonObject, ForeignStatisticsTrendChartData.class);
-                        statisticsTrendChartData.setLocationId(country.getLocationId());
-                        statisticsTrendChartData.setCountryShortCode(country.getCountryShortCode());
-                        list.add(statisticsTrendChartData);
-                    }
+                if(!StringUtils.isEmpty(incrVo)){
+                    incrVo.setId(country.getLocationId());
+                    incrVo.setCountryShortCode(country.getCountryShortCode());
+                    country.setIncrVo(incrVo);
                 }
-                country.setStatisticsTrendChartDataList(list);
+                // 获取服务器上的json数据并转换成字符串，主要是该地区的历史数据,前提是有值存在
+                if (!StringUtils.isEmpty(country.getStatisticsData())){
+                    String stringData = CrawlerUtils.getJsonStringData(country.getStatisticsData());
+                    String statisticDataStr = CrawlerUtils.getJsonInformation(Crawler.JSON_REGEX_TEMPLATE, stringData);
+                    JSONArray parseArray = JSON.parseArray(statisticDataStr);
+                    List<ForeignStatisticsTrendChartData> list = new ArrayList<>();
+                    if (null != parseArray) {
+                        for (Object o : parseArray) {
+                            JSONObject jsonObject = JSON.parseObject(o.toString());
+                            ForeignStatisticsTrendChartData statisticsTrendChartData = JSON.toJavaObject(jsonObject, ForeignStatisticsTrendChartData.class);
+                            statisticsTrendChartData.setLocationId(country.getLocationId());
+                            statisticsTrendChartData.setCountryShortCode(country.getCountryShortCode());
+                            list.add(statisticsTrendChartData);
+                        }
+                    }
+                    country.setStatisticsTrendChartDataList(list);
+                }
                 countryList.add(country);
 
             } catch (Exception e) {
-                System.out.println(country.getLocationId());
+                log.error("异常 {}",e.getMessage());
                 e.printStackTrace();
             }
         }

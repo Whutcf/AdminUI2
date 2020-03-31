@@ -41,7 +41,7 @@ public class DateUtils {
 
     /**
      * 获取当天日期
-     * @param []
+     *
      * @return java.lang.String
      * @author 蔡明涛
      * @date 2020.03.01 17:37
@@ -49,8 +49,15 @@ public class DateUtils {
     public static String getCurrentDate(){
         return LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
     }
-//    public static void main(String[] args) {
-//        System.out.println(getDate(1580350061000L));
-//    }
+
+    /**
+     * 获取纯数字的日期格式
+     * @return java.lang.String
+     * @author 蔡明涛
+     * @date 2020/3/31 22:53
+     */
+    public static String getCurrentDateWithNumber(){
+        return LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+    }
 
 }

@@ -9,6 +9,7 @@ import com.smic.cf.pojo.CityCovid19;
 import com.smic.cf.pojo.DomesticStatisticsTrendChartData;
 import com.smic.cf.pojo.ProvinceCovid19;
 import com.smic.cf.service.DomesticService;
+import com.smic.cf.util.DateUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -59,19 +60,24 @@ public class DomesticServiceImpl implements DomesticService {
                 List<DomesticStatisticsTrendChartData> trendChartDataList = provinceCovid19.getDomesticStatisticsTrendChartDataList();
                 if (null != trendChartDataList && trendChartDataList.size() > 0) {
                     for (DomesticStatisticsTrendChartData trendChartData : trendChartDataList) {
-                        LambdaQueryWrapper<DomesticStatisticsTrendChartData> queryWrapper = Wrappers.lambdaQuery();
-                        queryWrapper.eq(DomesticStatisticsTrendChartData::getDateId, trendChartData.getDateId())
-                                .eq(DomesticStatisticsTrendChartData::getLocationId, trendChartData.getLocationId())
-                                .eq(DomesticStatisticsTrendChartData::getProvinceName, trendChartData.getProvinceName());
-                        List<DomesticStatisticsTrendChartData> trendChartDataOlds = domesticStatisticTrendChartDataMapper.selectList(queryWrapper);
-                        // 只有找不到记录的时候，才会插入数据
-                        if (trendChartDataOlds.size() == 0) {
-                            domesticStatisticTrendChartDataMapper.insert(trendChartData);
-                        } else if (trendChartDataOlds.size() == 1) {
-                            domesticStatisticTrendChartDataMapper.update(trendChartData, queryWrapper);
-                        } else {
-                            domesticStatisticTrendChartDataMapper.delete(queryWrapper);
-                            domesticStatisticTrendChartDataMapper.insert(trendChartData);
+                        int dateId = Integer.parseInt(trendChartData.getDateId());
+                        int planDateId = Integer.parseInt(DateUtils.getCurrentDateWithNumber())-1;
+                        // 只更新最近两天的数据
+                        if (dateId >= planDateId){
+                            LambdaQueryWrapper<DomesticStatisticsTrendChartData> queryWrapper = Wrappers.lambdaQuery();
+                            queryWrapper.eq(DomesticStatisticsTrendChartData::getDateId, trendChartData.getDateId())
+                                    .eq(DomesticStatisticsTrendChartData::getLocationId, trendChartData.getLocationId())
+                                    .eq(DomesticStatisticsTrendChartData::getProvinceName, trendChartData.getProvinceName());
+                            List<DomesticStatisticsTrendChartData> trendChartDataOlds = domesticStatisticTrendChartDataMapper.selectList(queryWrapper);
+                            // 只有找不到记录的时候，才会插入数据
+                            if (trendChartDataOlds.size() == 0) {
+                                domesticStatisticTrendChartDataMapper.insert(trendChartData);
+                            } else if (trendChartDataOlds.size() == 1) {
+                                domesticStatisticTrendChartDataMapper.update(trendChartData, queryWrapper);
+                            } else {
+                                domesticStatisticTrendChartDataMapper.delete(queryWrapper);
+                                domesticStatisticTrendChartDataMapper.insert(trendChartData);
+                            }
                         }
                     }
                 }

@@ -26,11 +26,13 @@ public interface ForeignCountryService {
      * @param limit 页面记录数
      * @param continents 大洲名
      * @param provinceName 国家名
+     * @param field 排序的栏位
+     * @param order 排序的顺序 ASE，null，DESC
      * @return com.baomidou.mybatisplus.core.metadata.IPage<com.smic.cf.pojo.ForeignCountryCovid19>
      * @author 蔡明涛
      * @date 2020/3/29 16:34
      */
-    IPage<ForeignCountryCovid19> selectPage(Integer page, Integer limit, String continents, String provinceName);
+    IPage<ForeignCountryCovid19> selectPage(Integer page, Integer limit, String continents, String provinceName, String field, String order);
 
     /**
      * 获取大洲数

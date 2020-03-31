@@ -1,9 +1,11 @@
 package com.smic.cf.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.smic.cf.constants.CrawlerConstants;
 import com.smic.cf.mapper.ForeignCountryCovid19Mapper;
 import com.smic.cf.mapper.ForeignStatisticTrendChartDataMapper;
 import com.smic.cf.mapper.IncrVoMapper;
@@ -11,6 +13,7 @@ import com.smic.cf.pojo.ForeignCountryCovid19;
 import com.smic.cf.pojo.ForeignStatisticsTrendChartData;
 import com.smic.cf.pojo.IncrVo;
 import com.smic.cf.service.ForeignCountryService;
+import com.smic.cf.util.DateUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -76,34 +79,41 @@ public class ForeignCountryServiceImpl implements ForeignCountryService {
                 }
                 // 更新每日新增数据,需要对0特殊处理
                 IncrVo incrVo = foreignCountryCovid19.getIncrVo();
-                if (incrVo.getId() != 0) {
-                    incrVoMapper.deleteById(incrVo.getId());
-                } else {
-                    LambdaQueryWrapper<IncrVo> queryWrapper = Wrappers.lambdaQuery();
-                    queryWrapper.eq(IncrVo::getId, 0)
-                            .eq(IncrVo::getCountryShortCode, incrVo.getCountryShortCode());
-                    if (incrVoMapper.selectList(queryWrapper).size()>0) {
-                        incrVoMapper.delete(queryWrapper);
+                if (!StringUtils.isEmpty(incrVo)){
+                    if (incrVo.getId() != 0) {
+                        incrVoMapper.deleteById(incrVo.getId());
+                    } else {
+                        LambdaQueryWrapper<IncrVo> queryWrapper = Wrappers.lambdaQuery();
+                        queryWrapper.eq(IncrVo::getId, 0)
+                                .eq(IncrVo::getCountryShortCode, incrVo.getCountryShortCode());
+                        if (incrVoMapper.selectList(queryWrapper).size()>0) {
+                            incrVoMapper.delete(queryWrapper);
+                        }
                     }
+                    incrVoMapper.insert(incrVo);
                 }
-                incrVoMapper.insert(incrVo);
                 // 更新历史数据
                 List<ForeignStatisticsTrendChartData> statisticsTrendChartDataList = foreignCountryCovid19.getStatisticsTrendChartDataList();
                 if (null != statisticsTrendChartDataList && statisticsTrendChartDataList.size() > 0) {
                     for (ForeignStatisticsTrendChartData foreignStatisticsTrendChartData : statisticsTrendChartDataList) {
-                        LambdaQueryWrapper<ForeignStatisticsTrendChartData> queryWrapper = new LambdaQueryWrapper<>();
-                        queryWrapper.eq(ForeignStatisticsTrendChartData::getLocationId, foreignStatisticsTrendChartData.getLocationId())
-                                .eq(ForeignStatisticsTrendChartData::getCountryShortCode, foreignStatisticsTrendChartData.getCountryShortCode())
-                                .eq(ForeignStatisticsTrendChartData::getDateId, foreignStatisticsTrendChartData.getDateId());
-                        List<ForeignStatisticsTrendChartData> trendChartData = foreignStatisticTrendChartDataMapper.selectList(queryWrapper);
-                        // 总是会莫名出现重复选项，所以选择使用selectList
-                        if (trendChartData.size() == 0) {
-                            foreignStatisticTrendChartDataMapper.insert(foreignStatisticsTrendChartData);
-                        } else if (trendChartData.size() == 1) {
-                            foreignStatisticTrendChartDataMapper.update(foreignStatisticsTrendChartData, queryWrapper);
-                        } else {
-                            foreignStatisticTrendChartDataMapper.selectById(foreignStatisticsTrendChartData.getLocationId());
-                            foreignStatisticTrendChartDataMapper.insert(foreignStatisticsTrendChartData);
+                        // 历史数据只刷新最近两天的数据
+                        int dataId = Integer.parseInt(foreignStatisticsTrendChartData.getDateId());
+                        int planDateId = (Integer.parseInt(DateUtils.getCurrentDateWithNumber())-1);
+                        if (dataId >= planDateId){
+                            LambdaQueryWrapper<ForeignStatisticsTrendChartData> queryWrapper = new LambdaQueryWrapper<>();
+                            queryWrapper.eq(ForeignStatisticsTrendChartData::getLocationId, foreignStatisticsTrendChartData.getLocationId())
+                                    .eq(ForeignStatisticsTrendChartData::getCountryShortCode, foreignStatisticsTrendChartData.getCountryShortCode())
+                                    .eq(ForeignStatisticsTrendChartData::getDateId, foreignStatisticsTrendChartData.getDateId());
+                            List<ForeignStatisticsTrendChartData> trendChartData = foreignStatisticTrendChartDataMapper.selectList(queryWrapper);
+                            // 总是会莫名出现重复选项，所以选择使用selectList
+                            if (trendChartData.size() == 0) {
+                                foreignStatisticTrendChartDataMapper.insert(foreignStatisticsTrendChartData);
+                            } else if (trendChartData.size() == 1) {
+                                foreignStatisticTrendChartDataMapper.update(foreignStatisticsTrendChartData, queryWrapper);
+                            } else {
+                                foreignStatisticTrendChartDataMapper.selectById(foreignStatisticsTrendChartData.getLocationId());
+                                foreignStatisticTrendChartDataMapper.insert(foreignStatisticsTrendChartData);
+                            }
                         }
                     }
                 }
@@ -118,15 +128,40 @@ public class ForeignCountryServiceImpl implements ForeignCountryService {
      * @param limit        页面记录数
      * @param continents   大洲名
      * @param provinceName 国家名
+     * @param field        排序的栏位
+     * @param order        排序的顺序 ASE，null，DESC
      * @return com.baomidou.mybatisplus.core.metadata.IPage<com.smic.cf.pojo.ForeignCountryCovid19>
      * @author 蔡明涛
      * @date 2020/3/29 16:34
      */
     @Override
-    public IPage<ForeignCountryCovid19> selectPage(Integer page, Integer limit, String continents, String provinceName) {
-        LambdaQueryWrapper<ForeignCountryCovid19> queryWrapper = Wrappers.lambdaQuery();
-        queryWrapper.eq(!StringUtils.isEmpty(continents), ForeignCountryCovid19::getContinents, continents)
-                .eq(!StringUtils.isEmpty(provinceName), ForeignCountryCovid19::getProvinceName, provinceName);
+    public IPage<ForeignCountryCovid19> selectPage(Integer page, Integer limit, String continents, String provinceName, String field, String order) {
+        QueryWrapper<ForeignCountryCovid19> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq(!StringUtils.isEmpty(continents), "continents", continents)
+                .eq(!StringUtils.isEmpty(provinceName), "province_name", provinceName);
+        if (null != field) {
+            if (CrawlerConstants.FIELD_DEAD_RATE.equals(field)){
+                if (order == null || CrawlerConstants.ORDER_BY_ASC.equals(order)) {
+                    queryWrapper.orderByAsc("dead_rate+0");
+                } else {
+                    queryWrapper.orderByDesc("dead_rate+0");
+                }
+            } else {
+                if (order == null || CrawlerConstants.ORDER_BY_ASC.equals(order)) {
+                    if (CrawlerConstants.FIELD_CURRENT_CONFIRMED_COUNT.equals(field)){
+                        queryWrapper.orderByAsc("current_confirmed_count");
+                    } else {
+                        queryWrapper.orderByAsc("confirmed_count");
+                    }
+                } else {
+                    if (CrawlerConstants.FIELD_CURRENT_CONFIRMED_COUNT.equals(field)){
+                        queryWrapper.orderByDesc("current_confirmed_count");
+                    } else {
+                        queryWrapper.orderByDesc("confirmed_count");
+                    }
+                }
+            }
+        }
         Page<ForeignCountryCovid19> page1 = new Page<>(page, limit);
         return foreignCountryCovid19Mapper.selectPage(page1, queryWrapper);
     }

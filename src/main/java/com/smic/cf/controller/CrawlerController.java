@@ -10,14 +10,12 @@ import com.smic.cf.pojo.ProvinceCovid19;
 import com.smic.cf.schedual.SysCrawlerSchedule;
 import com.smic.cf.service.DomesticService;
 import com.smic.cf.service.ForeignCountryService;
-import com.smic.cf.util.CrawlerParser;
-import com.smic.cf.util.CrawlerUtils;
-import com.smic.cf.util.ResultBean;
-import com.smic.cf.util.ResultBeanUtil;
+import com.smic.cf.util.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -38,6 +36,7 @@ public class CrawlerController {
 
     @GetMapping("/refresh")
     public ResultBean<String> refresh(){
+        log.info("{}开启手动刷新", DateUtils.getCurrentDateTime());
         //获取页面数据
         CrawlerUtils.getPage(Crawler.URL);
         //提取页面数据（JSON格式）
@@ -49,6 +48,7 @@ public class CrawlerController {
         //将解析的数据存入DB
         foreignCountryService.insertForeignCountryData(foreignCountryCovid19List);
         domesticService.insertDomesticData(provinceCovid19List);
+        log.info("{} 刷新结束", DateUtils.getCurrentDateTime());
         return ResultBeanUtil.success();
     }
 
@@ -64,9 +64,11 @@ public class CrawlerController {
     public ResultBean<JSONObject> getForeignStatistics(@RequestParam("page") Integer page,
                                                        @RequestParam("limit") Integer limit,
                                                        @RequestParam("continents") String continents,
-                                                       @RequestParam("provinceName") String provinceName){
+                                                       @RequestParam("provinceName") String provinceName,
+                                                       @RequestParam("field") String field,
+                                                       @RequestParam("order") String order){
         JSONObject jsonObject = new JSONObject();
-        IPage<ForeignCountryCovid19> iPage =  foreignCountryService.selectPage(page,limit,continents,provinceName);
+        IPage<ForeignCountryCovid19> iPage =  foreignCountryService.selectPage(page,limit,continents,provinceName,field,order);
         jsonObject.put("total",iPage.getTotal());
         jsonObject.put("rows",iPage.getRecords());
         return ResultBeanUtil.success(jsonObject);

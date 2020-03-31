@@ -37,7 +37,7 @@
 
 <body>
 <div class="cBody">
-    <!-- 国外数据一览表 -->
+    <!-- 表头工具栏-->
     <form class="layui-form layui-fluid" action="">
         <div class="layui-form-item">
             <label class="layui-form-label">联动筛选</label>
@@ -60,8 +60,81 @@
             </div>
         </div>
     </form>
-    <div style="width: 100%; height: 200px;">
+    <!-- table -->
+    <div style="width: 100%; height: 300px;">
         <table class="layui-hide-sm" id="foreignStatistics" lay-skin="line" lay-filter="foreignStatic"></table>
+    </div>
+    <!-- echarts参照  -->
+    <div style="width: 100%; height: 400px; margin-top :220px">
+        <form class="layui-form" action="">
+            <div class="layui-input-inline">
+                <select name="reportType" id="reportType" lay-filter="reportType">
+                    <option value="订单数量">订单数量</option>
+                    <option value="退货单数">退货单数</option>
+                    <option value="订货金额">订货金额</option>
+                    <option value="退货金额">退货金额</option>
+                    <option value="金额合计">金额合计</option>
+                </select>
+            </div>
+            <div class="layui-input-inline">
+                <a class="pressBut active" onclick="refreshData([82, 2, 91, 34, 10, 120, 20],this)">按天</a>
+                <a class="pressBut" onclick="refreshData([10, 21, 1, 134, 210, 520, 420],this)">按周</a>
+                <a class="pressBut" onclick="refreshData([82, 2, 91, 34, 10, 120, 20],this)">按月</a>
+            </div>
+            <div class="changeRate">
+                <div class="layui-col-md6 left">115.20</div>
+                <div class="layui-col-md6 right">
+                    <!--上升-->
+                    <!--<span class="data up">-99.42%<i class="iconfont icon-xiangshangjiantoucuxiao"></i></span>-->
+                    <!--下降-->
+                    <span class="data">-99.42%<i class="iconfont icon-xiangxiajiantoucuxiao"></i></span>
+                    <span class="text">相比上周期</span>
+                </div>
+            </div>
+            <div id="myReport" style="width: 100%; height: 400px;"></div>
+            <script src="../../framework/echarts.min.js"></script>
+            <script type="text/javascript">
+                // 基于准备好的dom，初始化echarts实例
+                var myChart = echarts.init(document.getElementById('myReport'));
+
+                // 指定图表的配置项和数据
+                var option = {
+                    xAxis: {
+                        type: 'category',
+                        boundaryGap: false,
+                        data: ['2018-03-01', '2018-03-02', '2018-03-03', '2018-03-04', '2018-03-05', '2018-03-06', '2018-03-07']
+                    },
+                    yAxis: {
+                        type: 'value'
+                    },
+                    grid: {
+                        top: 20,
+                        bottom: 20,
+                        left: 50,
+                        right: 50
+                    },
+                    series: [{
+                        data: [820, 932, 901, 934, 1290, 1330, 1320],
+                        type: 'line',
+                        areaStyle: {}
+                    }]
+                };
+                myChart.setOption(option);
+
+                function refreshData(data, _this) {
+                    $(_this).addClass("active");
+                    $(_this).siblings().removeClass("active");
+                    if (!myChart) {
+                        return;
+                    }
+
+                    //更新数据
+                    var option = myChart.getOption();
+                    option.series[0].data = data;
+                    myChart.setOption(option);
+                }
+            </script>
+        </form>
     </div>
 </div>
 </body>
@@ -81,7 +154,7 @@
             table.render({
                 elem: '#foreignStatistics'
                 /* 高度最大化 */
-                , height: 300
+                , height: 500
                 /* 全局设置单元格的最新宽度 */
                 , cellMinWidth: 60
                 , title: '国外疫情表'
@@ -112,7 +185,11 @@
                 , where: {
                     'continents': ''
                     , 'provinceName': ''
+                    // 排序相关字段
+                    , field : ''
+                    , order : ''
                 }
+                , autoSort : false // 自定义排序，必须添加的内容
                 , method: 'post'
                 , response: {
                     statusCode: 200 // 重新规定成功的状态码为 200， table 默认为0
@@ -182,6 +259,9 @@
                     where: {
                         'provinceName': selectProvince.val().trim()
                         , 'continents': selectContinents.val().trim()
+                        // 排序相关的字段
+                        , field : ''
+                        , order : ''
                     }
                     , page: {
                         cur: 1
@@ -209,7 +289,7 @@
         // 手动刷新数据
         $('#refresh').unbind().bind({
             click: function () {
-                const loading = layer.load(0, {shade: [0.5, 'grey'], time: 2*1000});
+                const loading = layer.load(0, {shade: [0.5, 'grey'], time: 2 * 1000});
                 $.ajax({
                     url: "/crawler/refresh"
                     , success: function (data) {
@@ -226,7 +306,19 @@
             }
         });
 
-
+        // 自定义排序
+        table.on('sort(foreignStatic)',function (obj) { // foreignStatic 对应的是table的lay-filter
+            table.reload('foreignStatistics',{
+                initSort: obj
+                , where: {
+                    'provinceName': selectProvince.val().trim()
+                    , 'continents': selectContinents.val().trim()
+                    // 排序相关字段
+                    , field : obj.field // 排序的字段
+                    , order : obj.type // 排序的方式,当前排序类型：desc（降序）、asc（升序）、null（空对象，默认排序）
+                }
+            }); // foreignStatistics 对应的是table的id
+        });
     });
 </script>
 </html>
