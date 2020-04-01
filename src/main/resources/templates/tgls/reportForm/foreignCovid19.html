@@ -167,9 +167,8 @@
                         , {field: 'countryFullName', title: '英文全称'}
                         , {field: 'currentConfirmedCount', title: '当前确诊', sort: true}
                         , {field: 'confirmedCount', title: '累计确诊', sort: true}
-                        , {field: 'suspectedCount', title: '疑似病例'}
-                        , {field: 'curedCount', title: '治愈病例'}
-                        , {field: 'deadCount', title: '死亡病例'}
+                        , {field: 'curedCount', title: '治愈病例', sort: true}
+                        , {field: 'deadCount', title: '死亡病例', sort: true}
                         , {field: 'deadRate', title: '死亡率%', sort: true}
                         , {title: '操作', fixed: 'right', align: 'center', toolbar: '#toolbar'}
                     ]
@@ -289,7 +288,7 @@
         // 手动刷新数据
         $('#refresh').unbind().bind({
             click: function () {
-                const loading = layer.load(0, {shade: [0.5, 'grey'], time: 2 * 1000});
+                const loading = layer.load(0, {shade: [0.5, 'grey'], time: 150 * 1000});
                 $.ajax({
                     url: "/crawler/refresh"
                     , success: function (data) {

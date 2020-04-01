@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.smic.cf.constants.CrawlerConstants;
+import com.smic.cf.constants.SortItem;
 import com.smic.cf.mapper.ForeignCountryCovid19Mapper;
 import com.smic.cf.mapper.ForeignStatisticTrendChartDataMapper;
 import com.smic.cf.mapper.IncrVoMapper;
@@ -139,28 +140,12 @@ public class ForeignCountryServiceImpl implements ForeignCountryService {
         QueryWrapper<ForeignCountryCovid19> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq(!StringUtils.isEmpty(continents), "continents", continents)
                 .eq(!StringUtils.isEmpty(provinceName), "province_name", provinceName);
-        if (null != field) {
-            if (CrawlerConstants.FIELD_DEAD_RATE.equals(field)){
-                if (order == null || CrawlerConstants.ORDER_BY_ASC.equals(order)) {
-                    queryWrapper.orderByAsc("dead_rate+0");
-                } else {
-                    queryWrapper.orderByDesc("dead_rate+0");
-                }
-            } else {
-                if (order == null || CrawlerConstants.ORDER_BY_ASC.equals(order)) {
-                    if (CrawlerConstants.FIELD_CURRENT_CONFIRMED_COUNT.equals(field)){
-                        queryWrapper.orderByAsc("current_confirmed_count");
-                    } else {
-                        queryWrapper.orderByAsc("confirmed_count");
-                    }
-                } else {
-                    if (CrawlerConstants.FIELD_CURRENT_CONFIRMED_COUNT.equals(field)){
-                        queryWrapper.orderByDesc("current_confirmed_count");
-                    } else {
-                        queryWrapper.orderByDesc("confirmed_count");
-                    }
-                }
-            }
+        if (null != field && !StringUtils.isEmpty(field)) {
+           if (StringUtils.isEmpty(order) || order.equals(CrawlerConstants.ORDER_BY_ASC)){
+               queryWrapper.orderByAsc(SortItem.getColumn(field));
+           }else {
+               queryWrapper.orderByDesc(SortItem.getColumn(field));
+           }
         }
         Page<ForeignCountryCovid19> page1 = new Page<>(page, limit);
         return foreignCountryCovid19Mapper.selectPage(page1, queryWrapper);

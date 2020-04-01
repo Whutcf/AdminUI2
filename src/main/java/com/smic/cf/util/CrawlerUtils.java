@@ -48,7 +48,6 @@ public class CrawlerUtils {
         Pattern pattern = Pattern.compile(regex);
         //创建Matcher对象
         Elements pageInformation = page.getElementsByAttributeValue(attributeKey,attributeValue);
-        System.out.println(pageInformation.toString());
         Matcher matcher = pattern.matcher(pageInformation.toString());
         //该方法扫描输入的序列，查找与该模式匹配的子序列
         if (matcher.find()){
