@@ -59,11 +59,6 @@ public class PageController {
         return "nopermisson";
     }
 
-
-
-
-
-
     @GetMapping("tgls/{category}/{page}")
     public String page(@PathVariable("category") String category,
                        @PathVariable("page") String page) {

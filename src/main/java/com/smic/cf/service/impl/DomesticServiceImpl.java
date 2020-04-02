@@ -86,14 +86,15 @@ public class DomesticServiceImpl implements DomesticService {
                 List<CityCovid19> cities = provinceCovid19.getCities();
                 if (null != cities && cities.size() > 0) {
                     for (CityCovid19 city : cities) {
-                        if (city.getLocationId() != 0) {
+                        if (city.getLocationId() != 0 && city.getLocationId() != -1) {
                             if (!StringUtils.isEmpty(cityCovid19Mapper.selectById(city.getLocationId()))) {
                                 cityCovid19Mapper.deleteById(city);
                             }
                             cityCovid19Mapper.insert(city);
                         } else {
                             LambdaQueryWrapper<CityCovid19> queryWrapper = Wrappers.lambdaQuery();
-                            queryWrapper.eq(CityCovid19::getLocationId, 0)
+                            // 突然出现了-1的代码
+                            queryWrapper.nested(qw->qw.eq(CityCovid19::getLocationId, 0).or().eq(CityCovid19::getLocationId,-1))
                                     .eq(CityCovid19::getCityName, city.getCityName())
                                     .eq(CityCovid19::getProvinceShortName, city.getProvinceShortName())
                                     .eq(CityCovid19::getProvinceId, city.getProvinceId());

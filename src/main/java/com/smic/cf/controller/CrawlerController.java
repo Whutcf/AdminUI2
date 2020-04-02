@@ -100,5 +100,25 @@ public class CrawlerController {
         return ResultBeanUtil.success(jsonArray);
     }
 
-    // TODO: 2020/3/29 页面排序问题解决，引入Echarts
+    /**
+     * 获取柱状图数据 by各大洲分别统计疫情情况
+     * @return com.alibaba.fastjson.JSONObject
+     * @author 蔡明涛
+     * @date 2020/4/3 2:00
+     */
+    @GetMapping("/getSummaryBarChartData")
+    public JSONObject getSummaryBarChartData(){
+        return foreignCountryService.getSummaryBarChartData();
+    }
+
+    /**
+     * 获取各大洲当前确诊人数占比
+     * @return com.alibaba.fastjson.JSONObject
+     * @author 蔡明涛
+     * @date 2020/4/3 2:05
+     */
+    @GetMapping("/getSummaryPieChartData")
+    public JSONObject getSummaryPieChartData(){
+        return foreignCountryService.getSummaryPieChartData();
+    }
 }

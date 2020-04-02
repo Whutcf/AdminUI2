@@ -1,5 +1,6 @@
 package com.smic.cf.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -7,6 +8,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.smic.cf.constants.CrawlerConstants;
 import com.smic.cf.constants.SortItem;
+import com.smic.cf.dto.SummaryBarChartData;
 import com.smic.cf.mapper.ForeignCountryCovid19Mapper;
 import com.smic.cf.mapper.ForeignStatisticTrendChartDataMapper;
 import com.smic.cf.mapper.IncrVoMapper;
@@ -21,7 +23,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Description
@@ -80,14 +85,14 @@ public class ForeignCountryServiceImpl implements ForeignCountryService {
                 }
                 // 更新每日新增数据,需要对0特殊处理
                 IncrVo incrVo = foreignCountryCovid19.getIncrVo();
-                if (!StringUtils.isEmpty(incrVo)){
+                if (!StringUtils.isEmpty(incrVo)) {
                     if (incrVo.getId() != 0) {
                         incrVoMapper.deleteById(incrVo.getId());
                     } else {
                         LambdaQueryWrapper<IncrVo> queryWrapper = Wrappers.lambdaQuery();
                         queryWrapper.eq(IncrVo::getId, 0)
                                 .eq(IncrVo::getCountryShortCode, incrVo.getCountryShortCode());
-                        if (incrVoMapper.selectList(queryWrapper).size()>0) {
+                        if (incrVoMapper.selectList(queryWrapper).size() > 0) {
                             incrVoMapper.delete(queryWrapper);
                         }
                     }
@@ -99,8 +104,8 @@ public class ForeignCountryServiceImpl implements ForeignCountryService {
                     for (ForeignStatisticsTrendChartData foreignStatisticsTrendChartData : statisticsTrendChartDataList) {
                         // 历史数据只刷新最近两天的数据
                         int dataId = Integer.parseInt(foreignStatisticsTrendChartData.getDateId());
-                        int planDateId = (Integer.parseInt(DateUtils.getCurrentDateWithNumber())-1);
-                        if (dataId >= planDateId){
+                        int planDateId = (Integer.parseInt(DateUtils.getCurrentDateWithNumber()) - 1);
+                        if (dataId >= planDateId) {
                             LambdaQueryWrapper<ForeignStatisticsTrendChartData> queryWrapper = new LambdaQueryWrapper<>();
                             queryWrapper.eq(ForeignStatisticsTrendChartData::getLocationId, foreignStatisticsTrendChartData.getLocationId())
                                     .eq(ForeignStatisticsTrendChartData::getCountryShortCode, foreignStatisticsTrendChartData.getCountryShortCode())
@@ -141,11 +146,11 @@ public class ForeignCountryServiceImpl implements ForeignCountryService {
         queryWrapper.eq(!StringUtils.isEmpty(continents), "continents", continents)
                 .eq(!StringUtils.isEmpty(provinceName), "province_name", provinceName);
         if (null != field && !StringUtils.isEmpty(field)) {
-           if (StringUtils.isEmpty(order) || order.equals(CrawlerConstants.ORDER_BY_ASC)){
-               queryWrapper.orderByAsc(SortItem.getColumn(field));
-           }else {
-               queryWrapper.orderByDesc(SortItem.getColumn(field));
-           }
+            if (StringUtils.isEmpty(order) || order.equals(CrawlerConstants.ORDER_BY_ASC)) {
+                queryWrapper.orderByAsc(SortItem.getColumn(field));
+            } else {
+                queryWrapper.orderByDesc(SortItem.getColumn(field));
+            }
         }
         Page<ForeignCountryCovid19> page1 = new Page<>(page, limit);
         return foreignCountryCovid19Mapper.selectPage(page1, queryWrapper);
@@ -174,5 +179,114 @@ public class ForeignCountryServiceImpl implements ForeignCountryService {
     @Override
     public List<String> getCountries(String continents) {
         return foreignCountryCovid19Mapper.getCountries(continents);
+    }
+
+    /**
+     * 获取echarts的summaryBarChartData所需要的数据
+     *
+     * @return com.alibaba.fastjson.JSONObject
+     * @author 蔡明涛
+     * @date 2020/4/3 0:28
+     */
+    @Override
+    public JSONObject getSummaryBarChartData() {
+        // 获取基础数据
+        List<SummaryBarChartData> summaryBarChartDataList = foreignCountryCovid19Mapper.getSummaryData();
+
+        JSONObject jsonObject = new JSONObject();
+
+        List<String> legendList = new ArrayList<>();
+        legendList.add("当前确诊");
+        legendList.add("累计确诊");
+        legendList.add("治愈人数");
+        legendList.add("死亡人数");
+        jsonObject.put("legendList", legendList);
+
+        List<String> xAxisList = new ArrayList<>();
+        List<Map<String, Object>> seriesList = new ArrayList<>();
+        Map<String, Object> seriesMap1 = new HashMap<>(16);
+        Map<String, Object> seriesMap2 = new HashMap<>(16);
+        Map<String, Object> seriesMap3 = new HashMap<>(16);
+        Map<String, Object> seriesMap4 = new HashMap<>(16);
+        List<Integer> dataList1 = new ArrayList<>();
+        List<Integer> dataList2 = new ArrayList<>();
+        List<Integer> dataList3 = new ArrayList<>();
+        List<Integer> dataList4 = new ArrayList<>();
+        seriesMap1.put("name", "当前确诊");
+        seriesMap1.put("type", "bar");
+        seriesMap2.put("name", "累计确诊");
+        seriesMap2.put("type", "bar");
+        seriesMap3.put("name", "治愈人数");
+        seriesMap3.put("type", "bar");
+        seriesMap4.put("name", "死亡人数");
+        seriesMap4.put("type", "bar");
+        // 获取横轴和对应的数据
+        for (SummaryBarChartData summaryBarChartData : summaryBarChartDataList) {
+            xAxisList.add(summaryBarChartData.getContinents());
+            dataList1.add(summaryBarChartData.getCurrentConfirmedTotal());
+            dataList2.add(summaryBarChartData.getConfirmedTotal());
+            dataList3.add(summaryBarChartData.getCureTotal());
+            dataList4.add(summaryBarChartData.getDeadTotal());
+        }
+        seriesMap1.put("data", dataList1);
+        seriesList.add(seriesMap1);
+        seriesMap2.put("data", dataList2);
+        seriesList.add(seriesMap2);
+        seriesMap3.put("data", dataList3);
+        seriesList.add(seriesMap3);
+        seriesMap4.put("data", dataList4);
+        seriesList.add(seriesMap4);
+        jsonObject.put("xAxisList", xAxisList);
+        jsonObject.put("seriesList", seriesList);
+        return jsonObject;
+    }
+
+    /**
+     * 获取echarts的世界疫情各大洲当前确诊人数占比
+     *
+     * @return com.alibaba.fastjson.JSONObject
+     * @author 蔡明涛
+     * @date 2020/4/3 2:02
+     */
+    @Override
+    public JSONObject getSummaryPieChartData() {
+        // 获取基础数据
+        List<SummaryBarChartData> summaryBarChartDataList = foreignCountryCovid19Mapper.getSummaryData();
+        JSONObject jsonObject = new JSONObject();
+        List<String> legendList = new ArrayList<>();
+        List<Map<String, Object>> seriesList1 = new ArrayList<>();
+        List<Map<String, Object>> seriesList2 = new ArrayList<>();
+        List<Map<String, Object>> seriesList3 = new ArrayList<>();
+        List<Map<String, Object>> seriesList4 = new ArrayList<>();
+        for (SummaryBarChartData summaryBarChartData : summaryBarChartDataList) {
+            legendList.add(summaryBarChartData.getContinents());
+            Map<String,Object> dataMap1 = new HashMap<>(16);
+            Map<String,Object> dataMap2 = new HashMap<>(16);
+            Map<String,Object> dataMap3 = new HashMap<>(16);
+            Map<String,Object> dataMap4 = new HashMap<>(16);
+
+            dataMap1.put("name",summaryBarChartData.getContinents());
+            dataMap1.put("value",summaryBarChartData.getCurrentConfirmedTotal());
+
+            dataMap2.put("name",summaryBarChartData.getContinents());
+            dataMap2.put("value",summaryBarChartData.getConfirmedTotal());
+
+            dataMap3.put("name",summaryBarChartData.getContinents());
+            dataMap3.put("value",summaryBarChartData.getCureTotal());
+
+            dataMap4.put("name",summaryBarChartData.getContinents());
+            dataMap4.put("value",summaryBarChartData.getDeadTotal());
+
+            seriesList1.add(dataMap1);
+            seriesList2.add(dataMap2);
+            seriesList3.add(dataMap3);
+            seriesList4.add(dataMap4);
+        }
+        jsonObject.put("legendList", legendList);
+        jsonObject.put("seriesList1", seriesList1);
+        jsonObject.put("seriesList2", seriesList2);
+        jsonObject.put("seriesList3", seriesList3);
+        jsonObject.put("seriesList4", seriesList4);
+        return jsonObject;
     }
 }

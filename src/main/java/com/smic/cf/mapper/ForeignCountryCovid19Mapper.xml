@@ -16,4 +16,10 @@
             where continents = #{continents}
         </if>
     </select>
+    <select id="getSummaryData" resultType="com.smic.cf.dto.SummaryBarChartData">
+        select continents,sum(current_confirmed_count) currentConfirmedTotal,sum(confirmed_count) confirmedTotal,
+               sum(cured_count) cureTotal,sum(dead_count) deadTotal
+        from adminui.sys_foreign_country_covid19
+        group by continents;
+    </select>
 </mapper>

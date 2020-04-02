@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,Chrome=1">
@@ -20,8 +19,8 @@
     <!-- 公共样式 开始 -->
     <link rel="stylesheet" type="text/css" href="../../css/base.css">
     <link rel="stylesheet" type="text/css" href="../../css/iconfont.css">
-    <script type="text/javascript" src="../../framework/jquery-1.11.3.min.js"></script>
     <link rel="stylesheet" type="text/css" href="../../layui/css/layui.css">
+    <script type="text/javascript" src="../../framework/jquery-1.11.3.min.js"></script>
     <script type="text/javascript" src="../../layui/layui.js"></script>
     <!-- 滚动条插件 -->
     <link rel="stylesheet" type="text/css" href="../../css/jquery.mCustomScrollbar.css">
@@ -30,133 +29,94 @@
     <script src="../../framework/jquery.mCustomScrollbar.min.js"></script>
     <script src="../../framework/cframe.js"></script><!-- 仅供所有子页面使用 -->
     <!-- 公共样式 结束 -->
-
-    <script type="text/javascript" src="../../../static/framework/echarts.min.js"></script>
     <link rel="stylesheet" type="text/css" href="../../css/reportForm.css">
 </head>
 
 <body>
 <div class="cBody">
-    <!-- 表头工具栏-->
-    <form class="layui-form layui-fluid" action="">
-        <div class="layui-form-item">
-            <label class="layui-form-label">联动筛选</label>
-            <div class="layui-input-inline">
-                <select id="continents" lay-filter="continentsFilter" lay-search>
-                    <option value="">请选择或搜索大洲</option>
-                </select>
+    <div class="layui-tab-content" style="padding: 0 1px;">
+        <div class="layui-tab-item layui-show">
+            <!-- 表头工具栏-->
+            <form class="layui-form layui-fluid" action="" style="padding: 0;height: 45px">
+                <div class="layui-form" style="margin: 0 0;padding: 1px 0 1px 0;">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label" style="margin-left: 0;width: 60px">联动筛选</label>
+                        <div class="layui-input-inline" style="width: auto">
+                            <select id="continents" lay-filter="continentsFilter" lay-search>
+                                <option value="">请选择或搜索大洲</option>
+                            </select>
+                        </div>
+                        <span style="display: inline-block;float: left;width: 15px;padding-top: 10px;">-</span>
+                        <div class="layui-input-inline" style="width: auto">
+                            <select id="provinceName" lay-search>
+                                <option value="">请选择或搜索国家</option>
+                            </select>
+                        </div>
+                        <div class="layui-inline">
+                            <a class="layui-btn layui-btn-normal"
+                               style="padding: 0 5px;border-color: #595959;color: #666666;background-color: #ecf9ff"
+                               id="search_submit"
+                               data-type="reload"
+                               lay-filter="reload_search_submit">查询</a>
+                            <a class="layui-btn layui-btn-normal" id="searchResetBtn"
+                               style="padding: 0 5px;border-color: #595959;color: #666666;background-color: #ecf9ff"
+                               data-type="reload"
+                               lay-filter="searchResetBtn">重置</a>
+                            <a class="layui-btn layui-btn-normal" id="refresh"
+                               style="padding: 0 10px;border-color: #595959;color: #666666;background-color: #ecf9ff"
+                               lay-filter="refresh">刷新实时数据</a>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <!-- table -->
+            <div class="layui-row layui-col-space3" style="margin: auto 10px; height: 300px;">
+                <table class="layui-hide-sm" id="foreignStatistics" lay-skin="line" lay-filter="foreignStatic"></table>
             </div>
-            <div class="layui-input-inline">
-                <select id="provinceName" lay-search>
-                    <option value="">请选择或搜索国家</option>
-                </select>
-            </div>
-            <div class="layui-inline">
-                <a class="layui-btn" id="search_submit" data-type="reload" lay-filter="reload_search_submit">查询</a>
-                <a class="layui-btn" id="searchResetBtn" data-type="reload" lay-filter="searchResetBtn">重置</a>
-            </div>
-            <div class="layui-inline">
-                <a class="layui-btn" id="refresh" lay-filter="refresh">刷新实时数据</a>
-            </div>
-        </div>
-    </form>
-    <!-- table -->
-    <div style="width: 100%; height: 300px;">
-        <table class="layui-hide-sm" id="foreignStatistics" lay-skin="line" lay-filter="foreignStatic"></table>
-    </div>
-    <!-- echarts参照  -->
-    <div style="width: 100%; height: 400px; margin-top :220px">
-        <form class="layui-form" action="">
-            <div class="layui-input-inline">
-                <select name="reportType" id="reportType" lay-filter="reportType">
-                    <option value="订单数量">订单数量</option>
-                    <option value="退货单数">退货单数</option>
-                    <option value="订货金额">订货金额</option>
-                    <option value="退货金额">退货金额</option>
-                    <option value="金额合计">金额合计</option>
-                </select>
-            </div>
-            <div class="layui-input-inline">
-                <a class="pressBut active" onclick="refreshData([82, 2, 91, 34, 10, 120, 20],this)">按天</a>
-                <a class="pressBut" onclick="refreshData([10, 21, 1, 134, 210, 520, 420],this)">按周</a>
-                <a class="pressBut" onclick="refreshData([82, 2, 91, 34, 10, 120, 20],this)">按月</a>
-            </div>
-            <div class="changeRate">
-                <div class="layui-col-md6 left">115.20</div>
-                <div class="layui-col-md6 right">
-                    <!--上升-->
-                    <!--<span class="data up">-99.42%<i class="iconfont icon-xiangshangjiantoucuxiao"></i></span>-->
-                    <!--下降-->
-                    <span class="data">-99.42%<i class="iconfont icon-xiangxiajiantoucuxiao"></i></span>
-                    <span class="text">相比上周期</span>
+            <!-- echarts -->
+            <!-- 为echarts准备一个具备大小的dom -->
+            <div class="layui-row layui-col-space3" style="height: auto;margin: 200px 1px auto;">
+                <div class="layui-card">
+                    <div class="layui-card-header">世界疫情数据汇总</div>
+                    <div class="layui-card-body">
+                        <div class="layui-carousel" id="Notice_carousel" lay-filter="Notice_carousel">
+                            <div carousel-item>
+                                <div id="summaryBarChart"></div>
+                                <div id="summaryPieChart"></div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div id="myReport" style="width: 100%; height: 400px;"></div>
-            <script src="../../framework/echarts.min.js"></script>
-            <script type="text/javascript">
-                // 基于准备好的dom，初始化echarts实例
-                var myChart = echarts.init(document.getElementById('myReport'));
-
-                // 指定图表的配置项和数据
-                var option = {
-                    xAxis: {
-                        type: 'category',
-                        boundaryGap: false,
-                        data: ['2018-03-01', '2018-03-02', '2018-03-03', '2018-03-04', '2018-03-05', '2018-03-06', '2018-03-07']
-                    },
-                    yAxis: {
-                        type: 'value'
-                    },
-                    grid: {
-                        top: 20,
-                        bottom: 20,
-                        left: 50,
-                        right: 50
-                    },
-                    series: [{
-                        data: [820, 932, 901, 934, 1290, 1330, 1320],
-                        type: 'line',
-                        areaStyle: {}
-                    }]
-                };
-                myChart.setOption(option);
-
-                function refreshData(data, _this) {
-                    $(_this).addClass("active");
-                    $(_this).siblings().removeClass("active");
-                    if (!myChart) {
-                        return;
-                    }
-
-                    //更新数据
-                    var option = myChart.getOption();
-                    option.series[0].data = data;
-                    myChart.setOption(option);
-                }
-            </script>
-        </form>
+        </div>
     </div>
 </div>
 </body>
 <script type="text/html" id="toolbar">
     <a class="layui-btn layui-btn-xs" lay-event="detail">查看历史数据</a>
 </script>
+<script type="text/javascript" src="../../echarts/echarts.js"></script>
 <script>
-    layui.use(['table', 'form', 'layer'], function () {
-        const table = layui.table
+    // 折叠面板 依赖 element模块
+    layui.use(['table', 'form', 'layer', 'element', 'carousel'], function () {
+        var table = layui.table
             , form = layui.form
-            , layer = layui.layer;
+            , layer = layui.layer
+            , carousel = layui.carousel
+            , element = layui.element;
         const selectProvince = $("#provinceName");
         const selectContinents = $("#continents");
 
         // 加载表格数据
         function initialTable() {
             table.render({
-                elem: '#foreignStatistics'
+                elem: '#foreignStatistics '
                 /* 高度最大化 */
                 , height: 500
                 /* 全局设置单元格的最新宽度 */
                 , cellMinWidth: 60
+                /* 隔行换色 */
+                // , even: true
                 , title: '国外疫情表'
                 , url: '/crawler/getForeignStatistics'
                 , cols: [
@@ -165,7 +125,7 @@
                         , {field: 'provinceName', title: '国家名称'}
                         , {field: 'countryShortCode', title: '英文简称'}
                         , {field: 'countryFullName', title: '英文全称'}
-                        , {field: 'currentConfirmedCount', title: '当前确诊', sort: true}
+                        , {field: 'currentConfirmedCount', title: '当前确诊', sort: true, style: "color:red;"}
                         , {field: 'confirmedCount', title: '累计确诊', sort: true}
                         , {field: 'curedCount', title: '治愈病例', sort: true}
                         , {field: 'deadCount', title: '死亡病例', sort: true}
@@ -173,7 +133,25 @@
                         , {title: '操作', fixed: 'right', align: 'center', toolbar: '#toolbar'}
                     ]
                 ]
-                , page: {
+                , done: function (res, curr, count) {
+                    // 设置某一列头 data-field 指向你想要改变的列头的field 值
+                    $(".layui-table-header .layui-table thead tr th[data-field='currentConfirmedCount'] ").css({
+                        'background-color': '#e57e82',
+                        'color': '#fff'
+                    });
+                    $(".layui-table-header .layui-table thead tr th[data-field='confirmedCount'] ").css({
+                        'background-color': '#a3313b',
+                        'color': '#fff'
+                    });
+                    $(".layui-table-header .layui-table thead tr th[data-field='curedCount'] ").css({
+                        'background-color': '#8fa1b5',
+                        'color': '#fff'
+                    });
+                    $(".layui-table-header .layui-table thead tr th[data-field='deadCount'] ").css({
+                        'background-color': '#1eb2a2',
+                        'color': '#fff'
+                    });
+                }, page: {
                     layout: ['prev', 'page', 'next', 'skip', 'limit', 'refresh', 'count'] //自定义分页布局
                     , groups: 5 //显示 5 个连续页码
                     , first: '首页' // 自定义“首页”的内容
@@ -185,10 +163,10 @@
                     'continents': ''
                     , 'provinceName': ''
                     // 排序相关字段
-                    , field : ''
-                    , order : ''
+                    , field: ''
+                    , order: ''
                 }
-                , autoSort : false // 自定义排序，必须添加的内容
+                , autoSort: false // 自定义排序，必须添加的内容
                 , method: 'post'
                 , response: {
                     statusCode: 200 // 重新规定成功的状态码为 200， table 默认为0
@@ -259,8 +237,8 @@
                         'provinceName': selectProvince.val().trim()
                         , 'continents': selectContinents.val().trim()
                         // 排序相关的字段
-                        , field : ''
-                        , order : ''
+                        , field: ''
+                        , order: ''
                     }
                     , page: {
                         cur: 1
@@ -306,17 +284,233 @@
         });
 
         // 自定义排序
-        table.on('sort(foreignStatic)',function (obj) { // foreignStatic 对应的是table的lay-filter
-            table.reload('foreignStatistics',{
+        table.on('sort(foreignStatic)', function (obj) { // foreignStatic 对应的是table的lay-filter
+            table.reload('foreignStatistics', {
                 initSort: obj
                 , where: {
                     'provinceName': selectProvince.val().trim()
                     , 'continents': selectContinents.val().trim()
                     // 排序相关字段
-                    , field : obj.field // 排序的字段
-                    , order : obj.type // 排序的方式,当前排序类型：desc（降序）、asc（升序）、null（空对象，默认排序）
+                    , field: obj.field // 排序的字段
+                    , order: obj.type // 排序的方式,当前排序类型：desc（降序）、asc（升序）、null（空对象，默认排序）
                 }
             }); // foreignStatistics 对应的是table的id
+        });
+
+        //建造轮播实例
+        carousel.render({
+            elem: '#Notice_carousel'
+            , width: '100%' //设置容器宽度
+            , height: '300px'
+            , arrow: 'none' //不显示箭头
+            , indicator: 'inside'//指示器位置，可选outside,none
+            , autoplay: false//自动切换
+            , trigger: 'hover'//悬浮切换
+            //,anim: 'updown' //切换动画方式默认左右
+        });
+
+        // 基于准备好的dom，初始化echarts的实例
+        let summaryBarChart = echarts.init(document.getElementById('summaryBarChart'));
+        let summaryPieChart = echarts.init(document.getElementById('summaryPieChart'));
+
+        function generateSummaryBarChart() {
+            $.ajax({
+                url: '/crawler/getSummaryBarChartData'
+                , dataType: 'json'
+                , success: function (data) {
+                    generateBarChar(data);
+                }
+            });
+        }
+
+        generateSummaryBarChart();
+
+        function generateSummaryPieChart() {
+            $.ajax({
+                url: '/crawler/getSummaryPieChartData'
+                , dataType: 'json'
+                , success: function (data) {
+                    generatePieChar(data);
+                }
+            });
+        }
+
+        generateSummaryPieChart();
+
+        // 生成图标的方法
+        function generateBarChar(data) {
+            let optionBarChart = {
+                title: {
+                    text: '疫情汇总'
+                },
+                tooltip: {
+                    trigger: 'axis'//悬浮显示对比
+                },
+                legend: {//顶部显示 与series中的数据类型的name一致
+                    data: data.legendList
+                },
+                toolbox: {
+                    feature: {
+                        saveAsImage: {}//保存图片下载
+                    }
+                },
+                xAxis: {
+                    type: 'category',
+                    boundaryGap: true,//从起点开始
+                    data: data.xAxisList
+                },
+                yAxis: {
+                    type: 'value'
+                },
+                series: data.seriesList
+            };
+            summaryBarChart.setOption(optionBarChart);
+        }
+
+        function generatePieChar(data) {
+            let optionPieChart = {
+                title: [{
+                    text: '疫情汇总'
+                    , x: 'center'//标题居中
+                }, {
+                    subtext: '确诊人数占比'//副标题
+                    , left: '28%'
+                    , top: '80%'
+                    , textAlign: 'center'
+                }, {
+                    subtext: '累计人数占比'//副标题
+                    , left: '46%'
+                    , top: '80%'
+                    , textAlign: 'center'
+                }, {
+                    subtext: '治愈人数占比'//副标题
+                    , left: '64%'
+                    , top: '80%'
+                    , textAlign: 'center'
+                }, {
+                    subtext: '死亡人数占比'//副标题
+                    , left: '82%'
+                    , top: '80%'
+                    , textAlign: 'center'
+                }], tooltip: {
+                    trigger: 'item'//悬浮显示对比
+                },
+                legend: {
+                    orient: 'vertical',//类型垂直,默认水平
+                    left: 'left',//类型区分在左 默认居中
+                    data: data.legendList
+                },
+                series: [
+                    {
+                        type: 'pie',//饼状
+                        radius: '60%',//圆的大小
+                        center: ['28%', '50%'],
+                        data: data.seriesList1
+                    }, {
+                        type: 'pie',//饼状
+                        radius: '60%',//圆的大小
+                        center: ['46%', '50%'],
+                        data: data.seriesList2
+                    }, {
+                        type: 'pie',//饼状
+                        radius: '60%',//圆的大小
+                        center: ['64%', '50%'],
+                        data: data.seriesList3
+                    }, {
+                        type: 'pie',//饼状
+                        radius: '60%',//圆的大小
+                        center: ['82%', '50%'],
+                        data: data.seriesList4
+                    }
+                ]
+            };
+            // 使用刚指定的配置项和数据显示图表。
+            summaryPieChart.setOption(optionPieChart);
+        }
+
+        // 指定图标的配置项和数据
+        // var optionPieChart = {
+        //     title: {
+        //         text: '发布类型汇总',
+        //         subtext: '纯属虚构',//副标题
+        //         x: 'center'//标题居中
+        //     }, tooltip: {
+        //         trigger: 'item'//悬浮显示对比
+        //     },
+        //     legend: {
+        //         orient: 'vertical',//类型垂直,默认水平
+        //         left: 'left',//类型区分在左 默认居中
+        //         data: ['公告', '作业', '光荣榜', '成绩报告']
+        //     },
+        //     series: [
+        //         {
+        //             type: 'pie',//饼状
+        //             radius: '60%',//圆的大小
+        //             center: ['50%', '50%'],//居中
+        //             data: [
+        //                 {value: 335, name: '公告'},
+        //                 {value: 310, name: '作业'},
+        //                 {value: 234, name: '光荣榜'},
+        //                 {value: 135, name: '成绩报告'}
+        //             ]
+        //         }
+        //     ]
+        // };
+        //     optionBarChart = {
+        //     title: {
+        //         text: '疫情汇总'
+        //     },
+        //     tooltip: {
+        //         trigger: 'axis'//悬浮显示对比
+        //     },
+        //     legend: {//顶部显示 与series中的数据类型的name一致
+        //         data: ['公告', '作业', '光荣榜', '成绩报告']
+        //     },
+        //     toolbox: {
+        //         feature: {
+        //             saveAsImage: {}//保存图片下载
+        //         }
+        //     },
+        //     xAxis: {
+        //         type: 'category',
+        //         boundaryGap: false,//从起点开始
+        //         data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
+        //     },
+        //     yAxis: {
+        //         type: 'value'
+        //     },
+        //     series: [{
+        //         name: '公告',
+        //         type: 'line',//线性
+        //         data: [620, 732, 701, 734, 1090, 1130, 1120],
+        //     }, {
+        //         name: '作业',
+        //         type: 'line',//线性
+        //         data: [720, 832, 801, 834, 1190, 1230, 1220],
+        //     }, {
+        //         smooth: true,//曲线 默认折线
+        //         name: '光荣榜',
+        //         type: 'line',//线性
+        //         data: [820, 932, 901, 934, 1290, 1330, 1320],
+        //     }, {
+        //         smooth: true,//曲线
+        //         name: '成绩报告',
+        //         type: 'line',//线性
+        //         data: [220, 332, 401, 534, 690, 730, 820],
+        //     }]
+        // },
+
+        window.onresize = function () { //用于使echarts自适应高度和宽度
+            summaryBarChart.resize();
+            summaryPieChart.resize();
+        };
+
+        //监听轮播切换事件
+        carousel.on('change(Notice_carousel)', function (obj) { //Notice_carousel 来源于对应HTML容器的 lay-filter="Notice_carousel" 属性值
+            obj.index === 0 ? summaryBarChart.resize() : summaryPieChart.resize();
+            //console.log(obj.index); //当前条目的索引
+            //console.log(obj.prevIndex); //上一个条目的索引
+            //console.log(obj.item); //当前条目的元素对象
         });
     });
 </script>
