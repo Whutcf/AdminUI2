@@ -228,13 +228,31 @@ public class ForeignCountryServiceImpl implements ForeignCountryService {
             dataList3.add(summaryBarChartData.getCureTotal());
             dataList4.add(summaryBarChartData.getDeadTotal());
         }
+        // 在坐标轴上显示数字
+        Map<String,Object> textStyle = new HashMap<>(16);
+        textStyle.put("color","#1015E5");
+        textStyle.put("fontSize",8);
+        Map<String,Object> label = new HashMap<>(16);
+        label.put("show",true);
+        label.put("position","top");
+        label.put("textStyle",textStyle);
+        Map<String,Object> normal = new HashMap<>(16);
+        normal.put("label",label);
+        Map<String,Object> itemStyle = new HashMap<>(16);
+        itemStyle.put("normal",normal);
+
+
         seriesMap1.put("data", dataList1);
+        seriesMap1.put("itemStyle", itemStyle);
         seriesList.add(seriesMap1);
         seriesMap2.put("data", dataList2);
+        seriesMap2.put("itemStyle", itemStyle);
         seriesList.add(seriesMap2);
         seriesMap3.put("data", dataList3);
+        seriesMap3.put("itemStyle", itemStyle);
         seriesList.add(seriesMap3);
         seriesMap4.put("data", dataList4);
+        seriesMap4.put("itemStyle", itemStyle);
         seriesList.add(seriesMap4);
         jsonObject.put("xAxisList", xAxisList);
         jsonObject.put("seriesList", seriesList);

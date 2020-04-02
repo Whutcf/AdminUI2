@@ -394,6 +394,7 @@
                     , textAlign: 'center'
                 }], tooltip: {
                     trigger: 'item'//悬浮显示对比
+                    , formatter: "{a}<br/>{b} : {c} ({d}%)"
                 },
                 legend: {
                     orient: 'vertical',//类型垂直,默认水平
@@ -402,21 +403,25 @@
                 },
                 series: [
                     {
+                        name: '确诊人数占比',
                         type: 'pie',//饼状
                         radius: '60%',//圆的大小
                         center: ['28%', '50%'],
                         data: data.seriesList1
                     }, {
+                        name: '累计人数占比',
                         type: 'pie',//饼状
                         radius: '60%',//圆的大小
                         center: ['46%', '50%'],
                         data: data.seriesList2
                     }, {
+                        name: '治愈人数占比',
                         type: 'pie',//饼状
                         radius: '60%',//圆的大小
                         center: ['64%', '50%'],
                         data: data.seriesList3
                     }, {
+                        name: '死亡人数占比',
                         type: 'pie',//饼状
                         radius: '60%',//圆的大小
                         center: ['82%', '50%'],
