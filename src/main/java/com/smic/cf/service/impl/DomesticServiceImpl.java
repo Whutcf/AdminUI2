@@ -16,6 +16,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 /**
@@ -59,11 +62,14 @@ public class DomesticServiceImpl implements DomesticService {
                 // 保存省份历史数据
                 List<DomesticStatisticsTrendChartData> trendChartDataList = provinceCovid19.getDomesticStatisticsTrendChartDataList();
                 if (null != trendChartDataList && trendChartDataList.size() > 0) {
+                    LocalDate localDate = LocalDate.now();
                     for (DomesticStatisticsTrendChartData trendChartData : trendChartDataList) {
-                        int dateId = Integer.parseInt(trendChartData.getDateId());
-                        int planDateId = Integer.parseInt(DateUtils.getCurrentDateWithNumber())-1;
-                        // 只更新最近两天的数据
-                        if (dateId >= planDateId){
+                        String dateId = trendChartData.getDateId();
+                        LocalDate date = LocalDate.of(Integer.parseInt(dateId.substring(0, 4))
+                                , Integer.parseInt(dateId.substring(4, 6))
+                                , Integer.parseInt(dateId.substring(6, 8)));
+                        // 只更新最近前一天的数据 Period.between(date,localDate).getDays()<=1 他抓的是日期对应的天，与我们想要的不符合
+                        if (ChronoUnit.DAYS.between(date,localDate)<=1) {
                             LambdaQueryWrapper<DomesticStatisticsTrendChartData> queryWrapper = Wrappers.lambdaQuery();
                             queryWrapper.eq(DomesticStatisticsTrendChartData::getDateId, trendChartData.getDateId())
                                     .eq(DomesticStatisticsTrendChartData::getLocationId, trendChartData.getLocationId())
@@ -94,7 +100,7 @@ public class DomesticServiceImpl implements DomesticService {
                         } else {
                             LambdaQueryWrapper<CityCovid19> queryWrapper = Wrappers.lambdaQuery();
                             // 突然出现了-1的代码
-                            queryWrapper.nested(qw->qw.eq(CityCovid19::getLocationId, 0).or().eq(CityCovid19::getLocationId,-1))
+                            queryWrapper.nested(qw -> qw.eq(CityCovid19::getLocationId, 0).or().eq(CityCovid19::getLocationId, -1))
                                     .eq(CityCovid19::getCityName, city.getCityName())
                                     .eq(CityCovid19::getProvinceShortName, city.getProvinceShortName())
                                     .eq(CityCovid19::getProvinceId, city.getProvinceId());

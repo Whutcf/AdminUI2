@@ -16,17 +16,20 @@ import com.smic.cf.pojo.ForeignCountryCovid19;
 import com.smic.cf.pojo.ForeignStatisticsTrendChartData;
 import com.smic.cf.pojo.IncrVo;
 import com.smic.cf.service.ForeignCountryService;
-import com.smic.cf.util.DateUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static java.time.LocalDate.now;
 
 /**
  * @Description
@@ -61,8 +64,10 @@ public class ForeignCountryServiceImpl implements ForeignCountryService {
                 // 保存或更新当前区域数据
                 if (foreignCountryCovid19.getLocationId() != 0) {
                     if (!StringUtils.isEmpty(foreignCountryCovid19Mapper.selectById(foreignCountryCovid19.getLocationId()))) {
+                        foreignCountryCovid19.setDeadRate(foreignCountryCovid19.getDeadRate() + "%");
                         foreignCountryCovid19Mapper.updateById(foreignCountryCovid19);
                     } else {
+                        foreignCountryCovid19.setDeadRate(foreignCountryCovid19.getDeadRate() + "%");
                         foreignCountryCovid19Mapper.insert(foreignCountryCovid19);
                     }
                 } else {
@@ -75,11 +80,14 @@ public class ForeignCountryServiceImpl implements ForeignCountryService {
                     // 防止异常出现两笔以上的记录，防呆
                     List<ForeignCountryCovid19> foreignCountryCovid19Olds = foreignCountryCovid19Mapper.selectList(queryWrapper);
                     if (foreignCountryCovid19Olds.size() == 0) {
+                        foreignCountryCovid19.setDeadRate(foreignCountryCovid19.getDeadRate() + "%");
                         foreignCountryCovid19Mapper.insert(foreignCountryCovid19);
                     } else if (foreignCountryCovid19Olds.size() == 1) {
+                        foreignCountryCovid19.setDeadRate(foreignCountryCovid19.getDeadRate() + "%");
                         foreignCountryCovid19Mapper.update(foreignCountryCovid19, queryWrapper);
                     } else {
                         foreignCountryCovid19Mapper.delete(queryWrapper);
+                        foreignCountryCovid19.setDeadRate(foreignCountryCovid19.getDeadRate() + "%");
                         foreignCountryCovid19Mapper.insert(foreignCountryCovid19);
                     }
                 }
@@ -101,11 +109,17 @@ public class ForeignCountryServiceImpl implements ForeignCountryService {
                 // 更新历史数据
                 List<ForeignStatisticsTrendChartData> statisticsTrendChartDataList = foreignCountryCovid19.getStatisticsTrendChartDataList();
                 if (null != statisticsTrendChartDataList && statisticsTrendChartDataList.size() > 0) {
+                    LocalDate localDate = now();
                     for (ForeignStatisticsTrendChartData foreignStatisticsTrendChartData : statisticsTrendChartDataList) {
-                        // 历史数据只刷新最近两天的数据
-                        int dataId = Integer.parseInt(foreignStatisticsTrendChartData.getDateId());
-                        int planDateId = (Integer.parseInt(DateUtils.getCurrentDateWithNumber()) - 1);
-                        if (dataId >= planDateId) {
+                        String dateId = foreignStatisticsTrendChartData.getDateId();
+                        LocalDate date = LocalDate.of(Integer.parseInt(dateId.substring(0, 4))
+                                , Integer.parseInt(dateId.substring(4, 6))
+                                , Integer.parseInt(dateId.substring(6, 8)));
+                        // 历史数据只刷新前一天的数据
+                        // java8中主要使用Period、Duration，ChronoUnit
+                        // Period类方法getYears（），getMonths（）和getDays（）来计算.
+                        // ChronoUnit类可用于在单个时间单位内测量一段时间，例如天数或秒。between（）方法
+                        if (ChronoUnit.DAYS.between(date, localDate) <= 1) {
                             LambdaQueryWrapper<ForeignStatisticsTrendChartData> queryWrapper = new LambdaQueryWrapper<>();
                             queryWrapper.eq(ForeignStatisticsTrendChartData::getLocationId, foreignStatisticsTrendChartData.getLocationId())
                                     .eq(ForeignStatisticsTrendChartData::getCountryShortCode, foreignStatisticsTrendChartData.getCountryShortCode())
@@ -117,7 +131,7 @@ public class ForeignCountryServiceImpl implements ForeignCountryService {
                             } else if (trendChartData.size() == 1) {
                                 foreignStatisticTrendChartDataMapper.update(foreignStatisticsTrendChartData, queryWrapper);
                             } else {
-                                foreignStatisticTrendChartDataMapper.selectById(foreignStatisticsTrendChartData.getLocationId());
+                                foreignStatisticTrendChartDataMapper.deleteById(foreignStatisticsTrendChartData.getLocationId());
                                 foreignStatisticTrendChartDataMapper.insert(foreignStatisticsTrendChartData);
                             }
                         }
@@ -229,17 +243,17 @@ public class ForeignCountryServiceImpl implements ForeignCountryService {
             dataList4.add(summaryBarChartData.getDeadTotal());
         }
         // 在坐标轴上显示数字
-        Map<String,Object> textStyle = new HashMap<>(16);
-        textStyle.put("color","#1015E5");
-        textStyle.put("fontSize",8);
-        Map<String,Object> label = new HashMap<>(16);
-        label.put("show",true);
-        label.put("position","top");
-        label.put("textStyle",textStyle);
-        Map<String,Object> normal = new HashMap<>(16);
-        normal.put("label",label);
-        Map<String,Object> itemStyle = new HashMap<>(16);
-        itemStyle.put("normal",normal);
+        Map<String, Object> textStyle = new HashMap<>(16);
+        textStyle.put("color", "#1015E5");
+        textStyle.put("fontSize", 8);
+        Map<String, Object> label = new HashMap<>(16);
+        label.put("show", true);
+        label.put("position", "top");
+        label.put("textStyle", textStyle);
+        Map<String, Object> normal = new HashMap<>(16);
+        normal.put("label", label);
+        Map<String, Object> itemStyle = new HashMap<>(16);
+        itemStyle.put("normal", normal);
 
 
         seriesMap1.put("data", dataList1);
@@ -278,22 +292,22 @@ public class ForeignCountryServiceImpl implements ForeignCountryService {
         List<Map<String, Object>> seriesList4 = new ArrayList<>();
         for (SummaryBarChartData summaryBarChartData : summaryBarChartDataList) {
             legendList.add(summaryBarChartData.getContinents());
-            Map<String,Object> dataMap1 = new HashMap<>(16);
-            Map<String,Object> dataMap2 = new HashMap<>(16);
-            Map<String,Object> dataMap3 = new HashMap<>(16);
-            Map<String,Object> dataMap4 = new HashMap<>(16);
+            Map<String, Object> dataMap1 = new HashMap<>(16);
+            Map<String, Object> dataMap2 = new HashMap<>(16);
+            Map<String, Object> dataMap3 = new HashMap<>(16);
+            Map<String, Object> dataMap4 = new HashMap<>(16);
 
-            dataMap1.put("name",summaryBarChartData.getContinents());
-            dataMap1.put("value",summaryBarChartData.getCurrentConfirmedTotal());
+            dataMap1.put("name", summaryBarChartData.getContinents());
+            dataMap1.put("value", summaryBarChartData.getCurrentConfirmedTotal());
 
-            dataMap2.put("name",summaryBarChartData.getContinents());
-            dataMap2.put("value",summaryBarChartData.getConfirmedTotal());
+            dataMap2.put("name", summaryBarChartData.getContinents());
+            dataMap2.put("value", summaryBarChartData.getConfirmedTotal());
 
-            dataMap3.put("name",summaryBarChartData.getContinents());
-            dataMap3.put("value",summaryBarChartData.getCureTotal());
+            dataMap3.put("name", summaryBarChartData.getContinents());
+            dataMap3.put("value", summaryBarChartData.getCureTotal());
 
-            dataMap4.put("name",summaryBarChartData.getContinents());
-            dataMap4.put("value",summaryBarChartData.getDeadTotal());
+            dataMap4.put("name", summaryBarChartData.getContinents());
+            dataMap4.put("value", summaryBarChartData.getDeadTotal());
 
             seriesList1.add(dataMap1);
             seriesList2.add(dataMap2);
