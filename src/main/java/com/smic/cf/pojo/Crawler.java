@@ -8,11 +8,16 @@ package com.smic.cf.pojo;
  */
 public class Crawler {
     /**
-     * 爬虫的网址
+     * 爬虫的网址 丁香医生
      */
-    public static final String URL = "https://3g.dxy.cn/newh5/view/pneumonia";
+    public static final String URL1 = "https://3g.dxy.cn/newh5/view/pneumonia";
     /**
-     * json api数据的id
+     * 爬虫的网址 百度
+     */
+    public static final String URL2 = "https://voice.baidu.com/act/newpneumonia/newpneumonia?city=江苏-江苏";
+
+    /**
+     * 页面的ID选择器数据的id
      */
     public static final String ID = "id";
 
@@ -40,4 +45,6 @@ public class Crawler {
     public static final String TIME_LINE_REGEX_TEMPLATE = "\\[\\{.*\\}\\]";
     public static final String DOMESTIC_TIME_LINE_ATTRIBUTE="getTimelineService1";
 
+    public static final String BAIDU_DATA_REGEX_TEMPLATE = "\\\"component\\\".*\\}\\]\\}\\]";
+    public static final String BAIDU_DATA_ATTRIBUTE = "captain-config";
 }

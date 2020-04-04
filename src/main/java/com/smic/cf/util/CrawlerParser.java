@@ -3,10 +3,17 @@ package com.smic.cf.util;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.smic.cf.crawlerbaidu.dto.ComponentBean;
+import com.smic.cf.crawlerbaidu.dto.CrawlerBaidu;
+import com.smic.cf.crawlerbaidu.dto.TrendBean;
+import com.smic.cf.crawlerbaidu.dto.TrendListBean;
+import com.smic.cf.crawlerbaidu.pojo.Covid19TrendHist;
+import com.smic.cf.crawlerbaidu.service.serviceimpl.TrendServiceImpl;
 import com.smic.cf.pojo.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,6 +25,9 @@ import java.util.List;
  */
 @Slf4j
 public class CrawlerParser {
+
+    @Resource
+    private TrendServiceImpl trendService;
 
     /**
      * 解析国外基本数据
@@ -140,6 +150,5 @@ public class CrawlerParser {
         }
         return timeLines;
     }
-
 
 }

@@ -15,10 +15,8 @@
     <!-- 网站简介 -->
     <meta name="keywords" content="搜索关键字，以半角英文逗号隔开"/>
     <title>国外疫情</title>
-
     <!-- 公共样式 开始 -->
     <link rel="stylesheet" type="text/css" href="../../css/base.css">
-    <link rel="stylesheet" type="text/css" href="../../css/iconfont.css">
     <link rel="stylesheet" type="text/css" href="../../layui/css/layui.css">
     <script type="text/javascript" src="../../framework/jquery-1.11.3.min.js"></script>
     <script type="text/javascript" src="../../layui/layui.js"></script>
@@ -29,9 +27,8 @@
     <script src="../../framework/jquery.mCustomScrollbar.min.js"></script>
     <script src="../../framework/cframe.js"></script><!-- 仅供所有子页面使用 -->
     <!-- 公共样式 结束 -->
-    <link rel="stylesheet" type="text/css" href="../../css/reportForm.css">
+    <link rel="stylesheet" type="text/css" href="../../css/layuiCarousel.css">
 </head>
-
 <body>
 <div class="cBody">
     <div class="layui-tab-content" style="padding: 0 1px;">
@@ -54,16 +51,16 @@
                         </div>
                         <div class="layui-inline">
                             <a class="layui-btn layui-btn-normal"
-                               style="padding: 0 5px;border-color: #595959;color: #666666;background-color: #ecf9ff"
+                               style="padding: 0 5px;border-color: #1eb2a2;color: #666666;background-color: #BFFDE1"
                                id="search_submit"
                                data-type="reload"
                                lay-filter="reload_search_submit">查询</a>
                             <a class="layui-btn layui-btn-normal" id="searchResetBtn"
-                               style="padding: 0 5px;border-color: #595959;color: #666666;background-color: #ecf9ff"
+                               style="padding: 0 5px;border-color: #1eb2a2;color: #666666;background-color: #BFFDE1"
                                data-type="reload"
                                lay-filter="searchResetBtn">重置</a>
                             <a class="layui-btn layui-btn-normal" id="refresh"
-                               style="padding: 0 10px;border-color: #595959;color: #666666;background-color: #ecf9ff"
+                               style="padding: 0 10px;border-color: #1eb2a2;color: #666666;background-color: #BFFDE1"
                                lay-filter="refresh">刷新实时数据</a>
                         </div>
                     </div>
@@ -125,7 +122,7 @@
                         , {field: 'provinceName', title: '国家名称'}
                         , {field: 'countryShortCode', title: '英文简称'}
                         , {field: 'countryFullName', title: '英文全称'}
-                        , {field: 'currentConfirmedCount', title: '当前确诊', sort: true, style: "color:red;"}
+                        , {field: 'currentConfirmedCount', title: '当前确诊', sort: true, style: "color: #a3313b;"}
                         , {field: 'confirmedCount', title: '累计确诊', sort: true}
                         , {field: 'curedCount', title: '治愈病例', sort: true}
                         , {field: 'deadCount', title: '死亡病例', sort: true}
@@ -136,19 +133,19 @@
                 , done: function (res, curr, count) {
                     // 设置某一列头 data-field 指向你想要改变的列头的field 值
                     $(".layui-table-header .layui-table thead tr th[data-field='currentConfirmedCount'] ").css({
-                        'background-color': '#e57e82',
+                        'background-color': '#c23531',
                         'color': '#fff'
                     });
                     $(".layui-table-header .layui-table thead tr th[data-field='confirmedCount'] ").css({
-                        'background-color': '#a3313b',
+                        'background-color': '#2f4554',
                         'color': '#fff'
                     });
                     $(".layui-table-header .layui-table thead tr th[data-field='curedCount'] ").css({
-                        'background-color': '#8fa1b5',
+                        'background-color': '#61a0a8',
                         'color': '#fff'
                     });
                     $(".layui-table-header .layui-table thead tr th[data-field='deadCount'] ").css({
-                        'background-color': '#1eb2a2',
+                        'background-color': '#d48265',
                         'color': '#fff'
                     });
                 }, page: {
@@ -231,6 +228,7 @@
 
         // 搜索功能
         const active = {
+            // 重新加载
             reload: function () {
                 table.reload('foreignStatistics', {
                     where: {
@@ -295,6 +293,26 @@
                     , order: obj.type // 排序的方式,当前排序类型：desc（降序）、asc（升序）、null（空对象，默认排序）
                 }
             }); // foreignStatistics 对应的是table的id
+        });
+
+        // 查看历史数据
+        // 监听工具条
+        table.on('tool(foreignStatic)', function (obj) {
+            let data = obj.data;
+            if (obj.event === 'detail') {
+                let locationId = data.locationId;
+                let provinceName = data.provinceName;
+                console.log(locationId + ' ' + provinceName);
+                layer.open({
+                    type: 2 //Page层类型 1: 纯文本 2: 跳转页面
+                    , area: ['1200px', '600px']
+                    , title: provinceName + '疫情历史'
+                    , shade: 0.6 //遮罩透明度
+                    , maxmin: true //允许全屏最小化
+                    , anim: 1 //0-6的动画形式，-1不开启
+                    , content: 'foreignCovid19HistDetail.html?locationId=' + locationId
+                });
+            }
         });
 
         //建造轮播实例

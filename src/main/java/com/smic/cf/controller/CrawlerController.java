@@ -7,7 +7,6 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.smic.cf.pojo.Crawler;
 import com.smic.cf.pojo.ForeignCountryCovid19;
 import com.smic.cf.pojo.ProvinceCovid19;
-import com.smic.cf.schedual.SysCrawlerSchedule;
 import com.smic.cf.service.DomesticService;
 import com.smic.cf.service.ForeignCountryService;
 import com.smic.cf.util.*;
@@ -15,7 +14,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -36,19 +34,16 @@ public class CrawlerController {
 
     @GetMapping("/refresh")
     public ResultBean<String> refresh(){
-        log.info("{}开启手动刷新", DateUtils.getCurrentDateTime());
-        //获取页面数据
-        CrawlerUtils.getPage(Crawler.URL);
-        //提取页面数据（JSON格式）
-        String foreignCountryInformation = CrawlerUtils.getInformation(Crawler.FOREIGN_STATIC_INFORMATION_REGEX_TEMPLATE, Crawler.ID, Crawler.FOREIGN_STATIC_INFORMATION_ATTRIBUTE);
-        String domesticInformation = CrawlerUtils.getInformation(Crawler.DOMESTIC_STATIC_INFORMATION_REGEX_TEMPLATE, Crawler.ID, Crawler.DOMESTIC_STATIC_INFORMATION_ATTRIBUTE);
+        log.info("{}开启手动刷新, 数据源: {}", DateUtils.getCurrentDateTime(),Crawler.URL1);
+        String foreignCountryInformation = CrawlerUtils.getJsonString(Crawler.URL1, Crawler.FOREIGN_STATIC_INFORMATION_REGEX_TEMPLATE, Crawler.FOREIGN_STATIC_INFORMATION_ATTRIBUTE);
+        String domesticInformation = CrawlerUtils.getJsonString(Crawler.URL1,Crawler.DOMESTIC_STATIC_INFORMATION_REGEX_TEMPLATE, Crawler.DOMESTIC_STATIC_INFORMATION_ATTRIBUTE);
         //解析json数据
         List<ForeignCountryCovid19> foreignCountryCovid19List = CrawlerParser.parseForeignCountryInformation(foreignCountryInformation);
         List<ProvinceCovid19> provinceCovid19List = CrawlerParser.parseDomesticInformation(domesticInformation);
         //将解析的数据存入DB
         foreignCountryService.insertForeignCountryData(foreignCountryCovid19List);
         domesticService.insertDomesticData(provinceCovid19List);
-        log.info("{} 刷新结束", DateUtils.getCurrentDateTime());
+        log.info("{} 手动刷新结束, 数据源: {}", DateUtils.getCurrentDateTime(),Crawler.URL1);
         return ResultBeanUtil.success();
     }
 

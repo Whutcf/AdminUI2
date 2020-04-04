@@ -1,5 +1,6 @@
 package com.smic.cf.util;
 
+import com.smic.cf.pojo.Crawler;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -90,5 +91,22 @@ public class CrawlerUtils {
                 .timeout(10000).ignoreContentType(true).execute();
 
         return response.body();
+    }
+
+
+    /**
+     * 页面爬虫两步走
+     * @param url 爬虫网站
+     * @param regexTemplate 正则表达式
+     * @param attribute 匹配对象名称
+     * @return java.lang.String
+     * @author 蔡明涛
+     * @date 2020/4/4 20:57
+     */
+    public static String getJsonString(String url, String regexTemplate, String attribute) {
+        //获取页面数据
+        CrawlerUtils.getPage(url);
+        //提取页面数据（JSON格式）
+        return CrawlerUtils.getInformation(regexTemplate, Crawler.ID, attribute);
     }
 }

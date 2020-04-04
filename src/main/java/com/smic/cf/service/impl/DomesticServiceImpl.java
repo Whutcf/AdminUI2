@@ -9,7 +9,6 @@ import com.smic.cf.pojo.CityCovid19;
 import com.smic.cf.pojo.DomesticStatisticsTrendChartData;
 import com.smic.cf.pojo.ProvinceCovid19;
 import com.smic.cf.service.DomesticService;
-import com.smic.cf.util.DateUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,7 +16,6 @@ import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.time.LocalDate;
-import java.time.Period;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
