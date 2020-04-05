@@ -92,7 +92,7 @@ public class SysCrawlerSchedule {
      * @author 蔡明涛
      * @date 2020/4/4 20:47
      */
-    @Scheduled(cron = "0 0 10,20 * * ?")
+    @Scheduled(cron = "0 0 10,14,20 * * ?")
     public void getTrendHistData(){
         log.info("定时脚本开启，时间{},数据来源:{}", DateUtils.getCurrentDateTime(),Crawler.URL2);
         String information = CrawlerUtils.getJsonString(Crawler.URL2, Crawler.BAIDU_DATA_REGEX_TEMPLATE, Crawler.BAIDU_DATA_ATTRIBUTE);

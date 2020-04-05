@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,Chrome=1">
+    <!-- Google Chrome Frame也可以让IE用上Chrome的引擎: -->
+    <meta name="renderer" content="webkit">
+    <!--国产浏览器高速模式-->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="AdminUI2"/>
+    <title>国外疫情发展史</title>
+    <link rel="stylesheet" type="text/css" href="../../layui/css/layui.css">
+    <script type="text/javascript" src="../../layui/layui.js"></script>
+    <script type="text/javascript" src="../../framework/jquery-1.11.3.min.js"></script>
+    <script src="../../framework/jquery-ui-1.10.4.min.js"></script>
+    <script src="../../framework/jquery.mousewheel.min.js"></script>
+    <script src="../../framework/jquery.mCustomScrollbar.min.js"></script>
+    <script src="../../framework/cframe.js"></script><!-- 仅供所有子页面使用 -->
+    <!-- 修改layui的轮播图标显示在标题后 -->
+    <link rel="stylesheet" type="text/css" href="../../css/layuiCarousel.css">
+    <script type="text/javascript" src="../../echarts/echarts.js"></script>
+    <script type="text/javascript" src="../../js/foreignCovid19HistDetail.js" charset="UTF-8"></script>
+</head>
+<style>
+    .grid-demo {
+        text-align: center;
+        background-color: #f5f6f7;
+    }
+
+    .panel_word {
+        width: 60%;
+        display: inline-block;
+        float: bottom;
+        margin-top: 3px;
+        border: #40AFFE;
+    }
+
+    .panel_word span {
+        font-size: 25px;
+        display: block;
+        height: 30px;
+        line-height: 30px;
+    }
+
+    .grid-demo a cite {
+        font-size: 12px;
+        display: block;
+        font-style: normal;
+    }
+
+    /*layui 表头居中*/
+    .layui-table-view .layui-table th {
+        text-align: center;
+    }
+</style>
+<body>
+<!-- 该方法不生效 -->
+<!--&lt;!&ndash; 用来接受另一个页面传入的参数 &ndash;&gt;-->
+<!--<input type="hidden" name="locationId" th:value="${locationId}" id="locationId"/>-->
+<div class="layui-tab-content" style="padding: 0 1px;">
+    <div class="layui-tab-item layui-show">
+        <!-- 汇总显示区域 -->
+        <div class="layui-row layui-col-space15" style="padding: 1px 0 1px 0;margin: 2px 5px 2px 0;">
+            <div class="layui-col-xs12 layui-col-sm6 layui-col-md4 layui-col-lg3">
+                <div class="grid-demo">
+                    <div class="panel_word">
+                        <cite>现有确诊</cite>
+                        <span style="color: #e83132" id="currentConfirmedCount"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-col-xs12 layui-col-sm6 layui-col-md4 layui-col-lg3">
+                <div class="grid-demo">
+                    <div class="panel_word">
+                        <cite>累计确诊</cite>
+                        <span style="color: #ff6a57;" id="confirmedCount"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-col-xs12 layui-col-sm6 layui-col-md4 layui-col-lg3">
+                <div class="grid-demo">
+                    <div class="panel_word">
+                        <cite>累计治愈</cite>
+                        <span style="color: #10aeb5;" id="curedCount"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-col-xs12 layui-col-sm6 layui-col-md4 layui-col-lg3">
+                <div class="grid-demo">
+                    <div class="panel_word">
+                        <cite>累计死亡</cite>
+                        <span style="color: #4d5054;" id="deadCount"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- 表头工具栏 本来是打算做个日期筛选的，后台想想太傻比了，留着日后其他地方用吧！-->
+        <!--<div class="layui-row layui-col-space15" style="padding: 1px 0 1px 0;margin-top: 0;margin-bottom: 10px;">
+            <form class="layui-form layui-fluid" action="" style="padding: 0;height: 45px">
+                <div class="layui-form" style="margin: 0 0;padding: 1px 0 1px 0;">
+                    <div class="layui-form-item layui-inline layui-col-md3" style="margin-top: 10px;"></div>
+                    <div class="layui-form-item layui-inline layui-col-md3-offset3" style="margin-top: 10px;">
+                        <label class="layui-form-label" style="margin-left: 0;width: 60px">选择日期</label>
+                        <div class="layui-input-inline">
+                            <input type="text" class="layui-input" id="beginDate" placeholder="开始日期">
+                        </div>
+                        <div class="layui-input-inline">
+                            <input type="text" class="layui-input" id="endDate" placeholder="结束日期">
+                        </div>
+                        <div class="layui-inline">
+                            <a class="layui-btn layui-btn-normal"
+                               style="padding: 0 5px;border-color: #595959;color: #666666;background-color: #ecf9ff"
+                               id="search_submit"
+                               data-type="reload"
+                               lay-filter="reload_search_submit">查询</a>
+                            <a class="layui-btn layui-btn-normal" id="searchResetBtn"
+                               style="padding: 0 5px;border-color: #595959;color: #666666;background-color: #ecf9ff"
+                               data-type="reload"
+                               lay-filter="searchResetBtn">重置</a>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>-->
+        <!-- echarts -->
+        <!-- 为echarts准备一个具备大小的dom -->
+        <div class="layui-row layui-col-space1" style="height: auto;">
+            <div class="layui-col-md12" style="margin-top: 2px">
+                <div class="layui-card">
+<!--                    <div class="layui-card-header"-->
+<!--                         style="height: 30px;line-height: 30px;font-style: italic;font-size: 16px;">疫情图示-->
+<!--                    </div>-->
+                    <div class="layui-card-body">
+                        <div style="width: 100%;height:400px" id="covid19Chart"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- table -->
+        <div class="layui-row layui-col-space3" style="margin: auto 10px; height: 300px;text-align: center;">
+            <table class="layui-hide-sm" id="foreignStatistics" lay-skin="line" lay-filter="foreignStatic"></table>
+        </div>
+    </div>
+</div>
+</body>
+</html>

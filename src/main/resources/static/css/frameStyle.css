@@ -9,7 +9,7 @@ body{
 }
 .frameMenu .logo{
 	width: 100%;
-	height: 110px;
+	height: 90px;
 	padding: 20px 0;
 	overflow: hidden;
 	border-bottom: 1px solid #2c3441;
@@ -18,15 +18,15 @@ body{
 	-webkit-box-sizing:border-box; /* Safari */
 }
 .frameMenu .logo img{
-	width: 70px;
-	height: 70px;
+	width: 60px;
+	height: 60px;
 	background-color: #383838;
 	border-radius: 10px;
 	margin-left: 10px;
 	float: left;
 }
 .logoText{
-	height: 70px;
+	height: 60px;
 	margin-left: 10px;
 	float: left;
 	color: #bdc2c8;
@@ -114,17 +114,17 @@ body{
 /**frameTop**/
 .frameTop{
 	width: 100%;
-	height: 60px;
+	height: 30px;
 	background-color: #FFF;
 	position: relative;
 }
 .frameTop .jt{
 	position: absolute;
-    top: 24.5px;
+    top: 20px;
     left: -6px;
 }
 .frameTop .topMenu{
-	height: 60px;
+	height: 30px;
 	float: right;
 }
 .frameTop .topMenu ul{
@@ -136,8 +136,8 @@ body{
 }
 .frameTop .topMenu ul li a{
 	padding: 0 15px;
-	height: 60px;
-	line-height: 60px;
+	height: 30px;
+	line-height: 30px;
 	display: block;
 	color: #999;
 }
@@ -157,7 +157,6 @@ body{
 /**frameMain**/
 .frameMain{
 	width: 100%;
-	height: 60px;
 	border-left: 2px solid #1AA094;
 	box-sizing:border-box;
 	-moz-box-sizing:border-box; /* Firefox */
@@ -165,7 +164,7 @@ body{
 }
 .frameMain .title{
 	width: 100%;
-	height: 40px;
+	height: 36px;
 	background-color: #eee;
 }
 .frameMain .title span{

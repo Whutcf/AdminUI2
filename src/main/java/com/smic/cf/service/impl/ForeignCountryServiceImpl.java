@@ -210,10 +210,10 @@ public class ForeignCountryServiceImpl implements ForeignCountryService {
         JSONObject jsonObject = new JSONObject();
 
         List<String> legendList = new ArrayList<>();
-        legendList.add("当前确诊");
-        legendList.add("累计确诊");
-        legendList.add("治愈人数");
-        legendList.add("死亡人数");
+        legendList.add(CrawlerConstants.CURRENT_CONFIRMED_COUNT_NAME);
+        legendList.add(CrawlerConstants.CONFIRMED_COUNT_NAME);
+        legendList.add(CrawlerConstants.CURED_COUNT_NAME);
+        legendList.add(CrawlerConstants.DEAD_COUNT_NAME);
         jsonObject.put("legendList", legendList);
 
         List<String> xAxisList = new ArrayList<>();
@@ -226,14 +226,14 @@ public class ForeignCountryServiceImpl implements ForeignCountryService {
         List<Integer> dataList2 = new ArrayList<>();
         List<Integer> dataList3 = new ArrayList<>();
         List<Integer> dataList4 = new ArrayList<>();
-        seriesMap1.put("name", "当前确诊");
-        seriesMap1.put("type", "bar");
-        seriesMap2.put("name", "累计确诊");
-        seriesMap2.put("type", "bar");
-        seriesMap3.put("name", "治愈人数");
-        seriesMap3.put("type", "bar");
-        seriesMap4.put("name", "死亡人数");
-        seriesMap4.put("type", "bar");
+        seriesMap1.put(CrawlerConstants.ECHARTS_NAME, CrawlerConstants.CURRENT_CONFIRMED_COUNT_NAME);
+        seriesMap1.put(CrawlerConstants.ECHARTS_TYPE, CrawlerConstants.ECHARTS_BAR);
+        seriesMap2.put(CrawlerConstants.ECHARTS_NAME, CrawlerConstants.CONFIRMED_COUNT_NAME);
+        seriesMap2.put(CrawlerConstants.ECHARTS_TYPE, CrawlerConstants.ECHARTS_BAR);
+        seriesMap3.put(CrawlerConstants.ECHARTS_NAME, CrawlerConstants.CURED_COUNT_NAME);
+        seriesMap3.put(CrawlerConstants.ECHARTS_TYPE, CrawlerConstants.ECHARTS_BAR);
+        seriesMap4.put(CrawlerConstants.ECHARTS_NAME, CrawlerConstants.DEAD_COUNT_NAME);
+        seriesMap4.put(CrawlerConstants.ECHARTS_TYPE, CrawlerConstants.ECHARTS_BAR);
         // 获取横轴和对应的数据
         for (SummaryBarChartData summaryBarChartData : summaryBarChartDataList) {
             xAxisList.add(summaryBarChartData.getContinents());
@@ -256,17 +256,17 @@ public class ForeignCountryServiceImpl implements ForeignCountryService {
         itemStyle.put("normal", normal);
 
 
-        seriesMap1.put("data", dataList1);
-        seriesMap1.put("itemStyle", itemStyle);
+        seriesMap1.put(CrawlerConstants.ECHARTS_DATA, dataList1);
+        seriesMap1.put(CrawlerConstants.ECHARTS_ITEM_STYLE, itemStyle);
         seriesList.add(seriesMap1);
-        seriesMap2.put("data", dataList2);
-        seriesMap2.put("itemStyle", itemStyle);
+        seriesMap2.put(CrawlerConstants.ECHARTS_DATA, dataList2);
+        seriesMap2.put(CrawlerConstants.ECHARTS_ITEM_STYLE, itemStyle);
         seriesList.add(seriesMap2);
-        seriesMap3.put("data", dataList3);
-        seriesMap3.put("itemStyle", itemStyle);
+        seriesMap3.put(CrawlerConstants.ECHARTS_DATA, dataList3);
+        seriesMap3.put(CrawlerConstants.ECHARTS_ITEM_STYLE, itemStyle);
         seriesList.add(seriesMap3);
-        seriesMap4.put("data", dataList4);
-        seriesMap4.put("itemStyle", itemStyle);
+        seriesMap4.put(CrawlerConstants.ECHARTS_DATA, dataList4);
+        seriesMap4.put(CrawlerConstants.ECHARTS_ITEM_STYLE, itemStyle);
         seriesList.add(seriesMap4);
         jsonObject.put("xAxisList", xAxisList);
         jsonObject.put("seriesList", seriesList);
@@ -297,17 +297,17 @@ public class ForeignCountryServiceImpl implements ForeignCountryService {
             Map<String, Object> dataMap3 = new HashMap<>(16);
             Map<String, Object> dataMap4 = new HashMap<>(16);
 
-            dataMap1.put("name", summaryBarChartData.getContinents());
-            dataMap1.put("value", summaryBarChartData.getCurrentConfirmedTotal());
+            dataMap1.put(CrawlerConstants.ECHARTS_NAME, summaryBarChartData.getContinents());
+            dataMap1.put(CrawlerConstants.ECHARTS_VALUE, summaryBarChartData.getCurrentConfirmedTotal());
 
-            dataMap2.put("name", summaryBarChartData.getContinents());
-            dataMap2.put("value", summaryBarChartData.getConfirmedTotal());
+            dataMap2.put(CrawlerConstants.ECHARTS_NAME, summaryBarChartData.getContinents());
+            dataMap2.put(CrawlerConstants.ECHARTS_VALUE, summaryBarChartData.getConfirmedTotal());
 
-            dataMap3.put("name", summaryBarChartData.getContinents());
-            dataMap3.put("value", summaryBarChartData.getCureTotal());
+            dataMap3.put(CrawlerConstants.ECHARTS_NAME, summaryBarChartData.getContinents());
+            dataMap3.put(CrawlerConstants.ECHARTS_VALUE, summaryBarChartData.getCureTotal());
 
-            dataMap4.put("name", summaryBarChartData.getContinents());
-            dataMap4.put("value", summaryBarChartData.getDeadTotal());
+            dataMap4.put(CrawlerConstants.ECHARTS_NAME, summaryBarChartData.getContinents());
+            dataMap4.put(CrawlerConstants.ECHARTS_VALUE, summaryBarChartData.getDeadTotal());
 
             seriesList1.add(dataMap1);
             seriesList2.add(dataMap2);
@@ -320,5 +320,34 @@ public class ForeignCountryServiceImpl implements ForeignCountryService {
         jsonObject.put("seriesList3", seriesList3);
         jsonObject.put("seriesList4", seriesList4);
         return jsonObject;
+    }
+
+    /**
+     * 根据Id找对象
+     *
+     * @param locationId 地理位置Id
+     * @return com.smic.cf.pojo.ForeignCountryCovid19
+     * @author 蔡明涛
+     * @date 2020/4/5 1:18
+     */
+    @Override
+    public ForeignCountryCovid19 getForeignCountryById(Long locationId) {
+        return foreignCountryCovid19Mapper.selectById(locationId);
+    }
+
+    /**
+     * 根据Id找对象
+     *
+     * @param locationId 地理位置
+     * @return java.util.List<com.smic.cf.pojo.ForeignStatisticsTrendChartData>
+     * @author 蔡明涛
+     * @date 2020/4/5 1:24
+     */
+    @Override
+    public List<ForeignStatisticsTrendChartData> getTrendChartDataList(Long locationId) {
+        LambdaQueryWrapper<ForeignStatisticsTrendChartData> queryWrapper = Wrappers.lambdaQuery();
+        queryWrapper.eq(ForeignStatisticsTrendChartData::getLocationId, locationId)
+                .orderByDesc(ForeignStatisticsTrendChartData::getDateId);
+        return foreignStatisticTrendChartDataMapper.selectList(queryWrapper);
     }
 }

@@ -4,7 +4,7 @@ $(function(){
 	$(window).resize(function(){
 		init();
 	});
-	
+
 	//菜单
 	$(".menuFA").click(function(){
 		menuFAClick($(this));
@@ -85,7 +85,7 @@ function init(){
 	var win_h = $(window).height();
 	var win_w = $(window).width();
 	var frameMenuW = $(".frameMenu").width();
-	var logoH = 110;
+	var logoH = 90;
 	var frameTopH = $(".frameTop").height();
 	
 	$(".frameMenu").height(win_h);

@@ -44,8 +44,8 @@
 			<div class="logo">
 				<img src="images/logo.png" />
 				<div class="logoText">
-					<h1>逗你玩呢</h1>
-					<p>Just joke</p>
+					<h1>练习项目</h1>
+					<p>For Fun</p>
 				</div>
 			</div>
 			<div class="menu">
@@ -56,8 +56,8 @@
 					<li>
 						<a class="menuFA" href="javascript:void(0)"><i class="iconfont icon-icon left"></i>关注疫情<i class="iconfont icon-dajiantouyou right"></i></a>
 						<dl>
-							<dt><a href="javascript:void(0)" onclick="menuCAClick('tgls/reportForm/reportForm1',this)">国内疫情</a></dt>
-							<dt><a href="javascript:void(0)" onclick="menuCAClick('tgls/reportForm/foreignCovid19',this)">国外疫情</a></dt>
+							<dt><a href="javascript:void(0)" onclick="menuCAClick('tgls/reportForm/reportForm1',this)">中国疫情</a></dt>
+							<dt><a href="javascript:void(0)" onclick="menuCAClick('tgls/reportForm/foreignCovid19',this)">全球疫情</a></dt>
 						</dl>
 					</li>
 					<li>
@@ -112,7 +112,7 @@
 		<div class="main">
 			<!-- 头部栏 - 开始 -->
 			<div class="frameTop">
-				<img class="jt" src="images/top_jt.png" />
+				<img class="jt" src="images/top_jt.png" id="animation-left-nav"/>
 				<div class="topMenu">
 					<ul th:if="${session?.userinfo}">
 						<li th:switch="${session?.userinfo?.userName}">
@@ -147,10 +147,10 @@
 			<!-- 核心区域 - 开始 -->
 			<div class="frameMain">
 				<div class="title" id="frameMainTitle">
-					<span><i class="iconfont icon-xianshiqi"></i>后台首页</span>
+					<span><i class="iconfont icon-xianshiqi"></i>全球疫情</span>
 				</div>
 				<div class="con">
-					<iframe id="mainIframe" src="tgls/qdAPI" scrolling="no"></iframe>
+					<iframe id="mainIframe" src="tgls/reportForm/foreignCovid19" scrolling="no"></iframe>
 				</div>
 			</div>
 			<!-- 核心区域 - 结束 -->

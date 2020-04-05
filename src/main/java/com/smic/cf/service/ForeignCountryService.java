@@ -3,6 +3,7 @@ package com.smic.cf.service;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.smic.cf.pojo.ForeignCountryCovid19;
+import com.smic.cf.pojo.ForeignStatisticsTrendChartData;
 
 import java.util.List;
 
@@ -67,4 +68,22 @@ public interface ForeignCountryService {
      * @date 2020/4/3 2:02
      */
     JSONObject getSummaryPieChartData();
+
+    /**
+     * 根据Id找对象
+     * @param locationId 地理位置Id
+     * @return com.smic.cf.pojo.ForeignCountryCovid19
+     * @author 蔡明涛
+     * @date 2020/4/5 1:18
+     */
+    ForeignCountryCovid19 getForeignCountryById(Long locationId);
+
+    /**
+     * 根据Id找对象
+     * @param locationId 地理位置id
+     * @return java.util.List<com.smic.cf.pojo.ForeignStatisticsTrendChartData>
+     * @author 蔡明涛
+     * @date 2020/4/5 1:24
+     */
+    List<ForeignStatisticsTrendChartData> getTrendChartDataList(Long locationId);
 }
