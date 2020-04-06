@@ -1,22 +1,14 @@
 package com.smic.cf;
 
-import com.smic.cf.pojo.Crawler;
-import com.smic.cf.pojo.DomesticTimeLine;
-import com.smic.cf.pojo.ForeignCountryCovid19;
-import com.smic.cf.pojo.ProvinceCovid19;
 import com.smic.cf.service.DomesticService;
 import com.smic.cf.service.ForeignCountryService;
 import com.smic.cf.service.TimeLineService;
-import com.smic.cf.service.impl.ForeignCountryServiceImpl;
-import com.smic.cf.util.CrawlerParser;
-import com.smic.cf.util.CrawlerUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.annotation.Resource;
-import java.util.List;
 
 /**
  * @Description TODO

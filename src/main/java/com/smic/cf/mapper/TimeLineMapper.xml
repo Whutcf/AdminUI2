@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.smic.cf.mapper.TimeLineMapper">
+
+    <select id="getThreeDaysData" resultType="com.smic.cf.entities.pojo.TimeLine">
+        select *
+        from adminui.sys_time_line
+        where pub_date > date_format(date_sub(now(), interval 2 day), '%Y-%m-%d %H:%i:%s')
+        order by pub_date desc
+    </select>
+    <select id="getThreeDaysStr" resultType="java.lang.String">
+        select substring(pub_date, 1, 10) date
+        from adminui.sys_time_line
+        where pub_date > date_format(date_sub(now(), interval 2 day), '%Y-%m-%d %H:%i:%s')
+        group by date
+        order by date desc;
+    </select>
+
+</mapper>

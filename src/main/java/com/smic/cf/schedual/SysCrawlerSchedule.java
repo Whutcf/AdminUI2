@@ -2,10 +2,10 @@ package com.smic.cf.schedual;
 
 import com.smic.cf.crawlerbaidu.pojo.Covid19TrendHist;
 import com.smic.cf.crawlerbaidu.service.serviceimpl.TrendServiceImpl;
-import com.smic.cf.pojo.Crawler;
-import com.smic.cf.pojo.DomesticTimeLine;
-import com.smic.cf.pojo.ForeignCountryCovid19;
-import com.smic.cf.pojo.ProvinceCovid19;
+import com.smic.cf.entities.pojo.Crawler;
+import com.smic.cf.entities.pojo.TimeLine;
+import com.smic.cf.entities.pojo.ForeignCountryCovid19;
+import com.smic.cf.entities.pojo.ProvinceCovid19;
 import com.smic.cf.service.DomesticService;
 import com.smic.cf.service.ForeignCountryService;
 import com.smic.cf.service.TimeLineService;
@@ -77,11 +77,11 @@ public class SysCrawlerSchedule {
     public void getTimeLineData() {
         log.info("定时脚本开启，时间{},数据来源:{}", DateUtils.getCurrentDateTime(),Crawler.URL1);
         //获取页面数据
-        String domesticTimeLine = CrawlerUtils.getJsonString(Crawler.URL1, Crawler.TIME_LINE_REGEX_TEMPLATE, Crawler.DOMESTIC_TIME_LINE_ATTRIBUTE);
+        String timeline = CrawlerUtils.getJsonString(Crawler.URL1, Crawler.TIME_LINE_REGEX_TEMPLATE, Crawler.DOMESTIC_TIME_LINE_ATTRIBUTE);
         //解析json数据
-        List<DomesticTimeLine> domesticTimeLineList = CrawlerParser.parseDomesticTimelineInformation(domesticTimeLine);
+        List<TimeLine> timelines = CrawlerParser.parseDomesticTimelineInformation(timeline);
         // 存入DB
-        timeLineService.saveOrUpdateBatch(domesticTimeLineList);
+        timeLineService.saveOrUpdateBatch(timelines);
 
         log.info("定时脚本结束，时间{},数据来源:{}", DateUtils.getCurrentDateTime(),Crawler.URL1);
     }

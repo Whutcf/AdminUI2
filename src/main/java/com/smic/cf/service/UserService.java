@@ -2,7 +2,7 @@ package com.smic.cf.service;
 
 import java.util.List;
 
-import com.smic.cf.pojo.User;
+import com.smic.cf.entities.pojo.User;
 import com.smic.cf.util.Result;
 
 public interface UserService {

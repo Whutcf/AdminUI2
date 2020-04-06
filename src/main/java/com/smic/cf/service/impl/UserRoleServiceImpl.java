@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.smic.cf.pojo.UserRole;
+import com.smic.cf.entities.pojo.UserRole;
 import com.smic.cf.mapper.UserRoleMapper;
 import com.smic.cf.service.UserRoleService;
 

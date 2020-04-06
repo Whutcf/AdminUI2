@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.smic.cf.pojo.User;
+import com.smic.cf.entities.pojo.User;
 import com.smic.cf.service.UserService;
 
 import lombok.extern.slf4j.Slf4j;

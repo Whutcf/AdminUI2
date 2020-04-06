@@ -7,11 +7,10 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.smic.cf.constants.CrawlerConstants;
 import com.smic.cf.crawlerbaidu.pojo.Covid19TrendHist;
 import com.smic.cf.crawlerbaidu.service.TrendService;
-import com.smic.cf.crawlerbaidu.service.serviceimpl.TrendServiceImpl;
-import com.smic.cf.pojo.Crawler;
-import com.smic.cf.pojo.ForeignCountryCovid19;
-import com.smic.cf.pojo.ForeignStatisticsTrendChartData;
-import com.smic.cf.pojo.ProvinceCovid19;
+import com.smic.cf.entities.pojo.Crawler;
+import com.smic.cf.entities.pojo.ForeignCountryCovid19;
+import com.smic.cf.entities.pojo.ForeignStatisticsTrendChartData;
+import com.smic.cf.entities.pojo.ProvinceCovid19;
 import com.smic.cf.service.DomesticService;
 import com.smic.cf.service.ForeignCountryService;
 import com.smic.cf.util.*;
@@ -143,7 +142,7 @@ public class CrawlerController {
     /**
      *  获取该地区的疫情历史数据 用于前台桌面展示
      * @param locationId 地理位置
-     * @return com.smic.cf.util.ResultBean<java.util.List<com.smic.cf.pojo.ForeignStatisticsTrendChartData>>
+     * @return com.smic.cf.util.ResultBean<java.util.List<com.smic.cf.entitis.pojo.ForeignStatisticsTrendChartData>>
      * @author 蔡明涛
      * @date 2020/4/5 20:52
      */

@@ -1,6 +1,6 @@
 package com.smic.cf.service;
 
-import com.smic.cf.pojo.ProvinceCovid19;
+import com.smic.cf.entities.pojo.ProvinceCovid19;
 
 import java.util.List;
 

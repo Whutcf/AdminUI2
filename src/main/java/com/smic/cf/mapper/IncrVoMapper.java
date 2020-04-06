@@ -1,7 +1,7 @@
 package com.smic.cf.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.smic.cf.pojo.IncrVo;
+import com.smic.cf.entities.pojo.IncrVo;
 import org.apache.ibatis.annotations.Mapper;
 
 /**

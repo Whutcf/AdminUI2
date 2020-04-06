@@ -2,8 +2,8 @@ package com.smic.cf.service;
 
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.smic.cf.pojo.ForeignCountryCovid19;
-import com.smic.cf.pojo.ForeignStatisticsTrendChartData;
+import com.smic.cf.entities.pojo.ForeignCountryCovid19;
+import com.smic.cf.entities.pojo.ForeignStatisticsTrendChartData;
 
 import java.util.List;
 
@@ -30,7 +30,7 @@ public interface ForeignCountryService {
      * @param provinceName 国家名
      * @param field 排序的栏位
      * @param order 排序的顺序 ASE，null，DESC
-     * @return com.baomidou.mybatisplus.core.metadata.IPage<com.smic.cf.pojo.ForeignCountryCovid19>
+     * @return com.baomidou.mybatisplus.core.metadata.IPage<com.smic.cf.entitis.pojo.ForeignCountryCovid19>
      * @author 蔡明涛
      * @date 2020/3/29 16:34
      */
@@ -72,7 +72,7 @@ public interface ForeignCountryService {
     /**
      * 根据Id找对象
      * @param locationId 地理位置Id
-     * @return com.smic.cf.pojo.ForeignCountryCovid19
+     * @return com.smic.cf.entitis.pojo.ForeignCountryCovid19
      * @author 蔡明涛
      * @date 2020/4/5 1:18
      */
@@ -81,7 +81,7 @@ public interface ForeignCountryService {
     /**
      * 根据Id找对象
      * @param locationId 地理位置id
-     * @return java.util.List<com.smic.cf.pojo.ForeignStatisticsTrendChartData>
+     * @return java.util.List<com.smic.cf.entitis.pojo.ForeignStatisticsTrendChartData>
      * @author 蔡明涛
      * @date 2020/4/5 1:24
      */

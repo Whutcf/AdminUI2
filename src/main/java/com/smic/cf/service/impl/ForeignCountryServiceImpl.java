@@ -8,13 +8,13 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.smic.cf.constants.CrawlerConstants;
 import com.smic.cf.constants.SortItem;
-import com.smic.cf.dto.SummaryBarChartData;
+import com.smic.cf.entities.dto.SummaryBarChartData;
 import com.smic.cf.mapper.ForeignCountryCovid19Mapper;
 import com.smic.cf.mapper.ForeignStatisticTrendChartDataMapper;
 import com.smic.cf.mapper.IncrVoMapper;
-import com.smic.cf.pojo.ForeignCountryCovid19;
-import com.smic.cf.pojo.ForeignStatisticsTrendChartData;
-import com.smic.cf.pojo.IncrVo;
+import com.smic.cf.entities.pojo.ForeignCountryCovid19;
+import com.smic.cf.entities.pojo.ForeignStatisticsTrendChartData;
+import com.smic.cf.entities.pojo.IncrVo;
 import com.smic.cf.service.ForeignCountryService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -150,7 +150,7 @@ public class ForeignCountryServiceImpl implements ForeignCountryService {
      * @param provinceName 国家名
      * @param field        排序的栏位
      * @param order        排序的顺序 ASE，null，DESC
-     * @return com.baomidou.mybatisplus.core.metadata.IPage<com.smic.cf.pojo.ForeignCountryCovid19>
+     * @return com.baomidou.mybatisplus.core.metadata.IPage<com.smic.cf.entitis.pojo.ForeignCountryCovid19>
      * @author 蔡明涛
      * @date 2020/3/29 16:34
      */
@@ -326,7 +326,7 @@ public class ForeignCountryServiceImpl implements ForeignCountryService {
      * 根据Id找对象
      *
      * @param locationId 地理位置Id
-     * @return com.smic.cf.pojo.ForeignCountryCovid19
+     * @return com.smic.cf.entitis.pojo.ForeignCountryCovid19
      * @author 蔡明涛
      * @date 2020/4/5 1:18
      */
@@ -339,7 +339,7 @@ public class ForeignCountryServiceImpl implements ForeignCountryService {
      * 根据Id找对象
      *
      * @param locationId 地理位置
-     * @return java.util.List<com.smic.cf.pojo.ForeignStatisticsTrendChartData>
+     * @return java.util.List<com.smic.cf.entitis.pojo.ForeignStatisticsTrendChartData>
      * @author 蔡明涛
      * @date 2020/4/5 1:24
      */

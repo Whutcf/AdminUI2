@@ -8,8 +8,8 @@ import org.apache.ibatis.annotations.Param;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
-import com.smic.cf.pojo.User;
-import com.smic.cf.pojo.UserRole;
+import com.smic.cf.entities.pojo.User;
+import com.smic.cf.entities.pojo.UserRole;
 
 @Mapper
 public interface UserRoleMapper extends BaseMapper<UserRole> {

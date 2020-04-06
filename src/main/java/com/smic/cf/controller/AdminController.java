@@ -15,9 +15,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.smic.cf.pojo.Role;
-import com.smic.cf.pojo.User;
-import com.smic.cf.pojo.UserRole;
+import com.smic.cf.entities.pojo.Role;
+import com.smic.cf.entities.pojo.User;
+import com.smic.cf.entities.pojo.UserRole;
 import com.smic.cf.service.RoleService;
 import com.smic.cf.service.UserRoleService;
 import com.smic.cf.service.UserService;

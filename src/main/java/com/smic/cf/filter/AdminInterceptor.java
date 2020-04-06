@@ -8,10 +8,13 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
-import com.smic.cf.pojo.User;
+import com.smic.cf.entities.pojo.User;
 
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * @author 蔡明涛
+ */
 @Component
 @Slf4j
 public class AdminInterceptor extends HandlerInterceptorAdapter {

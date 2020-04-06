@@ -6,6 +6,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * @author 蔡明涛
+ */
 @Controller
 @Slf4j
 @RequestMapping("tgls/goodsManage")

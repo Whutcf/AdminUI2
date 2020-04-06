@@ -7,8 +7,8 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.smic.cf.pojo.Role;
-import com.smic.cf.pojo.User;
+import com.smic.cf.entities.pojo.Role;
+import com.smic.cf.entities.pojo.User;
 
 /**
  * @author 蔡明涛

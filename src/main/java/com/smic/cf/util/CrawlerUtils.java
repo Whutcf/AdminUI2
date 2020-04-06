@@ -1,6 +1,6 @@
 package com.smic.cf.util;
 
-import com.smic.cf.pojo.Crawler;
+import com.smic.cf.entities.pojo.Crawler;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;

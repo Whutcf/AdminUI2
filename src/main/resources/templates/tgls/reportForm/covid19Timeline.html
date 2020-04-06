@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,Chrome=1">
+    <!-- Google Chrome Frame也可以让IE用上Chrome的引擎: -->
+    <meta name="renderer" content="webkit">
+    <!--国产浏览器高速模式-->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="AdminUI2"/>
+    <title>疫情追踪</title>
+    <!-- 公共样式 开始 -->
+    <link rel="stylesheet" type="text/css" href="../../css/base.css">
+    <link rel="stylesheet" type="text/css" href="../../layui/css/layui.css">
+    <link rel="stylesheet" type="text/css" href="../../css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="../../css/animate.min.css">
+    <script type="text/javascript" src="../../framework/jquery-1.11.3.min.js"></script>
+    <script type="text/javascript" src="../../layui/layui.js"></script>
+    <!-- 滚动条插件 -->
+    <link rel="stylesheet" type="text/css" href="../../css/jquery.mCustomScrollbar.css">
+    <script src="../../framework/jquery-ui-1.10.4.min.js"></script>
+    <script src="../../framework/jquery.mousewheel.min.js"></script>
+    <script src="../../framework/jquery.mCustomScrollbar.min.js"></script>
+    <script src="../../framework/cframe.js"></script><!-- 仅供所有子页面使用 -->
+    <link rel="stylesheet" type="text/css" href="../../css/timeline.css">
+</head>
+<body>
+<div class="timeline-box shadow">
+    <div class="timeline-main">
+        <h1><i class="fa fa-clock-o"></i><strong>疫情追踪</strong></h1>
+        <div class="timeline-line"></div>
+        <div class="timeline-datetime" th:each="timeline,state:${timelineList}">
+            <h2><a class="yearToggle" th:text="${timeline.date}"></a><i class="fa fa-caret-down fa-fw"></i></h2>
+            <div class="timeline-date">
+                <ul th:each="info,infostat:${timeline.info}">
+                    <li>
+                        <div class="h4 animated fadeInLeft">
+                            <p class="time" th:text="${info.time}"></p><br>
+                            <span th:text="${info.infoSource}"></span>
+                        </div>
+                        <p class="dot-circle animated "><i class="fa fa-dot-circle-o"></i></p>
+                        <div class="content animated fadeInRight">
+                            <div class="layui-timeline-title">
+                                <h3>
+                                    <a th:href="${info.sourceUrl}" th:text="${info.title}" target="_blank"></a>
+                                </h3>
+                            </div>
+                            <span th:text="${info.content}">
+                            </span>
+                        </div>
+                        <div class="clear"></div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <h1 style="padding-top:4px;padding-bottom:2px;margin-top:40px;"><i class="fa fa-hourglass-end"></i>THE END</h1>
+    </div>
+</div>
+</body>
+<script type="text/javascript">
+    //页面滚动条失效了 所以出此下策
+    $(function () {
+        window.parent.document.getElementById("mainIframe").scrolling = 'yes';
+    })
+</script>
+</html>

@@ -2,7 +2,7 @@ package com.smic.cf.service;
 
 import java.util.List;
 
-import com.smic.cf.pojo.UserRole;
+import com.smic.cf.entities.pojo.UserRole;
 
 /**
  * @Description 用户角色处理接口

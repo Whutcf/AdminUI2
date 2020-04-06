@@ -3,13 +3,8 @@ package com.smic.cf.util;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.smic.cf.crawlerbaidu.dto.ComponentBean;
-import com.smic.cf.crawlerbaidu.dto.CrawlerBaidu;
-import com.smic.cf.crawlerbaidu.dto.TrendBean;
-import com.smic.cf.crawlerbaidu.dto.TrendListBean;
-import com.smic.cf.crawlerbaidu.pojo.Covid19TrendHist;
 import com.smic.cf.crawlerbaidu.service.serviceimpl.TrendServiceImpl;
-import com.smic.cf.pojo.*;
+import com.smic.cf.entities.pojo.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 
@@ -33,7 +28,7 @@ public class CrawlerParser {
      * 解析国外基本数据
      *
      * @param foreignCountryInformation json字符串
-     * @return java.util.List<com.smic.cf.pojo.ForeignCountryCovid19Info>
+     * @return java.util.List<com.smic.cf.entitis.pojo.ForeignCountryCovid19Info>
      * @author 蔡明涛
      * @date 2020/3/28 18:14
      */
@@ -85,7 +80,7 @@ public class CrawlerParser {
     /**
      * 国内各省数据集合
      * @param domesticInformation json字符串
-     * @return java.util.List<com.smic.cf.pojo.ProvinceCovid19>
+     * @return java.util.List<com.smic.cf.entitis.pojo.ProvinceCovid19>
      * @author 蔡明涛
      * @date 2020/3/28 20:01
      */
@@ -136,15 +131,15 @@ public class CrawlerParser {
     /**
      * 获取国内时间线信息
      * @param timeLineInformation 时间线解析内容
-     * @return java.util.List<com.smic.cf.pojo.DomesticTimeLine>
+     * @return java.util.List<com.smic.cf.entitis.pojo.DomesticTimeLine>
      * @author 蔡明涛
      * @date 2020/3/29 10:28
      */
-    public static List<DomesticTimeLine> parseDomesticTimelineInformation(String timeLineInformation) {
-        List<DomesticTimeLine> timeLines = new ArrayList<>();
+    public static List<TimeLine> parseDomesticTimelineInformation(String timeLineInformation) {
+        List<TimeLine> timeLines = new ArrayList<>();
         JSONArray jsonArray = JSON.parseArray(timeLineInformation);
         for (Object jsonObject : jsonArray) {
-            DomesticTimeLine timeLine = JSON.toJavaObject((JSON) jsonObject, DomesticTimeLine.class);
+            TimeLine timeLine = JSON.toJavaObject((JSON) jsonObject, TimeLine.class);
             timeLine.setPubDate(DateUtils.getDate(Long.parseLong(timeLine.getPubDate())));
             timeLines.add(timeLine);
         }

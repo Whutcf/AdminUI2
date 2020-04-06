@@ -1,7 +1,7 @@
 package com.smic.cf.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.smic.cf.pojo.DomesticStatisticsTrendChartData;
+import com.smic.cf.entities.pojo.DomesticStatisticsTrendChartData;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
