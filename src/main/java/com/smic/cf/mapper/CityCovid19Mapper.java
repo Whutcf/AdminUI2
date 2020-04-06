@@ -12,4 +12,12 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface CityCovid19Mapper extends BaseMapper<CityCovid19> {
+    /**
+     * 获取当前境外输入总数
+     *
+     * @return int
+     * @author 蔡明涛
+     * @date 2020/4/6 22:36
+     */
+    int getCurrentCovid19ForeignIn();
 }

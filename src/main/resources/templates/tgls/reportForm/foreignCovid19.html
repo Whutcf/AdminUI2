@@ -32,55 +32,53 @@
 <body>
 <div class="cBody">
     <div class="layui-tab-content" style="padding: 0 1px;">
-        <div class="layui-tab-item layui-show">
-            <!-- 表头工具栏-->
-            <form class="layui-form layui-fluid" action="" style="padding: 0;height: 45px">
-                <div class="layui-form" style="margin: 0 0;padding: 1px 0 1px 0;">
-                    <div class="layui-form-item">
-                        <label class="layui-form-label" style="margin-left: 0;width: 60px">联动筛选</label>
-                        <div class="layui-input-inline" style="width: auto">
-                            <select id="continents" lay-filter="continentsFilter" lay-search>
-                                <option value="">请选择或搜索大洲</option>
-                            </select>
-                        </div>
-                        <span style="display: inline-block;float: left;width: 15px;padding-top: 10px;">-</span>
-                        <div class="layui-input-inline" style="width: auto">
-                            <select id="provinceName" lay-search>
-                                <option value="">请选择或搜索国家</option>
-                            </select>
-                        </div>
-                        <div class="layui-inline">
-                            <a class="layui-btn layui-btn-normal"
-                               style="padding: 0 5px;border-color: #1eb2a2;color: #666666;background-color: #BFFDE1"
-                               id="search_submit"
-                               data-type="reload"
-                               lay-filter="reload_search_submit">查询</a>
-                            <a class="layui-btn layui-btn-normal" id="searchResetBtn"
-                               style="padding: 0 5px;border-color: #1eb2a2;color: #666666;background-color: #BFFDE1"
-                               data-type="reload"
-                               lay-filter="searchResetBtn">重置</a>
-                            <a class="layui-btn layui-btn-normal" id="refresh"
-                               style="padding: 0 10px;border-color: #1eb2a2;color: #666666;background-color: #BFFDE1"
-                               lay-filter="refresh">刷新实时数据</a>
-                        </div>
+        <!-- 表头工具栏-->
+        <form class="layui-form layui-fluid" action="" style="padding: 0;height: 45px">
+            <div class="layui-form" style="margin: 0 0;padding: 1px 0 1px 0;">
+                <div class="layui-form-item">
+                    <label class="layui-form-label" style="margin-left: 0;width: 60px">联动筛选</label>
+                    <div class="layui-input-inline" style="width: auto">
+                        <select id="continents" lay-filter="continentsFilter" lay-search>
+                            <option value="">请选择或搜索大洲</option>
+                        </select>
+                    </div>
+                    <span style="display: inline-block;float: left;width: 15px;padding-top: 10px;">-</span>
+                    <div class="layui-input-inline" style="width: auto">
+                        <select id="provinceName" lay-search>
+                            <option value="">请选择或搜索国家</option>
+                        </select>
+                    </div>
+                    <div class="layui-inline">
+                        <a class="layui-btn layui-btn-normal"
+                           style="padding: 0 5px;border-color: #1eb2a2;color: #666666;background-color: #BFFDE1"
+                           id="search_submit"
+                           data-type="reload"
+                           lay-filter="reload_search_submit">查询</a>
+                        <a class="layui-btn layui-btn-normal" id="searchResetBtn"
+                           style="padding: 0 5px;border-color: #1eb2a2;color: #666666;background-color: #BFFDE1"
+                           data-type="reload"
+                           lay-filter="searchResetBtn">重置</a>
+                        <a class="layui-btn layui-btn-normal" id="refresh"
+                           style="padding: 0 10px;border-color: #1eb2a2;color: #666666;background-color: #BFFDE1"
+                           lay-filter="refresh">刷新实时数据</a>
                     </div>
                 </div>
-            </form>
-            <!-- table -->
-            <div class="layui-row layui-col-space3" style="margin: auto 10px; height: 300px;">
-                <table class="layui-hide-sm" id="foreignStatistics" lay-skin="line" lay-filter="foreignStatic"></table>
             </div>
-            <!-- echarts -->
-            <!-- 为echarts准备一个具备大小的dom -->
-            <div class="layui-row layui-col-space3" style="height: auto;margin: 200px 1px auto;">
-                <div class="layui-card">
-                    <div class="layui-card-header">世界疫情数据汇总</div>
-                    <div class="layui-card-body">
-                        <div class="layui-carousel" id="Notice_carousel" lay-filter="Notice_carousel">
-                            <div carousel-item>
-                                <div id="summaryBarChart"></div>
-                                <div id="summaryPieChart"></div>
-                            </div>
+        </form>
+        <!-- table -->
+        <div class="layui-row layui-col-space3" style="margin: auto 10px; height: 300px;">
+            <table class="layui-hide-sm" id="foreignStatistics" lay-skin="line" lay-filter="foreignStatic"></table>
+        </div>
+        <!-- echarts -->
+        <!-- 为echarts准备一个具备大小的dom -->
+        <div class="layui-row layui-col-space3" style="margin: 200px 1px auto;">
+            <div class="layui-card">
+                <div class="layui-card-header"><strong>世界疫情数据汇总</strong></div>
+                <div class="layui-card-body">
+                    <div class="layui-carousel" id="Notice_carousel" lay-filter="Notice_carousel">
+                        <div carousel-item>
+                            <div id="summaryBarChart"></div>
+                            <div id="summaryPieChart"></div>
                         </div>
                     </div>
                 </div>

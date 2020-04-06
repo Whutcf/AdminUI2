@@ -144,7 +144,7 @@ layui.use(['table', 'form', 'layer', 'element', 'carousel', 'laydate'], function
             let value = data[0][max-1];
             let tooltips = data[0][max-1];
             covid19TrendChart.hideLoading();// 数据到手去除加载效果
-            option = {
+            let option = {
                 title: {
                     text: countryName + '疫情趋势',
                     subtext: '当日存在确诊、当日累计治愈、当日累计死亡',

@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.smic.cf.crawlerbaidu.service.serviceimpl.TrendServiceImpl;
 import com.smic.cf.entities.pojo.*;
+import com.smic.cf.entities.vo.IncrVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 

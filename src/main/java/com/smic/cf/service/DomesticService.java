@@ -19,4 +19,13 @@ public interface DomesticService {
      * @date 2020/3/29 0:05
      */
     void insertDomesticData(List<ProvinceCovid19> provinceCovid19List);
+
+    /**
+     * 获取当前境外输入总数
+     *
+     * @return int
+     * @author 蔡明涛
+     * @date 2020/4/6 22:35
+     */
+    int getCurrentCovid19ForeignIn();
 }

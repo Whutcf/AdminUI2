@@ -34,7 +34,7 @@ public interface ForeignCountryCovid19Mapper extends BaseMapper<ForeignCountryCo
 
     /**
      * 获取各大洲的汇总数据，包含当前确诊，累计确诊，治愈，死亡
-     * @return java.util.List<com.smic.cf.entitis.dto.SummaryBarChartData>
+     * @return java.util.List<com.smic.cf.entities.dto.SummaryBarChartData>
      * @author 蔡明涛
      * @date 2020/4/3 0:23
      */

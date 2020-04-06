@@ -72,18 +72,27 @@ public interface ForeignCountryService {
     /**
      * 根据Id找对象
      * @param locationId 地理位置Id
-     * @return com.smic.cf.entitis.pojo.ForeignCountryCovid19
+     * @return com.smic.cf.entities.pojo.ForeignCountryCovid19
      * @author 蔡明涛
-     * @date 2020/4/5 1:18
+     * @date 2020/4/5 1:18e
      */
     ForeignCountryCovid19 getForeignCountryById(Long locationId);
 
     /**
      * 根据Id找对象
      * @param locationId 地理位置id
-     * @return java.util.List<com.smic.cf.entitis.pojo.ForeignStatisticsTrendChartData>
+     * @return java.util.List<com.smic.cf.entities.pojo.ForeignStatisticsTrendChartData>
      * @author 蔡明涛
      * @date 2020/4/5 1:24
      */
     List<ForeignStatisticsTrendChartData> getTrendChartDataList(Long locationId);
+
+    /**
+     *  根据id查找数据库最新一条记录
+     * @param locationId 地理位置id
+     * @return com.smic.cf.entities.pojo.ForeignStatisticsTrendChartData
+     * @author 蔡明涛
+     * @date 2020/4/6 18:53
+     */
+    ForeignStatisticsTrendChartData getYesterdayCountryDataById(Long locationId);
 }

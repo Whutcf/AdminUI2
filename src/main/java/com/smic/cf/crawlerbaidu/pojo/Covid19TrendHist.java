@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 
+import java.io.Serializable;
+
 /**
  * @Description 用来存储搜集的各区域的历史数据
  * @ClassName Covid19TrendHist
@@ -11,8 +13,9 @@ import lombok.Data;
  * @Date 2020/4/4 17:38
  **/
 @Data
-public class Covid19TrendHist {
+public class Covid19TrendHist implements Serializable {
 
+    private static final long serialVersionUID = 8911006298488107978L;
     @TableId(value = "id",type = IdType.AUTO)
     private Integer id;
     /**

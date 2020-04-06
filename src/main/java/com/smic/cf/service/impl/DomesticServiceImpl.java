@@ -118,4 +118,16 @@ public class DomesticServiceImpl implements DomesticService {
             }
         }
     }
+
+    /**
+     * 获取当前境外输入总数
+     *
+     * @return int
+     * @author 蔡明涛
+     * @date 2020/4/6 22:35
+     */
+    @Override
+    public int getCurrentCovid19ForeignIn() {
+        return cityCovid19Mapper.getCurrentCovid19ForeignIn();
+    }
 }

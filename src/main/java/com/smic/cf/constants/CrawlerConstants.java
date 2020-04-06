@@ -11,6 +11,10 @@ public class CrawlerConstants {
      * 页面传入的排序参数
      */
     public static final String ORDER_BY_ASC = "asc";
+    /**
+     * 地理位置代称
+     */
+    public static final String LOCATION_ID = "locationId";
 
     /**
      * chart图系列名称

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.smic.cf.mapper.CityCovid19Mapper">
+
+    <select id="getCurrentCovid19ForeignIn" resultType="java.lang.Integer">
+        SELECT
+        sum(confirmed_count)
+        FROM adminui.sys_city_covid19
+        WHERE (location_id = 0 OR location_id = -1)
+        AND city_name != '省十里丰监狱'
+    </select>
+</mapper>

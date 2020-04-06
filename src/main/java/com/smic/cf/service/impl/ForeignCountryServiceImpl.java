@@ -14,7 +14,7 @@ import com.smic.cf.mapper.ForeignStatisticTrendChartDataMapper;
 import com.smic.cf.mapper.IncrVoMapper;
 import com.smic.cf.entities.pojo.ForeignCountryCovid19;
 import com.smic.cf.entities.pojo.ForeignStatisticsTrendChartData;
-import com.smic.cf.entities.pojo.IncrVo;
+import com.smic.cf.entities.vo.IncrVo;
 import com.smic.cf.service.ForeignCountryService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -349,5 +349,23 @@ public class ForeignCountryServiceImpl implements ForeignCountryService {
         queryWrapper.eq(ForeignStatisticsTrendChartData::getLocationId, locationId)
                 .orderByDesc(ForeignStatisticsTrendChartData::getDateId);
         return foreignStatisticTrendChartDataMapper.selectList(queryWrapper);
+    }
+
+    /**
+     * 根据id查找数据库最新一条记录
+     *
+     * @param locationId 地理位置id
+     * @return com.smic.cf.entities.pojo.ForeignStatisticsTrendChartData
+     * @author 蔡明涛
+     * @date 2020/4/6 18:53
+     */
+    @Override
+    public ForeignStatisticsTrendChartData getYesterdayCountryDataById(Long locationId) {
+        // 获取DB中存在的最大日期
+        String maxDateId = foreignStatisticTrendChartDataMapper.getMaxDateId(locationId);
+
+        LambdaQueryWrapper<ForeignStatisticsTrendChartData> queryWrapper = Wrappers.lambdaQuery();
+        queryWrapper.eq(ForeignStatisticsTrendChartData::getLocationId,locationId).eq(ForeignStatisticsTrendChartData::getDateId,maxDateId);
+        return foreignStatisticTrendChartDataMapper.selectOne(queryWrapper);
     }
 }

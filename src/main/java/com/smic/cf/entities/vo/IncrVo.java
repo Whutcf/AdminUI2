@@ -1,4 +1,4 @@
-package com.smic.cf.entities.pojo;
+package com.smic.cf.entities.vo;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;

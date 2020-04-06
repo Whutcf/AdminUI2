@@ -1,0 +1,63 @@
+.grid-demo {
+    text-align: center;
+    background-color: #f5f6f7;
+}
+
+.grid-demo a cite {
+    font-size: 12px;
+    display: block;
+    font-style: normal;
+}
+
+.grid {
+    text-align: center;
+    background-color: #f8f8f8;
+}
+
+.grid cite {
+    font-size: 13px;
+    display: block;
+    font-style: normal;
+    background-color: #c7d2dd;
+    padding: 3px;
+    width: 50%;
+    text-align: center;
+    margin-left: 30px;
+}
+
+.panel_word {
+    width: 60%;
+    display: inline-block;
+    float: bottom;
+    margin-top: 3px;
+    border: #40AFFE;
+}
+
+.panel_word span {
+    font-size: 25px;
+    display: block;
+    height: 30px;
+    line-height: 30px;
+}
+
+.panel_word2 {
+    width: 60%;
+    display: inline-block;
+    float: bottom;
+    margin-top: 3px;
+    border: #40AFFE;
+}
+
+.panel_word2 span {
+    font-size: 25px;
+    display: block;
+    height: 30px;
+    line-height: 30px;
+}
+
+
+
+/*layui 表头居中*/
+.layui-table-view .layui-table th {
+    text-align: center;
+}

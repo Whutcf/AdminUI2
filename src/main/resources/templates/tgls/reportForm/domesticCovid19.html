@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,Chrome=1">
+    <!-- Google Chrome Frame也可以让IE用上Chrome的引擎: -->
+    <meta name="renderer" content="webkit">
+    <!--国产浏览器高速模式-->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="穷在闹市"/>
+    <!-- 作者 -->
+    <meta name="revised" content="穷在闹市.v3, 2019/05/01"/>
+    <!-- 定义页面的最新版本 -->
+    <meta name="description" content="网站简介"/>
+    <!-- 网站简介 -->
+    <meta name="keywords" content="搜索关键字，以半角英文逗号隔开"/>
+    <title>国内疫情</title>
+
+    <!-- 公共样式 开始 -->
+    <link rel="stylesheet" type="text/css" href="../../css/base.css">
+    <link rel="stylesheet" type="text/css" href="../../css/iconfont.css">
+    <script type="text/javascript" src="../../framework/jquery-1.11.3.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="../../layui/css/layui.css">
+    <script type="text/javascript" src="../../layui/layui.js"></script>
+    <!-- 滚动条插件 -->
+    <link rel="stylesheet" type="text/css" href="../../css/jquery.mCustomScrollbar.css">
+    <script src="../../framework/jquery-ui-1.10.4.min.js"></script>
+    <script src="../../framework/jquery.mousewheel.min.js"></script>
+    <script src="../../framework/jquery.mCustomScrollbar.min.js"></script>
+    <script src="../../framework/cframe.js"></script><!-- 仅供所有子页面使用 -->
+    <!-- 公共样式 结束 -->
+    <link rel="stylesheet" type="text/css" href="../../css/summaryHead.css">
+    <script type="text/javascript" src="../../echarts/echarts.js"></script>
+    <script type="text/javascript" src="../../echarts/china.js"></script>
+</head>
+
+<body>
+<div class="layui-tab-content" style="padding: 0 1px;">
+    <div class="layui-tab-item layui-show">
+        <!-- 汇总显示区域 -->
+        <div class="layui-row layui-col-space15" style="padding: 1px 0 1px 0;margin: 2px 5px 2px 0;">
+            <div class="layui-col-md2">
+                <div class="grid">
+                    <div class="panel_word2">
+                        <span style="color: #d96322" th:text="${summaryVo.currentConfirmedCount}"></span>
+                        <cite>现有确诊</cite>
+                        <span style="color: #d96322;font-size: 11px;display: block;height: 20px;line-height: 20px"
+                              th:text="'昨日'+(${summaryVo.currentConfirmedIncr}>0?'+'+${summaryVo.currentConfirmedIncr}:${summaryVo.currentConfirmedIncr})">
+						</span>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-col-md2">
+                <div class="grid">
+                    <div class="panel_word2">
+                        <span style="color: #c34545;" th:text="${summaryVo.confirmedCount}"></span>
+                        <cite>累计确诊</cite>
+                        <span style="color: #c3453d;font-size: 11px;display: block;height: 20px;line-height: 20px"
+                              th:text="'昨日'+(${summaryVo.confirmedIncr}>0?'+'+${summaryVo.confirmedIncr}:${summaryVo.confirmedIncr})">
+						</span>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-col-md2">
+                <div class="grid">
+                    <div class="panel_word2">
+                        <span style="color: #e64426;" th:text="${summaryVo.foreignInCount}"></span>
+                        <cite>境外输入</cite>
+                        <span style="color: #e64426;font-size: 11px;display: block;height: 20px;line-height: 20px"
+                              th:text="'昨日'+(${summaryVo.foreignInIncr}>0?'+'+${summaryVo.foreignInIncr}:${summaryVo.foreignInIncr})">
+						</span>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-col-md2">
+                <div class="grid">
+                    <div class="panel_word2">
+                        <span style="color: #f2a417;" th:text="${summaryVo.suspectedCount}"></span>
+                        <cite>疑似病例</cite>
+                        <span style="color: #f2a417;font-size: 11px;display: block;height: 20px;line-height: 20px"
+                              th:text="'昨日'+(${summaryVo.suspectedCountIncr}>0?'+'+${summaryVo.suspectedCountIncr}:${summaryVo.suspectedCountIncr})">
+						</span>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-col-md2">
+                <div class="grid">
+                    <div class="panel_word2">
+                        <span style="color: #39c4c4;" th:text="${summaryVo.curedCount}"></span>
+                        <cite>累计治愈</cite>
+                        <span style="color: #39c4c4;font-size: 11px;display: block;height: 20px;line-height: 20px"
+                              th:text="'昨日'+(${summaryVo.curedIncr}>0?'+'+${summaryVo.curedIncr}:${summaryVo.curedIncr})">
+						</span>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-col-md2">
+                <div class="grid">
+                    <div class="panel_word2">
+                        <span style="color: #0f3046;" th:text="${summaryVo.deadCount}"></span>
+                        <cite>累计死亡</cite>
+                        <span style="color: #0f3046;font-size: 11px;display: block;height: 20px;line-height: 20px"
+                              th:text="'昨日'+(${summaryVo.deadIncr}>0?'+'+${summaryVo.deadIncr}:${summaryVo.deadIncr})">
+						</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- echarts -->
+        <!-- 为echarts准备一个具备大小的dom -->
+        <div class="layui-row layui-col-space1" style="height: auto;">
+            <div class="layui-col-md12" style="margin-top: 2px">
+                <div class="layui-card">
+                    <div class="layui-card-body">
+                        <div style="width: 100%;height:400px" id="domesticMap"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- table -->
+        <div class="layui-row layui-col-space3" style="margin: auto 10px; height: 300px;text-align: center;">
+            <table class="layui-hide-sm" id="foreignStatistics" lay-skin="line" lay-filter="foreignStatic"></table>
+        </div>
+    </div>
+</div>
+</body>
+
+</html>

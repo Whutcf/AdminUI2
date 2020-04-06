@@ -12,4 +12,12 @@ import org.apache.ibatis.annotations.Mapper;
  **/
 @Mapper
 public interface ForeignStatisticTrendChartDataMapper extends BaseMapper<ForeignStatisticsTrendChartData> {
+    /**
+     * 获取最大日期即昨天的日期
+     * @param locationId 地理位置id
+     * @return java.lang.String
+     * @author 蔡明涛
+     * @date 2020/4/6 18:59
+     */
+    String getMaxDateId(Long locationId);
 }
