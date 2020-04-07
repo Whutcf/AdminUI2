@@ -18,4 +18,13 @@ public interface Covid19TrendHistService extends IService<Covid19TrendHist> {
      * @date 2020/4/6 22:25
      */
     Covid19TrendHist getYesterdayForeignInIncr();
+
+    /**
+     * 获取昨日新增疑似病例
+     *
+     * @return int
+     * @author 蔡明涛
+     * @date 2020/4/7 20:54
+     */
+    int getYesterdaySuspectedIncr();
 }

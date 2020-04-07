@@ -15,4 +15,14 @@
                     where name = '中国疫情汇总'
                       and series_name = '新增境外输入')
     </select>
+    <select id="getYesterdaySuspectedIncr" resultType="java.lang.Integer">
+        select value
+        from adminui.sys_covid19_trend_hist
+        where name = '中国疫情汇总'
+          and series_name = '新增疑似'
+          and id = (select max(id)
+                    from sys_covid19_trend_hist
+                    where name = '中国疫情汇总'
+                      and series_name = '新增疑似')
+    </select>
 </mapper>

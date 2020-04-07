@@ -182,8 +182,19 @@ public class CrawlerController {
             data[2][i+1] = trendChartDataList.get(length-i-1).getCuredCount();
             data[3][i+1] = trendChartDataList.get(length-i-1).getDeadCount();
         }
-
-
         return ResultBeanUtil.success(data);
+    }
+
+    /**
+     * 获取全国当前确诊人数的集合 [{name:北京,value:131},{...}]
+     *
+     * @return com.smic.cf.util.ResultBean<com.alibaba.fastjson.JSONArray>
+     * @author 蔡明涛
+     * @date 2020/4/7 21:24
+     */
+    @GetMapping("/getProvinceCovidNewAddData")
+    public ResultBean<JSONArray> getProvinceCovidNewAddData(){
+        JSONArray jsonArray = domesticService.getProvinceCurrentConfirmedCovid19List();
+        return ResultBeanUtil.success(jsonArray);
     }
 }

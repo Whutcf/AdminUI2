@@ -12,4 +12,12 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface ProvinceCovid19Mapper extends BaseMapper<ProvinceCovid19> {
+    /**
+     * 获取疑似病例总数
+     *
+     * @return int
+     * @author 蔡明涛
+     * @date 2020/4/7 20:49
+     */
+    int getTotalSuspectedCount();
 }

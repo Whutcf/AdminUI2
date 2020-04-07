@@ -2,7 +2,6 @@ package com.smic.cf.controller;
 
 import com.smic.cf.constants.CrawlerConstants;
 import com.smic.cf.crawlerbaidu.pojo.Covid19TrendHist;
-import com.smic.cf.entities.pojo.CityCovid19;
 import com.smic.cf.entities.pojo.ForeignCountryCovid19;
 import com.smic.cf.entities.pojo.ForeignStatisticsTrendChartData;
 import com.smic.cf.entities.vo.DomesticSummaryVo;
@@ -64,20 +63,23 @@ public class Covid19PageController {
     @GetMapping("/tgls/reportForm/domesticCovid19")
     public String getDomesticInfo(Model model, @RequestParam(CrawlerConstants.LOCATION_ID) Long locationId) {
         DomesticSummaryVo summaryVo = new DomesticSummaryVo();
-        // 获取当前最新数据 现有确诊 累计确诊 疑似病例 累计治愈 累计死亡
+        // 获取当前最新数据 现有确诊 累计确诊 累计治愈 累计死亡
         ForeignCountryCovid19 domesticInfo = foreignCountryService.getForeignCountryById(locationId);
         summaryVo.setConfirmedCount(domesticInfo.getConfirmedCount());
         summaryVo.setCurrentConfirmedCount(domesticInfo.getCurrentConfirmedCount());
-        summaryVo.setSuspectedCount(domesticInfo.getSuspectedCount());
         summaryVo.setCuredCount(domesticInfo.getCuredCount());
         summaryVo.setDeadCount(domesticInfo.getDeadCount());
-        // 获取昨日新增数据 新增现有确诊 新增累计确诊 新增疑似病例 新增累计治愈 新增累计死亡
+        // 获取昨日新增数据 新增现有确诊 新增累计确诊 新增累计治愈 新增累计死亡
         ForeignStatisticsTrendChartData yesterdayInfo = foreignCountryService.getYesterdayCountryDataById(locationId);
         summaryVo.setCurrentConfirmedIncr(yesterdayInfo.getCurrentConfirmedIncr());
         summaryVo.setConfirmedIncr(yesterdayInfo.getConfirmedIncr());
-        summaryVo.setSuspectedCountIncr(yesterdayInfo.getSuspectedCountIncr());
         summaryVo.setCuredIncr(yesterdayInfo.getCuredIncr());
         summaryVo.setDeadIncr(yesterdayInfo.getDeadIncr());
+        // 疑似病例 新增疑似病例 数据存在问题，暂时这么操作
+        int suspectedCount = domesticService.getTotalSuspectedCount();
+        summaryVo.setSuspectedCount(suspectedCount);
+        int suspectedIncr = covid19TrendHistService.getYesterdaySuspectedIncr();
+        summaryVo.setSuspectedCountIncr(suspectedIncr);
         // 获取境外病例和新增境外病例
         int currentCovid19ForeignIn = domesticService.getCurrentCovid19ForeignIn();
         summaryVo.setForeignInCount(currentCovid19ForeignIn);

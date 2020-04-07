@@ -1,7 +1,11 @@
 package com.smic.cf.service.impl;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.smic.cf.constants.CrawlerConstants;
+import com.smic.cf.entities.pojo.Crawler;
 import com.smic.cf.mapper.CityCovid19Mapper;
 import com.smic.cf.mapper.DomesticStatisticTrendChartDataMapper;
 import com.smic.cf.mapper.ProvinceCovid19Mapper;
@@ -67,7 +71,7 @@ public class DomesticServiceImpl implements DomesticService {
                                 , Integer.parseInt(dateId.substring(4, 6))
                                 , Integer.parseInt(dateId.substring(6, 8)));
                         // 只更新最近前一天的数据 Period.between(date,localDate).getDays()<=1 他抓的是日期对应的天，与我们想要的不符合
-                        if (ChronoUnit.DAYS.between(date,localDate)<=1) {
+                        if (ChronoUnit.DAYS.between(date, localDate) <= 1) {
                             LambdaQueryWrapper<DomesticStatisticsTrendChartData> queryWrapper = Wrappers.lambdaQuery();
                             queryWrapper.eq(DomesticStatisticsTrendChartData::getDateId, trendChartData.getDateId())
                                     .eq(DomesticStatisticsTrendChartData::getLocationId, trendChartData.getLocationId())
@@ -129,5 +133,37 @@ public class DomesticServiceImpl implements DomesticService {
     @Override
     public int getCurrentCovid19ForeignIn() {
         return cityCovid19Mapper.getCurrentCovid19ForeignIn();
+    }
+
+    /**
+     * 获取疑似病例总数
+     *
+     * @return int
+     * @author 蔡明涛
+     * @date 2020/4/7 20:47
+     */
+    @Override
+    public int getTotalSuspectedCount() {
+        return provinceCovid19Mapper.getTotalSuspectedCount();
+    }
+
+    /**
+     * 获取全国当前确诊人数的集合 [{name:北京,value:131},{...}]
+     *
+     * @return com.alibaba.fastjson.JSONArray
+     * @author 蔡明涛
+     * @date 2020/4/7 21:35
+     */
+    @Override
+    public JSONArray getProvinceCurrentConfirmedCovid19List() {
+        JSONArray jsonArray = new JSONArray();
+        List<ProvinceCovid19> provinceCovid19s = provinceCovid19Mapper.selectList(null);
+        for (ProvinceCovid19 provinceCovid19 : provinceCovid19s) {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put(CrawlerConstants.ECHARTS_NAME, provinceCovid19.getProvinceShortName());
+            jsonObject.put(CrawlerConstants.ECHARTS_VALUE, provinceCovid19.getCurrentConfirmedCount());
+            jsonArray.add(jsonObject);
+        }
+        return jsonArray;
     }
 }

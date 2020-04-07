@@ -32,4 +32,16 @@ public class Covid19TrendHistServiceImpl extends ServiceImpl<Covid19TrendHistMap
     public Covid19TrendHist getYesterdayForeignInIncr() {
         return covid19TrendHistMapper.getYesterdayForeignInIncr();
     }
+
+    /**
+     * 获取昨日新增疑似病例
+     *
+     * @return int
+     * @author 蔡明涛
+     * @date 2020/4/7 20:54
+     */
+    @Override
+    public int getYesterdaySuspectedIncr() {
+        return covid19TrendHistMapper.getYesterdaySuspectedIncr();
+    }
 }

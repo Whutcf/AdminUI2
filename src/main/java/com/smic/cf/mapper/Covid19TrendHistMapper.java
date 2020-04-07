@@ -20,4 +20,13 @@ public interface Covid19TrendHistMapper extends BaseMapper<Covid19TrendHist> {
      * @date 2020/4/6 22:26
      */
     Covid19TrendHist getYesterdayForeignInIncr();
+
+    /**
+     * 获取昨日新增疑似
+     *
+     * @return int
+     * @author 蔡明涛
+     * @date 2020/4/7 20:55
+     */
+    int getYesterdaySuspectedIncr();
 }

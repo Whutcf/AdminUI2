@@ -1,5 +1,6 @@
 package com.smic.cf.service;
 
+import com.alibaba.fastjson.JSONArray;
 import com.smic.cf.entities.pojo.ProvinceCovid19;
 
 import java.util.List;
@@ -28,4 +29,22 @@ public interface DomesticService {
      * @date 2020/4/6 22:35
      */
     int getCurrentCovid19ForeignIn();
+
+    /**
+     * 获取疑似病例总数
+     *
+     * @return int
+     * @author 蔡明涛
+     * @date 2020/4/7 20:47
+     */
+    int getTotalSuspectedCount();
+
+    /**
+     * 获取全国当前确诊人数的集合 [{name:北京,value:131},{...}]
+     *
+     * @return com.alibaba.fastjson.JSONArray
+     * @author 蔡明涛
+     * @date 2020/4/7 21:35
+     */
+    JSONArray getProvinceCurrentConfirmedCovid19List();
 }
