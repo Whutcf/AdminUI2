@@ -36,6 +36,8 @@ import java.util.List;
 @Slf4j
 public class SysCrawlerSchedule {
 
+    // TODO: 2020/4/19 定时任务太多了，需要引入Quartz管理
+
     @Resource
     private TimeLineService timeLineService;
     @Resource
@@ -118,7 +120,7 @@ public class SysCrawlerSchedule {
      * @author 蔡明涛
      * @date 2020/4/19 14:13
      */
-    @Scheduled(cron = "0 0 7 * * ?")
+    @Scheduled(cron = "0 0 7,12,20 * * ?")
     public void saveCovid19Notice(){
         log.info("定时脚本开启，时间{},数据来源:{}", DateUtils.getCurrentDateTime(),Crawler.URL2);
         //获取页面数据

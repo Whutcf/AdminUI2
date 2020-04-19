@@ -9,6 +9,7 @@ import com.smic.cf.crawlerbaidu.dto.TrumpetBean;
 import com.smic.cf.crawlerbaidu.pojo.Covid19BaiduQueryInfo;
 import com.smic.cf.crawlerbaidu.pojo.Covid19Notice;
 import com.smic.cf.crawlerbaidu.service.Covid19BaiduQueryInfoService;
+import com.smic.cf.crawlerbaidu.service.Covid19NoticeService;
 import com.smic.cf.entities.pojo.Crawler;
 import com.smic.cf.mapper.Covid19NoticeMapper;
 import com.smic.cf.util.CrawlerParser;
@@ -36,12 +37,15 @@ public class CrawlerTest {
     @Resource
     private Covid19NoticeMapper covid19NoticeMapper;
     @Resource
+    private Covid19NoticeService covid19NoticeService;
+    @Resource
     private Covid19BaiduQueryInfoService covid19BaiduQueryInfoService;
 
     @Test
     public void getData() {
 //        //获取页面数据
-//        String information = CrawlerUtils.getJsonString(Crawler.URL2, Crawler.BAIDU_DATA_REGEX_TEMPLATE, Crawler.BAIDU_DATA_ATTRIBUTE);
+        String information = CrawlerUtils.getJsonString(Crawler.URL2, Crawler.BAIDU_DATA_REGEX_TEMPLATE, Crawler.BAIDU_DATA_ATTRIBUTE);
+        covid19NoticeService.saveCovid19Notice(information);
 //        ComponentBean componentBean = CrawlerParser.getComponentBean(information);
 //        if (componentBean != null) {
 //            List<TrumpetBean> trumpetBeanList = componentBean.getTrumpet();

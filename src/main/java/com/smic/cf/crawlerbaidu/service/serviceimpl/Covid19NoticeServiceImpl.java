@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -43,24 +44,29 @@ public class Covid19NoticeServiceImpl implements Covid19NoticeService {
         ComponentBean componentBean = CrawlerParser.getComponentBean(baiduSourceInformation);
         if (componentBean != null) {
             List<TrumpetBean> trumpetBeanList = componentBean.getTrumpet();
-            // 默认只获取第一条公告信息
-            TrumpetBean trumpetBean = trumpetBeanList.get(0);
-            Covid19Notice notice = new Covid19Notice();
-            BeanUtils.copyProperties(trumpetBean, notice);
             String date = DateUtils.getCurrentDate();
-            notice.setDate(date);
-            LambdaQueryWrapper<Covid19Notice> queryWrapper = Wrappers.lambdaQuery();
-            queryWrapper.eq(StringUtils.isNotBlank(date), Covid19Notice::getDate, date);
-            List<Covid19Notice> covid19Notices = covid19NoticeMapper.selectList(queryWrapper);
-            if (covid19Notices.size() > 0) {
-                for (int i = covid19Notices.size() - 1; i < covid19Notices.size(); i++) {
-                    if (!covid19Notices.get(i).getDate().equals(date)) {
-                        covid19NoticeMapper.insert(notice);
+            for (TrumpetBean trumpetBean : trumpetBeanList) {
+                Covid19Notice notice = new Covid19Notice();
+                BeanUtils.copyProperties(trumpetBean, notice);
+                notice.setDate(date);
+                LambdaQueryWrapper<Covid19Notice> queryWrapper = Wrappers.lambdaQuery();
+                queryWrapper.eq(Covid19Notice::getDate, date);
+                List<Covid19Notice> covid19Notices = covid19NoticeMapper.selectList(queryWrapper);
+                if (covid19Notices.size() > 0) {
+                    for (Covid19Notice covid19Notice : covid19Notices) {
+                        // 排除日期去比较是否存在
+                        List<String> ignoreList = new ArrayList<>();
+                        ignoreList.add("date");
+                        boolean compareTwoObjs = com.smic.cf.util.BeanUtils.compareTwoObjs(ignoreList, notice, covid19Notice);
+                        if (!compareTwoObjs) {
+                            covid19NoticeMapper.insert(notice);
+                        }
                     }
+                } else {
+                    covid19NoticeMapper.insert(notice);
                 }
-            } else {
-                covid19NoticeMapper.insert(notice);
             }
+
         }
     }
 }
