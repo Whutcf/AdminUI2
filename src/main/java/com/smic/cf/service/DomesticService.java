@@ -45,6 +45,7 @@ public interface DomesticService {
      * @return com.alibaba.fastjson.JSONArray
      * @author 蔡明涛
      * @date 2020/4/7 21:35
+     * @param flag 标记 1 代表当前确诊，2 代表累计确诊
      */
-    JSONArray getProvinceCurrentConfirmedCovid19List();
+    JSONArray getProvinceCovidMapData(Integer flag);
 }

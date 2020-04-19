@@ -192,9 +192,9 @@ public class CrawlerController {
      * @author 蔡明涛
      * @date 2020/4/7 21:24
      */
-    @GetMapping("/getProvinceCovidNewAddData")
-    public ResultBean<JSONArray> getProvinceCovidNewAddData(){
-        JSONArray jsonArray = domesticService.getProvinceCurrentConfirmedCovid19List();
+    @GetMapping("/getProvinceCovidMapData")
+    public ResultBean<JSONArray> getProvinceCovidMapData(@RequestParam("flag")Integer flag){
+        JSONArray jsonArray = domesticService.getProvinceCovidMapData(flag);
         return ResultBeanUtil.success(jsonArray);
     }
 }

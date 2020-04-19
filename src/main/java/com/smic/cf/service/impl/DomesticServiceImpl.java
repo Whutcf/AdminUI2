@@ -5,7 +5,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.smic.cf.constants.CrawlerConstants;
-import com.smic.cf.entities.pojo.Crawler;
 import com.smic.cf.mapper.CityCovid19Mapper;
 import com.smic.cf.mapper.DomesticStatisticTrendChartDataMapper;
 import com.smic.cf.mapper.ProvinceCovid19Mapper;
@@ -153,15 +152,20 @@ public class DomesticServiceImpl implements DomesticService {
      * @return com.alibaba.fastjson.JSONArray
      * @author 蔡明涛
      * @date 2020/4/7 21:35
+     * @param flag
      */
     @Override
-    public JSONArray getProvinceCurrentConfirmedCovid19List() {
+    public JSONArray getProvinceCovidMapData(Integer flag) {
         JSONArray jsonArray = new JSONArray();
         List<ProvinceCovid19> provinceCovid19s = provinceCovid19Mapper.selectList(null);
         for (ProvinceCovid19 provinceCovid19 : provinceCovid19s) {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put(CrawlerConstants.ECHARTS_NAME, provinceCovid19.getProvinceShortName());
-            jsonObject.put(CrawlerConstants.ECHARTS_VALUE, provinceCovid19.getCurrentConfirmedCount());
+            if (flag == 1){
+                jsonObject.put(CrawlerConstants.ECHARTS_VALUE, provinceCovid19.getCurrentConfirmedCount());
+            }else {
+                jsonObject.put(CrawlerConstants.ECHARTS_VALUE,provinceCovid19.getConfirmedCount());
+            }
             jsonArray.add(jsonObject);
         }
         return jsonArray;

@@ -55,7 +55,24 @@
     line-height: 30px;
 }
 
+.pressBut {
+    text-align: center;
+    width: auto;
+    height: 30px;
+    font-size: 16px;
+    padding: 5px 8px;
+    transform: none;
+    border: none;
+    margin: 0 1px;
+    background-color: #f7f7f7;
+    color: #666666;
+    cursor: pointer;
+}
 
+.pressBut.active {
+    background-color: #f1f5ff;
+    color: #76b4ff;
+}
 
 /*layui 表头居中*/
 .layui-table-view .layui-table th {

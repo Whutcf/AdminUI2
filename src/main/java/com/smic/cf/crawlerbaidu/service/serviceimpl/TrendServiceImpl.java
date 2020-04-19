@@ -10,6 +10,7 @@ import com.smic.cf.crawlerbaidu.dto.*;
 import com.smic.cf.crawlerbaidu.pojo.Covid19TrendHist;
 import com.smic.cf.crawlerbaidu.service.TrendService;
 import com.smic.cf.mapper.TrendMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,6 +24,7 @@ import java.util.List;
  * @Author 蔡明涛
  * @Date 2020/4/4 16:23
  **/
+@Slf4j
 @Service
 @Transactional(rollbackFor = Exception.class)
 public class TrendServiceImpl extends ServiceImpl<TrendMapper, Covid19TrendHist> implements TrendService {
@@ -42,6 +44,7 @@ public class TrendServiceImpl extends ServiceImpl<TrendMapper, Covid19TrendHist>
         // 新建一个对象用于存储各地区trend的所有历史数据
         List<Covid19TrendHist> covid19TrendHists = new ArrayList<>();
         JSONArray jsonArray = JSONArray.parseArray(information);
+        log.info(jsonArray.toJSONString());
         for (Object o : jsonArray) {
             CrawlerBaidu componentBean = JSON.toJavaObject((JSON) o, CrawlerBaidu.class);
             List<ComponentBean> components = componentBean.getComponent();
