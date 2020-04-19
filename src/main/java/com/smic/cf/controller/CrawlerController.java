@@ -54,7 +54,7 @@ public class CrawlerController {
         log.info("手动刷新开启，时间{},数据来源:{}", DateUtils.getCurrentDateTime(),Crawler.URL2);
         String information = CrawlerUtils.getJsonString(Crawler.URL2, Crawler.BAIDU_DATA_REGEX_TEMPLATE, Crawler.BAIDU_DATA_ATTRIBUTE);
         // 解析json数据 并生成集合
-        List<Covid19TrendHist> covid19TrendHists = trendService.getTrendHistData("[{"+information+"}]");
+        List<Covid19TrendHist> covid19TrendHists = trendService.getTrendHistData(information);
         // 存入DB
         trendService.saveOrUpdateBatch(covid19TrendHists);
 

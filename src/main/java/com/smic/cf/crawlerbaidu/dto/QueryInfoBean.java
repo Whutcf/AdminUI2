@@ -1,8 +1,8 @@
 package com.smic.cf.crawlerbaidu.dto;
 
 /**
- * @Description 小提示对象
- * @ClassName GossipsBean
+ * @Description 百度数据源中储存谣言，热词和常识的bean
+ * @ClassName QueryInfoBean
  * @Author 蔡明涛
  * @Date 2020/4/4 15:01
  **/

@@ -3,6 +3,8 @@ package com.smic.cf.util;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.smic.cf.crawlerbaidu.dto.ComponentBean;
+import com.smic.cf.crawlerbaidu.dto.CrawlerBaidu;
 import com.smic.cf.crawlerbaidu.service.serviceimpl.TrendServiceImpl;
 import com.smic.cf.entities.pojo.*;
 import com.smic.cf.entities.vo.IncrVo;
@@ -29,7 +31,7 @@ public class CrawlerParser {
      * 解析国外基本数据
      *
      * @param foreignCountryInformation json字符串
-     * @return java.util.List<com.smic.cf.entitis.pojo.ForeignCountryCovid19Info>
+     * @return java.util.List<com.smic.cf.entities.pojo.ForeignCountryCovid19Info>
      * @author 蔡明涛
      * @date 2020/3/28 18:14
      */
@@ -81,7 +83,7 @@ public class CrawlerParser {
     /**
      * 国内各省数据集合
      * @param domesticInformation json字符串
-     * @return java.util.List<com.smic.cf.entitis.pojo.ProvinceCovid19>
+     * @return java.util.List<com.smic.cf.entities.pojo.ProvinceCovid19>
      * @author 蔡明涛
      * @date 2020/3/28 20:01
      */
@@ -132,7 +134,7 @@ public class CrawlerParser {
     /**
      * 获取国内时间线信息
      * @param timeLineInformation 时间线解析内容
-     * @return java.util.List<com.smic.cf.entitis.pojo.DomesticTimeLine>
+     * @return java.util.List<com.smic.cf.entities.pojo.DomesticTimeLine>
      * @author 蔡明涛
      * @date 2020/3/29 10:28
      */
@@ -145,6 +147,28 @@ public class CrawlerParser {
             timeLines.add(timeLine);
         }
         return timeLines;
+    }
+
+    /**
+     * 获取百度数据源解析的对象component
+     * @param baiduSourceInformation json字符串
+     * @return com.smic.cf.crawlerbaidu.dto.ComponentBean
+     * @author 蔡明涛
+     * @date 2020/4/19 11:27
+     */
+    public static ComponentBean getComponentBean(String baiduSourceInformation) {
+        // 直接从页面获取的json字符串不满足json格式，需要特殊处理一下
+        String jsonString = "[{"+baiduSourceInformation+"}]";
+        JSONArray jsonArray = JSONArray.parseArray(jsonString);
+        if (jsonArray.size()>0){
+            for (Object object : jsonArray) {
+                CrawlerBaidu componentBean = JSON.toJavaObject((JSON) object, CrawlerBaidu.class);
+                List<ComponentBean> components = componentBean.getComponent();
+                // 从数据结果来看只有一个对象，所以这里就直接去第一个值
+                return components.get(0);
+            }
+        }
+        return null;
     }
 
 }

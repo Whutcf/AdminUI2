@@ -1,11 +1,14 @@
 package com.smic.cf.schedual;
 
+import com.smic.cf.crawlerbaidu.pojo.Covid19BaiduQueryInfo;
 import com.smic.cf.crawlerbaidu.pojo.Covid19TrendHist;
+import com.smic.cf.crawlerbaidu.service.Covid19BaiduQueryInfoService;
+import com.smic.cf.crawlerbaidu.service.Covid19NoticeService;
 import com.smic.cf.crawlerbaidu.service.serviceimpl.TrendServiceImpl;
 import com.smic.cf.entities.pojo.Crawler;
-import com.smic.cf.entities.pojo.TimeLine;
 import com.smic.cf.entities.pojo.ForeignCountryCovid19;
 import com.smic.cf.entities.pojo.ProvinceCovid19;
+import com.smic.cf.entities.pojo.TimeLine;
 import com.smic.cf.service.DomesticService;
 import com.smic.cf.service.ForeignCountryService;
 import com.smic.cf.service.TimeLineService;
@@ -41,6 +44,10 @@ public class SysCrawlerSchedule {
     private DomesticService domesticService;
     @Resource
     private TrendServiceImpl trendService;
+    @Resource
+    private Covid19NoticeService noticeService;
+    @Resource
+    private Covid19BaiduQueryInfoService baiduQueryInfoService;
 
     /**
      * 获取疫情基本数据 执行时间，每小时更新
@@ -97,12 +104,44 @@ public class SysCrawlerSchedule {
         log.info("定时脚本开启，时间{},数据来源:{}", DateUtils.getCurrentDateTime(),Crawler.URL2);
         String information = CrawlerUtils.getJsonString(Crawler.URL2, Crawler.BAIDU_DATA_REGEX_TEMPLATE, Crawler.BAIDU_DATA_ATTRIBUTE);
         // 解析json数据 并生成集合
-        List<Covid19TrendHist> covid19TrendHists = trendService.getTrendHistData("[{"+information+"}]");
+        List<Covid19TrendHist> covid19TrendHists = trendService.getTrendHistData(information);
         // 存入DB
         trendService.saveOrUpdateBatch(covid19TrendHists);
 
         log.info("定时脚本结束，时间{},数据来源:{}", DateUtils.getCurrentDateTime(),Crawler.URL2);
     }
 
+    /**
+     * 获取公告信息
+     * 每条早上7点更新
+     * @return void
+     * @author 蔡明涛
+     * @date 2020/4/19 14:13
+     */
+    @Scheduled(cron = "0 0 7 * * ?")
+    public void saveCovid19Notice(){
+        log.info("定时脚本开启，时间{},数据来源:{}", DateUtils.getCurrentDateTime(),Crawler.URL2);
+        //获取页面数据
+        String baiduSourceInformation = CrawlerUtils.getJsonString(Crawler.URL2, Crawler.BAIDU_DATA_REGEX_TEMPLATE, Crawler.BAIDU_DATA_ATTRIBUTE);
+        noticeService.saveCovid19Notice(baiduSourceInformation);
+        log.info("定时脚本结束，时间{},数据来源:{}", DateUtils.getCurrentDateTime(),Crawler.URL2);
+    }
+
+    /**
+     * 每小时更新一次实时百度查询相关内容
+     *
+     * @return void
+     * @author 蔡明涛
+     * @date 2020/4/19 14:35
+     */
+    @Scheduled(cron = "0 30 * * * ?")
+    public void saveOrUpdateBaiduQueryInfo(){
+        log.info("定时脚本开启，时间{},数据来源:{}", DateUtils.getCurrentDateTime(),Crawler.URL2);
+        //获取页面数据
+        String baiduSourceInformation = CrawlerUtils.getJsonString(Crawler.URL2, Crawler.BAIDU_DATA_REGEX_TEMPLATE, Crawler.BAIDU_DATA_ATTRIBUTE);
+        List<Covid19BaiduQueryInfo> queryInfos = baiduQueryInfoService.getBaiduQueryInfoList(baiduSourceInformation);
+        baiduQueryInfoService.saveOrUpdateBatch(queryInfos);
+        log.info("定时脚本结束，时间{},数据来源:{}", DateUtils.getCurrentDateTime(),Crawler.URL2);
+    }
 
 }

@@ -1,15 +1,16 @@
 package com.smic.cf.crawlerbaidu.service.serviceimpl;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.smic.cf.crawlerbaidu.dto.*;
+import com.smic.cf.crawlerbaidu.dto.ComponentBean;
+import com.smic.cf.crawlerbaidu.dto.ListBean;
+import com.smic.cf.crawlerbaidu.dto.TrendBean;
+import com.smic.cf.crawlerbaidu.dto.TrendListBean;
 import com.smic.cf.crawlerbaidu.pojo.Covid19TrendHist;
 import com.smic.cf.crawlerbaidu.service.TrendService;
 import com.smic.cf.mapper.TrendMapper;
+import com.smic.cf.util.CrawlerParser;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,7 +34,8 @@ public class TrendServiceImpl extends ServiceImpl<TrendMapper, Covid19TrendHist>
     private TrendMapper trendMapper;
 
     /**
-     *  获取各地区的trend的历史数据
+     * 获取各地区的trend的历史数据
+     *
      * @param information 页面解析的json字符串
      * @return java.util.List<com.smic.cf.crawlerbaidu.pojo.Covid19TrendHist>
      * @author 蔡明涛
@@ -43,14 +45,9 @@ public class TrendServiceImpl extends ServiceImpl<TrendMapper, Covid19TrendHist>
     public List<Covid19TrendHist> getTrendHistData(String information) {
         // 新建一个对象用于存储各地区trend的所有历史数据
         List<Covid19TrendHist> covid19TrendHists = new ArrayList<>();
-        JSONArray jsonArray = JSONArray.parseArray(information);
-        log.info(jsonArray.toJSONString());
-        for (Object o : jsonArray) {
-            CrawlerBaidu componentBean = JSON.toJavaObject((JSON) o, CrawlerBaidu.class);
-            List<ComponentBean> components = componentBean.getComponent();
-            // 从数据结果来看只有一个对象，所以这里就直接去第一个值
-            ComponentBean component = components.get(0);
-            // 添加疫情趋势数据
+        ComponentBean component = CrawlerParser.getComponentBean(information);
+        // 添加疫情趋势数据
+        if (component != null){
             TrendBean foreignTotalTrend = component.getAllForeignTrend();
             addTrendHist(covid19TrendHists, "国外疫情汇总", foreignTotalTrend);
             TrendBean chinaTotalTrend = component.getTrend();
@@ -59,10 +56,10 @@ public class TrendServiceImpl extends ServiceImpl<TrendMapper, Covid19TrendHist>
             addTrendList(covid19TrendHists, provinceTrendList);
             List<TrendListBean> foreignTrendList = component.getForeignTrendList();
             addTrendList(covid19TrendHists, foreignTrendList);
-
         }
         return covid19TrendHists;
     }
+
     /**
      * 将单个区域的疫情趋势信息添加到 covid19TrendHists 中去
      *
@@ -82,9 +79,9 @@ public class TrendServiceImpl extends ServiceImpl<TrendMapper, Covid19TrendHist>
             List<Integer> data = listBean.getData();
             int j = data.size();
             // 判断数据库是否有数据，有则只更新前一天的数据，无则添加全部数据
-            if (trendMapper.selectCount(null)>0){
-                j = j-1;
-            }else {
+            if (trendMapper.selectCount(null) > 0) {
+                j = j - 1;
+            } else {
                 j = 0;
             }
             for (int i = j; i < data.size(); i++) {
@@ -95,12 +92,12 @@ public class TrendServiceImpl extends ServiceImpl<TrendMapper, Covid19TrendHist>
                 // 日期和data是一一对应的，所以如此操作
                 covid19TrendHist.setDate(updateDate.get(i));
                 covid19TrendHists.add(covid19TrendHist);
-                if (j>0){
+                if (j > 0) {
                     LambdaQueryWrapper<Covid19TrendHist> queryWrapper = Wrappers.lambdaQuery();
-                    queryWrapper.eq(Covid19TrendHist::getDate,updateDate.get(i))
-                            .eq(Covid19TrendHist::getName,name)
-                            .eq(Covid19TrendHist::getSeriesName,seriesName)
-                            .eq(Covid19TrendHist::getValue,data.get(i));
+                    queryWrapper.eq(Covid19TrendHist::getDate, updateDate.get(i))
+                            .eq(Covid19TrendHist::getName, name)
+                            .eq(Covid19TrendHist::getSeriesName, seriesName)
+                            .eq(Covid19TrendHist::getValue, data.get(i));
                     trendMapper.delete(queryWrapper);
                 }
             }
@@ -109,8 +106,9 @@ public class TrendServiceImpl extends ServiceImpl<TrendMapper, Covid19TrendHist>
 
     /**
      * 将区域集合的疫情趋势信息添加到 covid19TrendHists 中去
+     *
      * @param covid19TrendHists 区域疫情历史信息的存储集合
-     * @param trendList 区域疫情趋势结合
+     * @param trendList         区域疫情趋势结合
      * @return void
      * @author 蔡明涛
      * @date 2020/4/4 18:21

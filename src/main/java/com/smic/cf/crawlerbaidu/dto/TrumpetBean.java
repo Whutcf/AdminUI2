@@ -1,7 +1,7 @@
 package com.smic.cf.crawlerbaidu.dto;
 
 /**
- * @Description 喇叭提示信息内容
+ * @Description 百度数据源每日公告信息
  * @ClassName TrumpetBean
  * @Author 蔡明涛
  * @Date 2020/4/4 14:59
