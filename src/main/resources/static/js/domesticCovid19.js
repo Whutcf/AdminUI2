@@ -15,6 +15,7 @@ $(function () {
         getMapData(2);
     });
 
+    // 切换地图数据源
     function getMapData(flag) {
         $.get('/crawler/getProvinceCovidMapData?flag=' + flag, function (res) {
             mapData = res.data;
@@ -29,7 +30,6 @@ $(function () {
             }
         });
     }
-
 
     // 显示地图
     function setMapOption(mapData, flag) {
@@ -56,10 +56,10 @@ $(function () {
                 left: 'center',
                 top: 'bottom',
                 inRange: {
-                    color: ['#ffffff', '#ffe4d9', '#ffcab3', '#ffaa85', '#ff7b69', '#cc2929','#8c0d0d']
+                    color: ['#ffffff', '#ffe4d9', '#ffcab3', '#ffaa85', '#ff7b69', '#cc2929', '#8c0d0d']
                 },
                 splitList: [
-                    {start: 10000,label: '>=10000'},
+                    {start: 10000, label: '>=10000'},
                     {start: 1000, end: 9999},
                     {start: 500, end: 999},
                     {start: 100, end: 499},
@@ -104,12 +104,44 @@ $(function () {
         option.series[0].mapData = mapData;
         if (flag === 1) {
             option.series[0].name = "现存确诊";
-            option.title.subtext= '现有确诊人数分布';
+            option.title.subtext = '现有确诊人数分布';
         } else {
             option.series[0].name = "累计确诊";
-            option.title.subtext= '累计确诊人数分布';
+            option.title.subtext = '累计确诊人数分布';
         }
-        domesticMap.setOption(option,true);
+        domesticMap.setOption(option, true);
     }
+});
 
+layui.use(['carousel', 'layer'], function () {
+    const carousel = layui.carousel
+        , layer = layui.layer;
+    // 建造实例
+    carousel.render({
+        elem: '#notices'
+        , width: 'auto'
+        , height: '30px'
+        , arrow: 'none' // 切换箭头默认显示状态  hover（悬停显示）always（始终显示） none（始终不显示）
+        , anim: 'updown' // 轮播切换动画方式，可选值为： default（左右切换）updown（上下切换）fade（渐隐渐显切换）
+        , interval: '3000'
+        , indicator: 'none'
+    });
+
+    $('.fakeClass').each(function () {
+        let id = $('#' + $(this).attr('id'));
+        id.bind('click', function () {
+                layer.open({
+                    title: '公告消息'
+                    , skin: 'layui-layer-lan'
+                    , area: ['600px', '150px']
+                    , type: 1
+                    , closeBtn: 0 //不显示关闭按钮
+                    , anim: 2
+                    , shadeClose: true // 开启遮罩关闭
+                    , content: '<div><p>'+id.attr("value")+'</p></div>'
+                });
+            }
+        );
+
+    });
 });

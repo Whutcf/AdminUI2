@@ -49,17 +49,19 @@ public class Covid19NoticeServiceImpl implements Covid19NoticeService {
                 Covid19Notice notice = new Covid19Notice();
                 BeanUtils.copyProperties(trumpetBean, notice);
                 notice.setDate(date);
-                LambdaQueryWrapper<Covid19Notice> queryWrapper = Wrappers.lambdaQuery();
-                queryWrapper.eq(Covid19Notice::getDate, date);
-                List<Covid19Notice> covid19Notices = covid19NoticeMapper.selectList(queryWrapper);
+                // 获取当天数据库中的所有公告
+                List<Covid19Notice> covid19Notices = getNotices();
                 if (covid19Notices.size() > 0) {
-                    for (Covid19Notice covid19Notice : covid19Notices) {
-                        // 排除日期去比较是否存在
-                        List<String> ignoreList = new ArrayList<>();
-                        ignoreList.add("date");
-                        boolean compareTwoObjs = com.smic.cf.util.BeanUtils.compareTwoObjs(ignoreList, notice, covid19Notice);
-                        if (!compareTwoObjs) {
-                            covid19NoticeMapper.insert(notice);
+                    // 首先要判断查出来的数据是否包含该公告
+                    if (!covid19Notices.contains(notice)) {
+                        for (Covid19Notice covid19Notice : covid19Notices) {
+                            // 其次还需要比较除了日期以外的值是否不相等,排除昨天的数据未刷新的情况
+                            List<String> ignoreList = new ArrayList<>();
+                            ignoreList.add("date");
+                            boolean compareTwoObjs = com.smic.cf.util.BeanUtils.compareTwoObjs(ignoreList, notice, covid19Notice);
+                            if (!compareTwoObjs) {
+                                covid19NoticeMapper.insert(notice);
+                            }
                         }
                     }
                 } else {
@@ -68,5 +70,20 @@ public class Covid19NoticeServiceImpl implements Covid19NoticeService {
             }
 
         }
+    }
+
+    /**
+     * 获取公告信息的集合
+     *
+     * @return java.util.List<com.smic.cf.crawlerbaidu.pojo.Covid19Notice>
+     * @author 蔡明涛
+     * @date 2020/4/19 16:47
+     */
+    @Override
+    public List<Covid19Notice> getNotices() {
+        String date = DateUtils.getCurrentDate();
+        LambdaQueryWrapper<Covid19Notice> queryWrapper = Wrappers.lambdaQuery();
+        queryWrapper.eq(Covid19Notice::getDate, date);
+        return covid19NoticeMapper.selectList(queryWrapper);
     }
 }

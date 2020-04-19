@@ -1,7 +1,9 @@
 package com.smic.cf.controller;
 
 import com.smic.cf.constants.CrawlerConstants;
+import com.smic.cf.crawlerbaidu.pojo.Covid19Notice;
 import com.smic.cf.crawlerbaidu.pojo.Covid19TrendHist;
+import com.smic.cf.crawlerbaidu.service.Covid19NoticeService;
 import com.smic.cf.entities.pojo.ForeignCountryCovid19;
 import com.smic.cf.entities.pojo.ForeignStatisticsTrendChartData;
 import com.smic.cf.entities.vo.DomesticSummaryVo;
@@ -34,6 +36,8 @@ public class Covid19PageController {
     private Covid19TrendHistService covid19TrendHistService;
     @Resource
     private DomesticService domesticService;
+    @Resource
+    private Covid19NoticeService noticeService;
 
 
     /**
@@ -86,7 +90,11 @@ public class Covid19PageController {
         Covid19TrendHist covid19TrendHist = covid19TrendHistService.getYesterdayForeignInIncr();
         summaryVo.setForeignInIncr(covid19TrendHist.getValue());
 
+        // 获取公告信息
+        List<Covid19Notice> notices = noticeService.getNotices();
+
         model.addAttribute("summaryVo", summaryVo);
+        model.addAttribute("notices", notices);
         return "tgls/reportForm/domesticCovid19";
     }
 }
