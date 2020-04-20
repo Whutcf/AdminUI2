@@ -197,4 +197,18 @@ public class CrawlerController {
         JSONArray jsonArray = domesticService.getProvinceCovidMapData(flag);
         return ResultBeanUtil.success(jsonArray);
     }
+
+    /**
+     * 获取每日新增人数
+     * @param name sys_covid19_trend_hist中的分类名称：ex.中国疫情汇总
+     * @param seriesName sys_covid19_trend_hist中的系列名称：ex.新增确诊
+     * @return com.smic.cf.util.ResultBean<com.alibaba.fastjson.JSONArray>
+     * @author 蔡明涛
+     * @date 2020/4/20 22:36
+     */
+    @GetMapping("/getCaseCount")
+    public ResultBean<JSONArray> getCaseCount(@RequestParam("name")String name,@RequestParam("seriesName")String seriesName){
+        JSONArray jsonArray = trendService.getCaseCount(name,seriesName);
+        return ResultBeanUtil.success(jsonArray);
+    }
 }

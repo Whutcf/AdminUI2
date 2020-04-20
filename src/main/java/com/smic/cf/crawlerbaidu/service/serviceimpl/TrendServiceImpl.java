@@ -1,5 +1,7 @@
 package com.smic.cf.crawlerbaidu.service.serviceimpl;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -17,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -47,7 +50,7 @@ public class TrendServiceImpl extends ServiceImpl<TrendMapper, Covid19TrendHist>
         List<Covid19TrendHist> covid19TrendHists = new ArrayList<>();
         ComponentBean component = CrawlerParser.getComponentBean(information);
         // 添加疫情趋势数据
-        if (component != null){
+        if (component != null) {
             TrendBean foreignTotalTrend = component.getAllForeignTrend();
             addTrendHist(covid19TrendHists, "国外疫情汇总", foreignTotalTrend);
             TrendBean chinaTotalTrend = component.getTrend();
@@ -58,6 +61,36 @@ public class TrendServiceImpl extends ServiceImpl<TrendMapper, Covid19TrendHist>
             addTrendList(covid19TrendHists, foreignTrendList);
         }
         return covid19TrendHists;
+    }
+
+    /**
+     * 获取每日新增人数的结果集
+     *
+     * @param name       sys_covid19_trend_hist中的分类名称：ex.中国疫情汇总
+     * @param seriesName sys_covid19_trend_hist中的系列名称：ex.新增确诊
+     * @return com.alibaba.fastjson.JSONArray
+     * @author 蔡明涛
+     * @date 2020/4/20 22:38
+     */
+    @Override
+    public JSONArray getCaseCount(String name, String seriesName) {
+        JSONArray jsonArray = new JSONArray();
+        List<Covid19TrendHist> trendHists = trendMapper.getCaseCount(name,seriesName);
+        List<String> xAxisList = new ArrayList<>();
+        List<Integer> seriesList = new ArrayList<>();
+        for (Covid19TrendHist trendHist : trendHists) {
+            xAxisList.add(trendHist.getDate());
+            seriesList.add(trendHist.getValue());
+        }
+        Collections.reverse(xAxisList);
+        Collections.reverse(seriesList);
+        JSONObject xAxisJson = new JSONObject();
+        xAxisJson.put("xAxisList",xAxisList);
+        jsonArray.add(xAxisJson);
+        JSONObject seriesJson = new JSONObject();
+        seriesJson.put("seriesList",seriesList);
+        jsonArray.add(seriesJson);
+        return jsonArray;
     }
 
     /**

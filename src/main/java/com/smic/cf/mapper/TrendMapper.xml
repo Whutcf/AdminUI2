@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.smic.cf.mapper.TrendMapper">
+
+    <select id="getCaseCount" resultType="com.smic.cf.crawlerbaidu.pojo.Covid19TrendHist">
+        select name, date, series_name, value
+        from adminui.sys_covid19_trend_hist
+        where name = #{name}
+          and series_name = #{seriesName}
+        order by id desc
+        limit 31
+    </select>
+</mapper>

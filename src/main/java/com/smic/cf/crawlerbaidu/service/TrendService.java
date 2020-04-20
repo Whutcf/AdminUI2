@@ -1,8 +1,7 @@
 package com.smic.cf.crawlerbaidu.service;
 
+import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.smic.cf.crawlerbaidu.dto.TrendBean;
-import com.smic.cf.crawlerbaidu.dto.TrendListBean;
 import com.smic.cf.crawlerbaidu.pojo.Covid19TrendHist;
 
 import java.util.List;
@@ -24,4 +23,15 @@ public interface TrendService extends IService<Covid19TrendHist> {
      * @date 2020/4/4 19:36
      */
    List<Covid19TrendHist> getTrendHistData(String information);
+
+   /**
+    * 获取每日新增人数的结果集
+    *
+    * @param name sys_covid19_trend_hist中的分类名称：ex.中国疫情汇总
+    * @param seriesName sys_covid19_trend_hist中的系列名称：ex.新增确诊
+    * @return com.alibaba.fastjson.JSONArray
+    * @author 蔡明涛
+    * @date 2020/4/20 22:38
+    */
+    JSONArray getCaseCount(String name, String seriesName);
 }

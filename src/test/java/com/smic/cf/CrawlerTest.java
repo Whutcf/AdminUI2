@@ -44,8 +44,8 @@ public class CrawlerTest {
     @Test
     public void getData() {
 //        //获取页面数据
-        String information = CrawlerUtils.getJsonString(Crawler.URL2, Crawler.BAIDU_DATA_REGEX_TEMPLATE, Crawler.BAIDU_DATA_ATTRIBUTE);
-        covid19NoticeService.saveCovid19Notice(information);
+//        String information = CrawlerUtils.getJsonString(Crawler.URL2, Crawler.BAIDU_DATA_REGEX_TEMPLATE, Crawler.BAIDU_DATA_ATTRIBUTE);
+//        covid19NoticeService.saveCovid19Notice(information);
 //        ComponentBean componentBean = CrawlerParser.getComponentBean(information);
 //        if (componentBean != null) {
 //            List<TrumpetBean> trumpetBeanList = componentBean.getTrumpet();

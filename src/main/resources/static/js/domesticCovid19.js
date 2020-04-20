@@ -1,11 +1,143 @@
 $(function () {
+    // 滚动条失效
+    window.parent.document.getElementById("mainIframe").scrolling = 'yes';
+
     let domesticMap = echarts.init(document.getElementById('domesticMap'));
+    let newAddCase = echarts.init(document.getElementById('newAddCase'));
+    let foreignInCase = echarts.init(document.getElementById('foreignInCase'));
     let mapData = [];
     let currentConfirmedBtn = $('#currentConfirmedBtn');
     let confirmedBtn = $('#confirmedBtn');
     domesticMap.showLoading();
-
+    newAddCase.showLoading();
+    foreignInCase.showLoading();
     getMapData(1);
+
+    // 获取国内每日新增数据，只取最近一个月的数据
+    getNewAddCase();
+
+    function getNewAddCase() {
+        $.get('/crawler/getCaseCount?name=中国疫情汇总&seriesName=新增确诊', function (res) {
+            newAddCase.hideLoading();
+            let data = res.data;
+            let option = {
+                title: {
+                    text: '每日新增确诊',
+                    subtext: '最近一个月内每日新增确诊人数',
+                    x: 'center',
+                    y: 'top'
+                },
+                tooltip: {
+                    trigger: 'axis'
+                },
+                toolbox: {
+                    show: true,
+                    feature: {
+                        magicType: {show: true, type: ['line', 'bar']},
+                        restore: {show: true},
+                        saveAsImage: {show: true}
+                    }
+                },
+                calculable: true,
+                xAxis: [
+                    {
+                        type: 'category',
+                        data: data[0].xAxisList
+                    }
+                ],
+                yAxis: [
+                    {
+                        type: 'value'
+                    }
+                ],
+                series: [
+                    {
+                        type: 'line',
+                        data: data[1].seriesList,
+                        markPoint: {
+                            data: [
+                                {type: 'max', name: '最大值'},
+                                {type: 'min', name: '最小值'}
+                            ]
+                        },
+                        markLine: {
+                            data: [
+                                {type: 'average', name: '平均值'}
+                            ]
+                        }
+                    }
+                ]
+            };
+            newAddCase.setOption(option);
+        });
+    }
+
+    // 获取境外输入每日新增数据，只取最近一个月的数据
+    getForeignInCase();
+
+    function getForeignInCase() {
+        $.get('/crawler/getCaseCount?name=中国疫情汇总&seriesName=新增境外输入', function (res) {
+            foreignInCase.hideLoading();
+            let data = res.data;
+            let option = {
+                title: {
+                    text: '每日新增境外输入',
+                    subtext: '最近一个月内每日新增境外输入人数',
+                    x: 'center',
+                    y: 'top'
+                },
+                tooltip: {
+                    trigger: 'axis'
+                },
+                toolbox: {
+                    show: true,
+                    feature: {
+                        magicType: {show: true, type: ['line', 'bar']},
+                        restore: {show: true},
+                        saveAsImage: {show: true}
+                    }
+                },
+                calculable: true,
+                xAxis: [
+                    {
+                        type: 'category',
+                        data: data[0].xAxisList
+                    }
+                ],
+                yAxis: [
+                    {
+                        type: 'value'
+                    }
+                ],
+                series: [
+                    {
+                        type: 'line',
+                        data: data[1].seriesList,
+                        itemStyle: {
+                            normal: {
+                                color: "#386db3",//折线点的颜色
+                                lineStyle: {
+                                    color: "#386db3"//折线的颜色
+                                }
+                            }
+                        },
+                        markPoint: {
+                            data: [
+                                {type: 'max', name: '最大值'},
+                                {type: 'min', name: '最小值'}
+                            ]
+                        },
+                        markLine: {
+                            data: [
+                                {type: 'average', name: '平均值'}
+                            ]
+                        }
+                    }
+                ]
+            };
+            foreignInCase.setOption(option);
+        });
+    }
 
     currentConfirmedBtn.on('click', function () {
         getMapData(1);
@@ -138,7 +270,7 @@ layui.use(['carousel', 'layer'], function () {
                     , closeBtn: 0 //不显示关闭按钮
                     , anim: 2
                     , shadeClose: true // 开启遮罩关闭
-                    , content: '<div><p>'+id.attr("value")+'</p></div>'
+                    , content: '<div><p>' + id.attr("value") + '</p></div>'
                 });
             }
         );
