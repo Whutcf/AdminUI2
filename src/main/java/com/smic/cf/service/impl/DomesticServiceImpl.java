@@ -152,16 +152,16 @@ public class DomesticServiceImpl implements DomesticService {
      * @return com.alibaba.fastjson.JSONArray
      * @author 蔡明涛
      * @date 2020/4/7 21:35
-     * @param flag
+     * @param flag 1:当前确诊 2:累计确诊
      */
     @Override
-    public JSONArray getProvinceCovidMapData(Integer flag) {
+    public JSONArray getProvinceCovid19MapData(Integer flag) {
         JSONArray jsonArray = new JSONArray();
         List<ProvinceCovid19> provinceCovid19s = provinceCovid19Mapper.selectList(null);
         for (ProvinceCovid19 provinceCovid19 : provinceCovid19s) {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put(CrawlerConstants.ECHARTS_NAME, provinceCovid19.getProvinceShortName());
-            if (flag == 1){
+            if (flag.equals(CrawlerConstants.CURRENT_CONFIRMED_COUNT_FLAG)){
                 jsonObject.put(CrawlerConstants.ECHARTS_VALUE, provinceCovid19.getCurrentConfirmedCount());
             }else {
                 jsonObject.put(CrawlerConstants.ECHARTS_VALUE,provinceCovid19.getConfirmedCount());

@@ -188,18 +188,33 @@ public class CrawlerController {
     /**
      * 获取全国当前确诊人数的集合 [{name:北京,value:131},{...}]
      *
+     * @param flag 1:当前确诊 2:累计确诊
      * @return com.smic.cf.util.ResultBean<com.alibaba.fastjson.JSONArray>
      * @author 蔡明涛
      * @date 2020/4/7 21:24
      */
     @GetMapping("/getProvinceCovidMapData")
     public ResultBean<JSONArray> getProvinceCovidMapData(@RequestParam("flag")Integer flag){
-        JSONArray jsonArray = domesticService.getProvinceCovidMapData(flag);
+        JSONArray jsonArray = domesticService.getProvinceCovid19MapData(flag);
         return ResultBeanUtil.success(jsonArray);
     }
 
     /**
-     * 获取每日新增人数
+     * 获取世界当前确诊或累计确诊人数的集合 [{name:美国,value:678999},{...}]
+     *
+     * @param flag 1:当前确诊 2:累计确诊
+     * @return com.smic.cf.util.ResultBean<com.alibaba.fastjson.JSONArray>
+     * @author 蔡明涛
+     * @date 2020/4/21 22:26
+     */
+    @GetMapping("/getWorldCovidMapData")
+    public ResultBean<JSONArray> getWorldCovidMapData(@RequestParam("flag")Integer flag){
+        JSONArray jsonArray = foreignCountryService.getWorldCovid19MapData(flag);
+        return ResultBeanUtil.success(jsonArray);
+    }
+
+    /**
+     * 从sys_covid19_trend_hist获取Case人数
      * @param name sys_covid19_trend_hist中的分类名称：ex.中国疫情汇总
      * @param seriesName sys_covid19_trend_hist中的系列名称：ex.新增确诊
      * @return com.smic.cf.util.ResultBean<com.alibaba.fastjson.JSONArray>

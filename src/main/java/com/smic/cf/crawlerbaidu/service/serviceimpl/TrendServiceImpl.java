@@ -64,7 +64,7 @@ public class TrendServiceImpl extends ServiceImpl<TrendMapper, Covid19TrendHist>
     }
 
     /**
-     * 获取每日新增人数的结果集
+     * 从sys_covid19_trend_hist中获取最近一个月的case人数的结果集
      *
      * @param name       sys_covid19_trend_hist中的分类名称：ex.中国疫情汇总
      * @param seriesName sys_covid19_trend_hist中的系列名称：ex.新增确诊

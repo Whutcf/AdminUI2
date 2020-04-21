@@ -47,5 +47,5 @@ public interface DomesticService {
      * @date 2020/4/7 21:35
      * @param flag 标记 1 代表当前确诊，2 代表累计确诊
      */
-    JSONArray getProvinceCovidMapData(Integer flag);
+    JSONArray getProvinceCovid19MapData(Integer flag);
 }

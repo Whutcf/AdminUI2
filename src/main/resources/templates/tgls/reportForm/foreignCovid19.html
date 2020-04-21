@@ -7,82 +7,90 @@
     <meta name="renderer" content="webkit">
     <!--国产浏览器高速模式-->
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="author" content="穷在闹市"/>
-    <!-- 作者 -->
-    <meta name="revised" content="穷在闹市.v3, 2019/05/01"/>
-    <!-- 定义页面的最新版本 -->
-    <meta name="description" content="网站简介"/>
-    <!-- 网站简介 -->
-    <meta name="keywords" content="搜索关键字，以半角英文逗号隔开"/>
     <title>国外疫情</title>
     <!-- 公共样式 开始 -->
-    <link rel="stylesheet" type="text/css" href="../../css/base.css">
     <link rel="stylesheet" type="text/css" href="../../layui/css/layui.css">
     <script type="text/javascript" src="../../framework/jquery-1.11.3.min.js"></script>
     <script type="text/javascript" src="../../layui/layui.js"></script>
-    <!-- 滚动条插件 -->
-    <link rel="stylesheet" type="text/css" href="../../css/jquery.mCustomScrollbar.css">
-    <script src="../../framework/jquery-ui-1.10.4.min.js"></script>
-    <script src="../../framework/jquery.mousewheel.min.js"></script>
-    <script src="../../framework/jquery.mCustomScrollbar.min.js"></script>
-    <script src="../../framework/cframe.js"></script><!-- 仅供所有子页面使用 -->
     <!-- 公共样式 结束 -->
     <link rel="stylesheet" type="text/css" href="../../css/layuiCarousel.css">
+    <link rel="stylesheet" type="text/css" href="../../css/summaryHead.css">
+    <script type="text/javascript" src="../../echarts/echarts.js"></script>
+    <script type="text/javascript" src="../../echarts/world.js"></script>
+    <script type="text/javascript" src="../../js/foreignCovid19.js" charset="UTF-8"></script>
 </head>
 <body>
-<div class="cBody">
-    <div class="layui-tab-content" style="padding: 0 1px;">
-        <!-- 表头工具栏-->
-        <form class="layui-form layui-fluid" action="" style="padding: 0;height: 45px">
-            <div class="layui-form" style="margin: 0 0;padding: 1px 0 1px 0;">
-                <div class="layui-form-item">
-                    <label class="layui-form-label" style="margin-left: 0;width: 60px">联动筛选</label>
-                    <div class="layui-input-inline" style="width: auto">
-                        <select id="continents" lay-filter="continentsFilter" lay-search>
-                            <option value="">请选择或搜索大洲</option>
-                        </select>
-                    </div>
-                    <span style="display: inline-block;float: left;width: 15px;padding-top: 10px;">-</span>
-                    <div class="layui-input-inline" style="width: auto">
-                        <select id="provinceName" lay-search>
-                            <option value="">请选择或搜索国家</option>
-                        </select>
-                    </div>
-                    <div class="layui-inline">
-                        <a class="layui-btn layui-btn-normal"
-                           style="padding: 0 5px;border-color: #1eb2a2;color: #666666;background-color: #BFFDE1"
-                           id="search_submit"
-                           data-type="reload"
-                           lay-filter="reload_search_submit">查询</a>
-                        <a class="layui-btn layui-btn-normal" id="searchResetBtn"
-                           style="padding: 0 5px;border-color: #1eb2a2;color: #666666;background-color: #BFFDE1"
-                           data-type="reload"
-                           lay-filter="searchResetBtn">重置</a>
-                        <a class="layui-btn layui-btn-normal" id="refresh"
-                           style="padding: 0 10px;border-color: #1eb2a2;color: #666666;background-color: #BFFDE1"
-                           lay-filter="refresh">刷新实时数据</a>
+<div class="layui-tab-content" style="padding: 0 1px;">
+    <div class="layui-tab-item layui-show">
+        <!-- 引入echarts -->
+        <div class="layui-row layui-col-space3">
+            <!-- 疫情地图（世界地图） -->
+            <div class="layui-col-md12" style="margin-top: 2px">
+                <div class="layui-card">
+                    <div class="layui-card-body">
+                        <div class="layui-input-inline" style="margin-left: 40%">
+                            <a id="currentConfirmedBtn" class="pressBut active">现存确诊</a>
+                            <a id="confirmedBtn" class="pressBut">累计确诊</a>
+                        </div>
+                        <!-- 为echarts准备一个具备大小的dom -->
+                        <div style="width: 100%;height:400px" id="worldMap"></div>
                     </div>
                 </div>
             </div>
-        </form>
-        <!-- table -->
-        <div class="layui-row layui-col-space3" style="margin: auto 10px; height: 300px;">
-            <table class="layui-hide-sm" id="foreignStatistics" lay-skin="line" lay-filter="foreignStatic"></table>
-        </div>
-        <!-- echarts -->
-        <!-- 为echarts准备一个具备大小的dom -->
-        <div class="layui-row layui-col-space3" style="margin: 200px 1px auto;">
-            <div class="layui-card">
-                <div class="layui-card-header"><strong>世界疫情数据汇总</strong></div>
-                <div class="layui-card-body">
-                    <div class="layui-carousel" id="Notice_carousel" lay-filter="Notice_carousel">
-                        <div carousel-item>
-                            <div id="summaryBarChart"></div>
-                            <div id="summaryPieChart"></div>
+            <!-- 基本数据汇总 -->
+            <div class="layui-col-md12">
+                <div class="layui-card">
+                    <div class="layui-card-header"><strong>世界疫情数据汇总</strong></div>
+                    <div class="layui-card-body">
+                        <!-- 汇总数据滚动条 -->
+                        <div class="layui-carousel" id="Notice_carousel" lay-filter="Notice_carousel">
+                            <div carousel-item>
+                                <div id="summaryBarChart"></div>
+                                <div id="summaryPieChart"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
+        <!-- 表头工具栏-->
+        <div class="layui-row layui-col-space1">
+            <form class="layui-form layui-fluid" action="" style="padding: 0;height: 45px">
+                <div class="layui-form" style="margin: 10px 0;padding: 1px 0 1px 0;">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label" style="margin-left: 0;width: 60px">联动筛选</label>
+                        <div class="layui-input-inline" style="width: auto">
+                            <select id="continents" lay-filter="continentsFilter" lay-search>
+                                <option value="">请选择或搜索大洲</option>
+                            </select>
+                        </div>
+                        <span style="display: inline-block;float: left;width: 15px;padding-top: 10px;">-</span>
+                        <div class="layui-input-inline" style="width: auto">
+                            <select id="provinceName" lay-search>
+                                <option value="">请选择或搜索国家</option>
+                            </select>
+                        </div>
+                        <div class="layui-inline">
+                            <a class="layui-btn layui-btn-normal"
+                               style="padding: 0 5px;border-color: #1eb2a2;color: #666666;background-color: #BFFDE1"
+                               id="search_submit"
+                               data-type="reload"
+                               lay-filter="reload_search_submit">查询</a>
+                            <a class="layui-btn layui-btn-normal" id="searchResetBtn"
+                               style="padding: 0 5px;border-color: #1eb2a2;color: #666666;background-color: #BFFDE1"
+                               data-type="reload"
+                               lay-filter="searchResetBtn">重置</a>
+                            <a class="layui-btn layui-btn-normal" id="refresh"
+                               style="padding: 0 10px;border-color: #1eb2a2;color: #666666;background-color: #BFFDE1"
+                               lay-filter="refresh">刷新实时数据</a>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <!-- table -->
+        <div class="layui-row layui-col-space3" style="margin: auto 10px; height: 300px;">
+            <table class="layui-hide-sm" id="foreignStatistics" lay-skin="line" lay-filter="foreignStatic"></table>
         </div>
     </div>
 </div>
@@ -90,6 +98,4 @@
 <script type="text/html" id="toolbar">
     <a class="layui-btn layui-btn-xs" lay-event="detail">查看历史数据</a>
 </script>
-<script type="text/javascript" src="../../echarts/echarts.js"></script>
-<script type="text/javascript" src="../../js/foreignCovid19.js" charset="UTF-8"></script>
 </html>

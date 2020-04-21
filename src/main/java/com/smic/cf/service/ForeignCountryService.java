@@ -1,5 +1,6 @@
 package com.smic.cf.service;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.smic.cf.entities.pojo.ForeignCountryCovid19;
@@ -95,4 +96,14 @@ public interface ForeignCountryService {
      * @date 2020/4/6 18:53
      */
     ForeignStatisticsTrendChartData getYesterdayCountryDataById(Long locationId);
+
+    /**
+     * 获取世界当前确诊或累计确诊人数的集合 [{name:美国,value:678999},{...}]
+     *
+     * @param flag 1:当前确诊 2:累计确诊
+     * @return com.alibaba.fastjson.JSONArray
+     * @author 蔡明涛
+     * @date 2020/4/21 22:30
+     */
+    JSONArray getWorldCovid19MapData(Integer flag);
 }

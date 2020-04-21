@@ -21,6 +21,10 @@ public class CrawlerConstants {
      */
     public static final String SERIES_NAME = "系列名称";
     public static final String CURRENT_CONFIRMED_COUNT_NAME = "当前确诊";
+    /**
+     * 当前确诊的flag为1
+     */
+    public static final Integer CURRENT_CONFIRMED_COUNT_FLAG = 1;
     public static final String HIST_CURRENT_CONFIRMED_COUNT_NAME = "当日存在确诊";
     public static final String CONFIRMED_COUNT_NAME = "累计确诊";
     public static final String HIST_CONFIRMED_COUNT_NAME = "当日累计确诊";

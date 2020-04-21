@@ -1,5 +1,6 @@
 package com.smic.cf.service.impl;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -9,12 +10,12 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.smic.cf.constants.CrawlerConstants;
 import com.smic.cf.constants.SortItem;
 import com.smic.cf.entities.dto.SummaryBarChartData;
-import com.smic.cf.mapper.ForeignCountryCovid19Mapper;
-import com.smic.cf.mapper.ForeignStatisticTrendChartDataMapper;
-import com.smic.cf.mapper.IncrVoMapper;
 import com.smic.cf.entities.pojo.ForeignCountryCovid19;
 import com.smic.cf.entities.pojo.ForeignStatisticsTrendChartData;
 import com.smic.cf.entities.vo.IncrVo;
+import com.smic.cf.mapper.ForeignCountryCovid19Mapper;
+import com.smic.cf.mapper.ForeignStatisticTrendChartDataMapper;
+import com.smic.cf.mapper.IncrVoMapper;
 import com.smic.cf.service.ForeignCountryService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -367,5 +368,30 @@ public class ForeignCountryServiceImpl implements ForeignCountryService {
         LambdaQueryWrapper<ForeignStatisticsTrendChartData> queryWrapper = Wrappers.lambdaQuery();
         queryWrapper.eq(ForeignStatisticsTrendChartData::getLocationId,locationId).eq(ForeignStatisticsTrendChartData::getDateId,maxDateId);
         return foreignStatisticTrendChartDataMapper.selectOne(queryWrapper);
+    }
+
+    /**
+     * 获取世界当前确诊或累计确诊人数的集合 [{name:美国,value:678999},{...}]
+     *
+     * @param flag 1:当前确诊 2:累计确诊
+     * @return com.alibaba.fastjson.JSONArray
+     * @author 蔡明涛
+     * @date 2020/4/21 22:30
+     */
+    @Override
+    public JSONArray getWorldCovid19MapData(Integer flag) {
+        JSONArray jsonArray = new JSONArray();
+        List<ForeignCountryCovid19> countryCovid19s = foreignCountryCovid19Mapper.selectList(null);
+        for (ForeignCountryCovid19 countryCovid19 : countryCovid19s) {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put(CrawlerConstants.ECHARTS_NAME,countryCovid19.getProvinceName());
+            if (flag.equals(CrawlerConstants.CURRENT_CONFIRMED_COUNT_FLAG)){
+                jsonObject.put(CrawlerConstants.ECHARTS_VALUE,countryCovid19.getCurrentConfirmedCount());
+            }else {
+                jsonObject.put(CrawlerConstants.ECHARTS_VALUE,countryCovid19.getConfirmedCount());
+            }
+            jsonArray.add(jsonObject);
+        }
+        return jsonArray;
     }
 }

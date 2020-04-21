@@ -11,11 +11,9 @@ $(function () {
     domesticMap.showLoading();
     newAddCase.showLoading();
     foreignInCase.showLoading();
-    getMapData(1);
 
     // 获取国内每日新增数据，只取最近一个月的数据
     getNewAddCase();
-
     function getNewAddCase() {
         $.get('/crawler/getCaseCount?name=中国疫情汇总&seriesName=新增确诊', function (res) {
             newAddCase.hideLoading();
@@ -74,7 +72,6 @@ $(function () {
 
     // 获取境外输入每日新增数据，只取最近一个月的数据
     getForeignInCase();
-
     function getForeignInCase() {
         $.get('/crawler/getCaseCount?name=中国疫情汇总&seriesName=新增境外输入', function (res) {
             foreignInCase.hideLoading();
@@ -139,6 +136,7 @@ $(function () {
         });
     }
 
+    getMapData(1);
     currentConfirmedBtn.on('click', function () {
         getMapData(1);
     });
