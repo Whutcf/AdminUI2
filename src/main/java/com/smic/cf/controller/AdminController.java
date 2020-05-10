@@ -36,8 +36,6 @@ import lombok.extern.slf4j.Slf4j;
  */
 public class AdminController {
 
-	private final String STATE_DEFULT = "true";
-
 	@Resource
 	private UserService userService;
 	@Resource
@@ -90,6 +88,7 @@ public class AdminController {
 		User userInfo = (User) request.getSession().getAttribute("userinfo");
 		String username = userInfo.getUserName();
 		Integer userId = (Integer) Integer.parseInt(strUserId);
+		String STATE_DEFULT = "true";
 		if (STATE_DEFULT.equalsIgnoreCase(state)) {
 			userService.updateStateById("T", userId, username);
 			log.info("用户的状态被修改为有效！");
