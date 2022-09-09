@@ -96,7 +96,7 @@
 		<dependency>
 			<groupId>org.yaml</groupId>
 			<artifactId>snakeyaml</artifactId>
-			<version>1.24</version><!--$NO-MVN-MAN-VER$-->
+			<version>1.26</version><!--$NO-MVN-MAN-VER$-->
 		</dependency>
 		<!-- 配置解决无法连接druid连接池 -->
 		<dependency>
